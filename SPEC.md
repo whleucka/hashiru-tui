@@ -118,7 +118,7 @@ do-not-disturb), clipboard, default apps, fingerprint (wraps
   the runner, the Dashboard and Doctor views (they become Overview and
   Updates → health).
 - **Change:** tabs become a sidebar; the runner grows the three kinds above.
-- **Drop:** the Stages tab idea. It's maintainer work.
+- **Drop:** the Stages tab idea. It's maintainer work. (v2 brings back re-applying one stage; see below.)
 
 ## Build order
 
@@ -135,3 +135,65 @@ do-not-disturb), clipboard, default apps, fingerprint (wraps
 Hashiru installs the binary itself (decided 2026-10-15); no AUR package. Whether
 a stage builds it from a pinned tag or downloads a release build is settled at
 step 7.
+
+## v2: power-user round
+
+Decided 2026-10-16. Same audience and stance; v2 makes the tool faster to
+drive and reach into, then adds the two areas a power user misses most.
+Order: keys and palette, plumbing, Packages, Services. Hardware (monitors,
+power, firmware) is its own later round, since it needs Hashiru changes.
+
+### Keys you can see
+
+- **`?` opens a keymap popup** over the current screen: the focused area's
+  keys, grouped, then the global ones. `?`, `esc` or `q` closes it. While a
+  text input has focus (`/` filter, palette), `?` types a `?`.
+- Areas describe their keys as data (key, what it does, group) instead of a
+  help string. The footer is built from the same list, so the two can't
+  disagree; it shows what fits and ends with `? keys`.
+
+### Palette
+
+- Stays the way to reach everything. Gains the global actions (refresh, show
+  keys, quit) and puts recently run actions first.
+- Every action gets a stable ID (`updates.update`, `snapshots.new`), shown
+  dimmed in the palette and used by deep links.
+
+### Plumbing
+
+- **Deep links.** `hashiru-tui <area>` opens on that area;
+  `hashiru-tui --run <action-id>` opens and runs it;
+  `hashiru-tui --list-actions` prints every ID. So a Hyprland bind or a
+  script can go straight to "update" or "new snapshot".
+- **Changelog before updating.** Updates shows the release notes
+  (`hashiru changelog`) for the versions this machine is behind, or the
+  current one's when it's up to date.
+- **Re-apply a stage.** A stage picker (`hashiru install --list`) runs
+  `hashiru install N` Interactive. This reverses v1's "drop Stages": that was
+  a maintainer's view of stages; re-applying config (45) or snapper (50) in
+  one key is a user's need.
+- **Overview refreshes itself**: the cheap local stats (uptime, memory,
+  battery, disk) every few seconds. Network probes still only on `r`.
+
+### Packages (native)
+
+The view nothing else gives: what Hashiru owns versus what you added.
+- **Groups:** Hashiru-managed (in `pacman/*.txt` under the `repo=` from
+  `status --porcelain`), yours (explicitly installed, not in a manifest),
+  missing (in a manifest, not installed: drift), orphans (`pacman -Qdtq`),
+  foreign (`-Qqm`). Package cache size from `/var/cache/pacman/pkg`.
+- `/` filters; `enter` shows `pacman -Qi`.
+- **Search** the repos and the AUR (`pacman -Ss`, `yay -Ssa`).
+- **Actions, all through the launcher so the real prompts show:** install
+  (`yay -S`), remove (`sudo pacman -Rns`), remove orphans, clean the cache
+  (`paccache -r`).
+
+### Services (native list, delegated actions)
+
+- System and `--user` units and timers: state, enabled, description; next
+  run for timers. `/` filters; one key toggles system/user, another shows
+  only failed.
+- Actions: start, stop, restart, enable, disable. System units go through the
+  launcher as `sudo systemctl ...` so the password prompt is visible; user
+  units run directly with a note. `journalctl -u` opens as Watch.
+- Logs' failed units jump here.

@@ -1,82 +1,84 @@
-# Implementation Plan: hashiru-tui control center (SPEC.md v1)
+# Implementation Plan: hashiru-tui v2, power-user round (SPEC.md "v2")
+
+v1's plan is in [v1/plan.md](v1/plan.md).
 
 ## Overview
 
-Turn the tab-based Hashiru viewer into the control center SPEC.md describes:
-a sidebar of areas, one launcher for other tools, a command palette, and the
-v1 areas (Overview, Updates, Keybinds, Connectivity, Wallpaper, Snapshots,
-Logs, Config), finishing with the Hashiru side (wallpaper mode, keybind,
-installing the binary).
+Make the tool faster to drive and reach into, then add Packages and
+Services: keys as data with a `?` popup, a palette with IDs and recents, deep
+links, changelog and stage re-apply in Updates, a self-refreshing Overview,
+and the two new areas.
 
 ## Architecture decisions
 
-- **Area interface.** Each area is a type implementing `Name`, `Update`
-  (every non-key message), `HandleKey` (gets first refusal on keys while
-  focused, returns handled), `View(w, h)`, `Help`, and `Actions` (for the
-  palette). Adding an area is one file and one line in the registry.
-- **Shared state, loaded once.** Status, doctor and the log live in one
-  `State` the shell owns. Overview and Updates both read it, so nothing is
-  fetched twice.
-- **One launcher, three kinds** (Interactive, Watch, GUI), as in SPEC.md.
-  herdr pane when present; otherwise ExecProcess for terminal tools and a
-  detached `setsid` process for GUI ones. Detaching is injected so tests
-  start nothing.
-- **Probes are injected, parsers are pure.** Every external command an area
-  reads (`checkupdates`, `nmcli`, `hyprctl binds`, `snapper`...) goes through
-  one `Exec` function in Options. Parsing is a pure function tested against
-  output captured from this machine in `testdata/`.
-- **Areas read, the launcher changes.** Anything that changes the machine
-  either runs through the launcher (the user sees and confirms it in the
-  real tool) or is a single explicit action with a visible note. No silent
-  writes.
+- **Keys are data.** `Area.Help() string` becomes `Area.Keys() []Key`
+  (`Key{Keys, Desc, Group string}`). The footer and the `?` popup both render
+  from it. Global keys are one list in the shell.
+- **Overlays are one mechanism.** The palette and the keymap popup are both
+  "an overlay takes every key while open". The popup is drawn over the area
+  (lipgloss layers), not in place of it, so you still see what the keys act
+  on.
+- **Actions have IDs.** `Action` gains `ID` (`<area>.<verb>`, lowercase,
+  stable). The palette, deep links and `--list-actions` all use it; titles
+  can change, IDs don't.
+- **Recents live in `~/.local/state/hashiru-tui/recent`**, a few lines of
+  IDs. Missing or unreadable means no recents, never an error.
+- **Same probe rules as v1.** New commands (`pacman -Q*`, `systemctl`,
+  `hashiru changelog`) go through `Exec`; parsers are pure and tested on
+  output captured from this machine.
+- **Anything that changes the machine runs through the launcher.** Package
+  install/remove and system unit changes are Interactive so sudo and pacman
+  prompts are visible. Only `systemctl --user` actions run directly.
 
 ## Task list
 
-### Phase 1: Shell
-- [x] Task 1: Sidebar shell with the Area interface; existing views become Overview, Updates, Logs
-- [x] Task 2: Launcher with Interactive / Watch / GUI kinds
-- [x] Task 3: Command palette over areas and actions
+### Phase 1: Keys and palette
+- [ ] Task 1: Keys as data; the footer renders from them
+- [ ] Task 2: `?` keymap popup
+- [ ] Task 3: Action IDs, global actions and recents in the palette
 
 ### Checkpoint A
-- [x] `go test ./...` and `make build` pass; run in a herdr split, all three areas work, palette opens and runs an action
+- [ ] Tests, vet, build; manual: `?` in every area, `?` inside a filter types `?`, palette recents survive a restart
 
-### Phase 2: Updates and the everyday areas
-- [x] Task 4: Pending pacman and AUR updates in Updates and Overview
-- [x] Task 5: Arch news in Updates
-- [x] Task 6: Keybinds area
-- [x] Task 7: Connectivity area (network, bluetooth, audio)
+### Phase 2: Plumbing
+- [ ] Task 4: Deep links (`<area>`, `--run`, `--list-actions`)
+- [ ] Task 5: Changelog in Updates
+- [ ] Task 6: Re-apply a stage
+- [ ] Task 7: Overview refreshes local stats on a timer
 
 ### Checkpoint B
-- [x] Tests and build pass; manual run against the real machine
+- [ ] Tests, vet, build; manual: `hashiru-tui --run snapshots.new` from a shell, stage 45 re-applied from the TUI
 
-### Phase 3: The rest of v1
-- [x] Task 8: Overview system summary (host, kernel, uptime, memory, disk, battery)
-- [x] Task 9: Snapshots area
-- [x] Task 10: Logs sources: journal errors and failed units
-- [x] Task 11: Config area
-- [x] Task 12: Wallpaper area
+### Phase 3: Packages
+- [ ] Task 8: Package probes and manifest parsing
+- [ ] Task 9: Packages area (groups, filter, info)
+- [ ] Task 10: Search, install, remove, orphans, cache
 
 ### Checkpoint C
-- [x] Tests and build pass; full manual pass of every area
+- [ ] Tests, vet, build; manual: groups match `pacman -Qqe` minus the manifests by hand; install and remove a small package
 
-### Phase 4: Hashiru side (/opt/hashiru)
-- [x] Task 13: tahoe-wallpaper respects a fixed wallpaper choice
-- [x] Task 14: SUPER+ALT+Space bind and installing the binary (**needs a decision first, see Open questions**)
+### Phase 4: Services
+- [ ] Task 11: systemctl probes (units, unit files, timers; system and user)
+- [ ] Task 12: Services area and actions; Logs' failed units jump here
+
+### Checkpoint D
+- [ ] Tests, vet, build; README updated for v2; full manual pass of every area
 
 ## Risks and mitigations
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Kitty graphics in a floating window or herdr pane don't render | Med | Wallpaper works without images (names + apply); preview is an extra, off when the terminal doesn't support it |
-| `hyprctl binds` output changes between Hyprland versions | Low | Same parser approach as `hypr/scripts/keybinds`; fixture test catches drift |
-| Network calls (Arch news, `checkupdates`) slow the UI | Med | Every probe runs off the UI thread with a timeout; areas show "loading" and "unknown" |
-| A probe tool is missing (no yay, no bluetooth) | Low | Missing tool is a visible "not installed" line, never an error that blocks the area |
-| Task 13/14 change the live desktop when Hashiru next updates | Med | Commits only, not pushed, not applied; you run `hashiru install 45` when ready |
+| Release notes for versions you're behind aren't in the local checkout until the pull | Med | Read them from the fetched ref (`git -C repo show origin/main:...`) if `hashiru changelog` can't; otherwise show "N commits behind" and the current notes. Decide in Task 5 after looking at how Hashiru stores them |
+| Manifest entries that are groups (e.g. `base-devel`) don't appear in `pacman -Qqe` | Med | Expand groups with `pacman -Sgq`; fixture test with a group entry |
+| `?` collides with a key an area already uses | Low | Task 1 audits every area's keys; none use `?` today |
+| Overlay compositing in lipgloss v2 misbehaves with kitty image placeholders on Wallpaper | Low | Popup hides the preview while open; Wallpaper already redraws it on resize |
+| Auto-refresh redraws fight with an open overlay or input | Low | Timer only updates Overview's data; views redraw from state as now |
+| sudo prompts inside a herdr pane vs. ExecProcess differ | Low | Same Interactive path as `hashiru update`, which already works in both |
 
 ## Open questions
 
-- **Task 14: how the binary reaches the machine.** hashiru-tui has no git
-  remote yet, so a stage can't clone or download it. Options: push
-  hashiru-tui to GitHub and have a stage `go install` a pinned tag; or vendor
-  a built binary into Hashiru (not great in git). The run will stop before
-  Task 14 to ask.
+- **Services: tag Hashiru's own units?** Showing which units Hashiru enabled
+  (reflector, snapper timers, the wallpaper daemon) means either a list in
+  Hashiru (e.g. `hashiru status` printing them) or a hardcoded list here that
+  drifts. Not in v2 unless you want the Hashiru change; v2 shows all units
+  with filters.
