@@ -60,3 +60,55 @@ func TestStartRejectsUnknownNames(t *testing.T) {
 		t.Error("unknown action: no error")
 	}
 }
+
+func TestStartOnATab(t *testing.T) {
+	for _, tc := range []struct{ link, area, tab string }{
+		{"packages.orphans", "Packages", "Orphans"},
+		{"Logs.JOURNAL", "Logs", "Journal errors"},
+		{"services.failed", "Services", "Failed"},
+	} {
+		m := New(Options{Source: fakeSource{}})
+		if err := m.Start(tc.link, ""); err != nil {
+			t.Fatalf("%s: %v", tc.link, err)
+		}
+		load(t, m)
+		if m.area().Name() != tc.area || !m.inArea {
+			t.Errorf("%s: opened on %s (in area %v)", tc.link, m.area().Name(), m.inArea)
+		}
+		// The current tab is the one drawn lit; find it by its place in Tabs.
+		tabs := m.area().(Tabbed)
+		if got := tabs.Tabs()[tabs.Tab()]; !strings.HasPrefix(strings.ToLower(tc.tab), got) {
+			t.Errorf("%s: on tab %q, want %s", tc.link, got, tc.tab)
+		}
+	}
+}
+
+func TestStartRejectsUnknownTabs(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	if err := m.Start("packages.nope", ""); err == nil || !strings.Contains(err.Error(), "orphans") {
+		t.Errorf("unknown tab: %v", err)
+	}
+	if err := m.Start("snapshots.new", ""); err == nil || !strings.Contains(err.Error(), "no tabs") {
+		t.Errorf("tab on an area without tabs: %v", err)
+	}
+}
+
+// Tabs names every tab [ and ] reach, in their order, so a deep link can
+// reach each one.
+func TestTabsMatchTheTabBar(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	for _, a := range m.areas {
+		tabs, ok := a.(Tabbed)
+		if !ok {
+			continue
+		}
+		n := len(tabs.Tabs())
+		for i := 1; i <= n; i++ {
+			a.HandleKey(tea.KeyPressMsg{Code: ']', Text: "]"})
+			if want := i % n; tabs.Tab() != want {
+				t.Fatalf("%s: after %d ] on tab %d, want %d (Tabs has %d names)", a.Name(), i, tabs.Tab(), want, n)
+			}
+		}
+	}
+}

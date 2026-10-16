@@ -129,6 +129,12 @@ func (l *logsArea) watch(label string, argv ...string) func() tea.Cmd {
 	}
 }
 
+func (l *logsArea) Tabs() []string { return []string{"hashiru", "journal", "failed"} }
+
+func (l *logsArea) Tab() int { return int(l.src) }
+
+func (l *logsArea) SetTab(i int) { l.src = logSource(i) }
+
 func (l *logsArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	k := msg.String()
 	if k == "s" {

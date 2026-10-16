@@ -1,6 +1,6 @@
 # Implementation Plan: hashiru-tui v2, power-user round (SPEC.md "v2")
 
-v1's plan is in [v1/plan.md](v1/plan.md).
+v1's plan is in [../v1/plan.md](../v1/plan.md).
 
 ## Overview
 

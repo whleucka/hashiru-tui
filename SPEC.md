@@ -197,3 +197,141 @@ The view nothing else gives: what Hashiru owns versus what you added.
   launcher as `sudo systemctl ...` so the password prompt is visible; user
   units run directly with a note. `journalctl -u` opens as Watch.
 - Logs' failed units jump here.
+
+## v3: hardware round
+
+Decided 2026-10-16. The round v2 put off: monitors, power, firmware. Same
+audience and stance. All three go in **one Hardware area** with `[` `]` tabs
+(Monitors, Power, Firmware), so the sidebar grows by one row, not three.
+
+### Capability map
+
+| Module id | Where | Responsibility | Depends on |
+|---|---|---|---|
+| `firmware` | here | fwupd devices, pending updates, refresh metadata, update | — |
+| `monitors` | here | live outputs; change mode, scale, rotation, placement; apply by writing the override `monitors.lua` | — |
+| `idle-override` | Hashiru | `~/.config/hashiru/hypr/hypridle-{ac,battery}.conf` replace the stowed ones; a reload command | — |
+| `charge-thresholds` | Hashiru | `HASHIRU_CHARGE_START/STOP` in `hashiru.conf`, `hashiru charge`, applied to `/etc/tlp.d` | — |
+| `power` | here | battery health, TLP profile and switch, idle timeouts, charge thresholds | `idle-override`, `charge-thresholds` |
+
+Build order: `firmware` (creates the Hardware area) → `monitors` →
+`idle-override`, `charge-thresholds` → `power`. The two Hashiru modules'
+contracts are specced in Hashiru (`/opt/hashiru/SPEC-idle-override.md`,
+`SPEC-charge-thresholds.md`); this file only says how the TUI uses them.
+Each Hashiru module ships in a Hashiru release before `power` relies on it,
+and `power` degrades (read-only, with a note) on a Hashiru that predates it.
+
+### Hardware area
+
+- Area ID `hardware`; `hashiru-tui hardware` opens it. Tabs as in Packages and
+  Logs: `[` `]`, the tab bar on top, the last tab remembered for the session.
+- **Deep links reach a tab** (decided 2026-10-16), in every area with tabs,
+  not just this one: `hashiru-tui hardware.power`, `hashiru-tui packages.orphans`,
+  `hashiru-tui logs.journal`. The tab part is the tab's short, stable name
+  (`yours`, `journal`, `failed`; the title's first word, lowercased), any
+  case accepted; labels in the tab bar can change, names don't. An unknown tab fails like an unknown area, listing the
+  area's tabs. An area without tabs given a tab part is an error too.
+  `--run` keeps action IDs; a positional `area.tab` is never an action.
+- Action IDs are `hardware.<verb>` (below). Everything that needs root goes
+  through the launcher as Interactive, so sudo and the tool's own prompts show.
+- `r` re-probes the current tab only.
+
+### Monitors (native)
+
+The one place a TUI beats editing Lua by hand: seeing the outputs and their
+real modes while changing them.
+
+- **List** from `hyprctl monitors all -j`: name, description, mode, position,
+  scale, rotation, enabled, focused. `enter` shows the rest, including every
+  available mode.
+- **Change, staged:** `m` mode (picker: `preferred` plus `availableModes`),
+  `s` scale (picker of common scales; after applying, show the scale Hyprland
+  actually used if it differs), `t` rotate (0/90/180/270), `p` place (left of,
+  right of, above, below another output; position computed from its logical
+  size). Staged changes show as a diff on the row (`2560x1440@60 → preferred`).
+  `esc` drops them.
+- **Apply (`a`, `hardware.monitors-apply`)** writes
+  `~/.config/hashiru/hypr/monitors.lua` from the staged layout and runs
+  `hyprctl reload`. Then a **keep-or-revert prompt with a 15 s countdown**:
+  `y` keeps, anything else or the timeout puts the previous file back (or
+  removes it, if there wasn't one) and reloads again. That guards the
+  black-screen case `monitors.lua` warns about (a dock offering fewer modes).
+- **Why write-and-reload, not `hyprctl eval 'hl.monitor(...)'` per change:**
+  `clamshell.lua` documents that `hl.monitor` accumulates rules and desyncs
+  from DRM when called repeatedly. One file, one reload, is the state Hyprland
+  will also boot into, so "live" and "saved" can't drift.
+- **The generated file:** a header saying hashiru-tui wrote it, one
+  `hl.monitor` per output, then Hashiru's catch-all (`output = ""`) last so a
+  display never seen before still lights. External displays are matched by
+  `desc:` (follows the display between ports, as `monitors.lua` recommends);
+  the internal panel (`eDP-*`) by name. Disabled outputs are written with
+  `disabled = true` except `eDP-*`, which is left to `clamshell.lua`.
+- **A hand-written override is never silently replaced.** If the file exists
+  without the hashiru-tui header, apply asks first and copies it to
+  `monitors.lua.bak` before writing.
+- Refuses to stage a layout with no enabled output.
+
+### Power (native, delegated writes)
+
+- **Battery**, per `/sys/class/power_supply/BAT*`: charge, status, health
+  (`energy_full / energy_full_design`, or the `charge_*` pair), cycle count,
+  current thresholds; AC online. No battery: the section says so and the rest
+  of the tab still works.
+- **Profile:** `platform_profile` and its choices, TLP's profile and power
+  source from `tlp-stat -s`. `p` (`hardware.power-profile`) picks one and runs
+  `sudo tlp <profile>`, the same command as waybar's cycle button.
+- **Idle:** lock and screen-off timeouts for AC and battery, read from the
+  override when there is one, else the stowed file, labelled which. `i`
+  (`hardware.idle`) edits them in minutes; saving writes the override (a copy
+  of the stowed file with only the `listener` timeouts changed) and runs
+  Hashiru's reload. `I` (`hardware.idle-reset`) removes the override and
+  reloads. Screen-off stays "lock + 30 s" unless set separately.
+- **Charge thresholds:** `c` (`hardware.charge`) asks start and stop
+  (0–100, start < stop) and runs `hashiru charge START STOP` Interactive;
+  `C` (`hardware.charge-off`) runs `hashiru charge off`. Hidden when the
+  battery has no `charge_control_*` files; read-only with a note when
+  `hashiru` has no `charge` subcommand.
+
+### Firmware (delegated)
+
+- **Devices** from `fwupdmgr get-devices --json`: name, vendor, version,
+  updatable. **Pending** from `fwupdmgr get-updates --json`, shown first and
+  flagged; `enter` shows a device's or release's details (version from → to,
+  summary, whether it needs a reboot).
+- `F` (`hardware.firmware-refresh`) runs `fwupdmgr refresh` Interactive;
+  `u` (`hardware.firmware-update`) runs `fwupdmgr update` Interactive, which
+  keeps fwupd's own confirm and reboot prompts. `u` is the same key as
+  Updates' update.
+- fwupd not installed or the daemon not answering: the tab says so with the
+  command that failed; no other tab is affected.
+
+### Engineering (same as v1 and v2)
+
+- Probes go through `system.Exec`, in `internal/system/{monitors,power,firmware}.go`;
+  parsers are pure and tested against output captured from this machine
+  (`internal/system/testdata/`). File reads (sysfs, hypridle confs) take a
+  root path so tests use a temp dir.
+- The Lua writer and the hypridle rewriter are pure functions with golden
+  tests: same layout in, same file out; a stowed hypridle file with changed
+  timeouts in, only the `timeout =` lines different out.
+- `make test` and `make race` pass; `make fmt` clean; every new key is in the
+  area's `Keys()` so the footer and `?` show it.
+- **Ask first:** any change to `clamshell.lua` or the catch-all; adding a Go
+  dependency. **Never:** write under `/etc` or into the stowed tree from the
+  TUI; run root commands outside the launcher.
+
+### Done when
+
+- `hashiru-tui hardware` opens on the area with three tabs; `[` `]` cycle them.
+  `hashiru-tui hardware.power` and `hashiru-tui packages.orphans` open on that
+  tab; `hashiru-tui hardware.nope` exits non-zero listing the tabs.
+- Firmware lists this machine's devices and an empty pending list without
+  error; `u` and `F` open fwupdmgr in a pane (herdr) or take over the terminal.
+- Monitors: changing eDP-1's scale and applying writes the override, reloads,
+  and reverts on its own after 15 s without `y`; with `y` the file stays and
+  survives a Hyprland restart. A hand-written override gets a `.bak`.
+- Power shows 87–88 % health and 57 cycles on this T14s (matching sysfs),
+  switches profile through sudo, edits idle timeouts so hypridle restarts on the override
+  (`ps -o args= -C hypridle` names the override file), and sets 75/80
+  thresholds that read back from sysfs and survive `hashiru update`.
+- Every new action is in the palette and `--list-actions`.

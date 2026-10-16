@@ -16,7 +16,7 @@ import (
 	"github.com/whleucka/hashiru-tui/internal/tui"
 )
 
-const usage = `usage: hashiru-tui [area] [--run <action-id>]
+const usage = `usage: hashiru-tui [area[.tab]] [--run <action-id>]
        hashiru-tui --list-actions
        hashiru-tui --version`
 

@@ -1,6 +1,6 @@
 # Tasks (v2)
 
-v1's tasks are in [v1/todo.md](v1/todo.md).
+v1's tasks are in [../v1/todo.md](../v1/todo.md).
 
 Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 

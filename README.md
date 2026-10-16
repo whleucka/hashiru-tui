@@ -40,6 +40,7 @@ Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR up
 
 ```bash
 hashiru-tui updates               # open on an area (any case)
+hashiru-tui logs.journal          # open on one of its tabs
 hashiru-tui --run snapshots.new   # open and run an action
 hashiru-tui --list-actions        # every action's ID and title
 ```

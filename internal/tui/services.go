@@ -123,6 +123,12 @@ func (s *services) load() tea.Cmd {
 	}
 }
 
+func (s *services) Tabs() []string { return []string{"system", "user", "failed"} }
+
+func (s *services) Tab() int { return int(s.tab) }
+
+func (s *services) SetTab(i int) { s.tab, s.sel, s.offset = svcTab(i), 0, 0 }
+
 // focus selects a unit on the Failed tab, or wherever it's listed.
 func (s *services) focus(name string, user bool) {
 	s.filtering = false

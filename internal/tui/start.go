@@ -7,15 +7,22 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-// Start sets where the TUI opens: focused on an area (by name, any case)
-// and/or running an action by ID once the window has a size, for deep links
-// like `hashiru-tui --run snapshots.new`. Call it before the program runs;
-// an unknown name is an error saying what there is.
+// Start sets where the TUI opens: focused on an area (by name, any case),
+// or one of its tabs ("logs.journal"), and/or running an action by ID once
+// the window has a size, for deep links like `hashiru-tui --run
+// snapshots.new`. Call it before the program runs; an unknown name is an
+// error saying what there is.
 func (m *Model) Start(area, run string) error {
 	if area != "" {
-		i := m.areaIndex(area)
+		name, tab, hasTab := strings.Cut(area, ".")
+		i := m.areaIndex(name)
 		if i < 0 {
-			return fmt.Errorf("no area %q; there are: %s", area, strings.Join(m.AreaNames(), ", "))
+			return fmt.Errorf("no area %q; there are: %s", name, strings.Join(m.AreaNames(), ", "))
+		}
+		if hasTab {
+			if err := m.openTab(m.areas[i], tab); err != nil {
+				return err
+			}
 		}
 		m.sel, m.inArea = i, true
 	}
@@ -32,6 +39,21 @@ func (m *Model) Start(area, run string) error {
 		m.startRun = &act
 	}
 	return nil
+}
+
+// openTab switches a to the tab named tab (any case).
+func (m *Model) openTab(a Area, tab string) error {
+	t, ok := a.(Tabbed)
+	if !ok {
+		return fmt.Errorf("%s has no tabs", a.Name())
+	}
+	for i, name := range t.Tabs() {
+		if strings.EqualFold(name, tab) {
+			t.SetTab(i)
+			return nil
+		}
+	}
+	return fmt.Errorf("no tab %q in %s; there are: %s", tab, a.Name(), strings.Join(t.Tabs(), ", "))
 }
 
 // jump focuses the named area and delivers msg to it.

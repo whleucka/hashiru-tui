@@ -25,6 +25,15 @@ type Area interface {
 	Actions() []Action
 }
 
+// Tabbed is an area with tabs ([ and ] go through them). Tabs are short,
+// stable names in that order, for deep links like `hashiru-tui logs.journal`;
+// the labels drawn in the tab bar can carry counts and change.
+type Tabbed interface {
+	Tabs() []string
+	Tab() int
+	SetTab(int)
+}
+
 // Action is something an area can do, named for the palette.
 type Action struct {
 	// ID is "<area>.<verb>": stable, for deep links and the palette's

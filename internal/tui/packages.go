@@ -35,6 +35,14 @@ func (g pkgGroup) String() string {
 	return [...]string{"Yours", "Missing", "Orphans", "Foreign", "Hashiru", "Search"}[g]
 }
 
+func (p *packages) Tabs() []string {
+	return []string{"yours", "missing", "orphans", "foreign", "hashiru", "search"}
+}
+
+func (p *packages) Tab() int { return int(p.group) }
+
+func (p *packages) SetTab(i int) { p.group, p.sel, p.offset = pkgGroup(i), 0, 0 }
+
 // pkgRow is one package in a group's list.
 type pkgRow struct {
 	name string
