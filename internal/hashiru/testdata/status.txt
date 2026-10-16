@@ -1,0 +1,9 @@
+version=v1.13.0-25-g38e7ede
+commit=38e7ede92edc629ed23c76673fbab3235bd8142a
+installed=2026-09-26T10:01:16-06:00
+updated=2026-10-14T15:15:29-06:00
+repo=/opt/hashiru
+head=ac2534b9d659eea337665fa82effb3c2645a07f0
+dirty=1
+untracked=0
+behind=0
