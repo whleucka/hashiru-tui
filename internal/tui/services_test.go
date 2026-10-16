@@ -153,4 +153,3 @@ type codeErr int
 
 func (c codeErr) Error() string { return "exit status" }
 func (c codeErr) ExitCode() int { return int(c) }
-

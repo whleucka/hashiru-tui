@@ -38,7 +38,7 @@ and the two new areas.
 - [x] Task 3: Action IDs, global actions and recents in the palette
 
 ### Checkpoint A
-- [ ] Tests, vet, build; manual: `?` in every area, `?` inside a filter types `?`, palette recents survive a restart
+- [x] Tests, vet, build; manual: `?` in every area, `?` inside a filter types `?`, palette recents survive a restart
 
 ### Phase 2: Plumbing
 - [x] Task 4: Deep links (`<area>`, `--run`, `--list-actions`)
@@ -47,7 +47,7 @@ and the two new areas.
 - [x] Task 7: Overview refreshes local stats on a timer
 
 ### Checkpoint B
-- [ ] Tests, vet, build; manual: `hashiru-tui --run snapshots.new` from a shell, stage 45 re-applied from the TUI
+- [x] Tests, vet, build; manual: `hashiru-tui --run snapshots.new` from a shell, stage 45 re-applied from the TUI
 
 ### Phase 3: Packages
 - [x] Task 8: Package probes and manifest parsing
@@ -55,14 +55,14 @@ and the two new areas.
 - [x] Task 10: Search, install, remove, orphans, cache
 
 ### Checkpoint C
-- [ ] Tests, vet, build; manual: groups match `pacman -Qqe` minus the manifests by hand; install and remove a small package
+- [x] Tests, vet, build; manual: groups match `pacman -Qqe` minus the manifests by hand; install and remove a small package
 
 ### Phase 4: Services
 - [x] Task 11: systemctl probes (units, unit files, timers; system and user)
 - [x] Task 12: Services area and actions; Logs' failed units jump here
 
 ### Checkpoint D
-- [ ] Tests, vet, build; README updated for v2; full manual pass of every area
+- [x] Tests, vet, build; README updated for v2; full manual pass of every area
 
 ## Risks and mitigations
 

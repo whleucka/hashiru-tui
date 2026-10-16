@@ -28,7 +28,7 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/tui/{area,palette,app}.go, recent.go (new), every area's Actions, tests. **Deps:** 1. **Size:** M
 
 ### Checkpoint A
-- [ ] Tests, vet, build; manual run of the checks in plan.md
+- [x] Tests, vet, build; manual run of the checks in plan.md
 
 ## Phase 2: Plumbing
 
@@ -57,7 +57,7 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/tui/overview.go, overview_test.go. **Deps:** none. **Size:** S
 
 ### Checkpoint B
-- [ ] Tests, vet, build; manual run of the checks in plan.md
+- [x] Tests, vet, build; manual run of the checks in plan.md
 
 ## Phase 3: Packages
 
@@ -81,7 +81,7 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/system/packages.go (search parser) + test, internal/tui/packages.go + test. **Deps:** 9. **Size:** M
 
 ### Checkpoint C
-- [ ] Tests, vet, build; manual run of the checks in plan.md
+- [x] Tests, vet, build; manual run of the checks in plan.md
 
 ## Phase 4: Services
 
@@ -98,4 +98,4 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/tui/services.go + test, logs.go, area.go. **Deps:** 1, 11. **Size:** M
 
 ### Checkpoint D
-- [ ] Tests, vet, build; README updated (areas, keys, deep links); full manual pass
+- [x] Tests, vet, build; README updated (areas, keys, deep links); full manual pass
