@@ -7,18 +7,22 @@ It holds no Hashiru logic of its own. Its state comes from the CLI's machine-rea
 - `hashiru status --porcelain`: key=value lines (release stamp, checkout, upstream)
 - `hashiru doctor --json`: every check, grouped by section
 
+The install log (`~/.local/share/hashiru/install.log`) is read directly, as `hashiru log` does.
+
 Anything that changes the machine (`update`, `config`) runs the real `hashiru` command. Inside herdr that happens in a split beside the TUI, as in mantis-tui. Outside herdr, the command takes over the terminal until it exits.
 
 ## Keys
 
 | Key | |
 |---|---|
-| `1` `2` / `tab` | Dashboard, Doctor |
+| `1` `2` `3` / `tab` | Dashboard, Doctor, Log |
 | `r` | refresh |
 | `u` | `hashiru update` (pane, focused) |
 | `e` | `hashiru config` (pane, focused) |
 | `L` | `hashiru log -f` (pane, focus stays here) |
 | `j` `k` `enter` | Doctor: move, expand a section |
+| `j` `k` `enter` `esc` | Log: pick a run, read it, back to the list |
+| `w` / `f` | Log: warnings and errors only / follow the newest run |
 | `q` | quit |
 
 ## Build
@@ -38,7 +42,6 @@ make test
 
 ## Roadmap
 
-- **Log**: the install log split into runs at `HASHIRU RUN START`, filter by level, follow
 - **Stages**: `scripts/NN-*.sh` with last-run result; re-run one (`45`) or from one (`45+`)
 - **Changelog**: `docs/releases/*.md` rendered with glamour; shows what's new when behind
 - **Update preview**: incoming commits and release notes before confirming `u`

@@ -15,10 +15,12 @@ type fakeSource struct {
 	status    hashiru.Status
 	report    hashiru.Report
 	statusErr error
+	runs      []hashiru.Run
 }
 
 func (f fakeSource) Status(context.Context) (hashiru.Status, error) { return f.status, f.statusErr }
 func (f fakeSource) Doctor(context.Context) (hashiru.Report, error) { return f.report, nil }
+func (f fakeSource) Log() ([]hashiru.Run, error)                    { return f.runs, nil }
 func (f fakeSource) Argv(args ...string) []string                   { return append([]string{"hashiru"}, args...) }
 
 func sampleReport() hashiru.Report {
@@ -175,6 +177,7 @@ func TestTabCycles(t *testing.T) {
 	if m.tab != tabDoctor {
 		t.Fatalf("tab = %v", m.tab)
 	}
+	m.Update(key("tab"))
 	m.Update(key("tab"))
 	if m.tab != tabDashboard {
 		t.Fatalf("tab = %v, want wrap to Dashboard", m.tab)

@@ -10,9 +10,19 @@ import (
 )
 
 // CLI runs the hashiru command. Bin is the executable, "hashiru" on PATH by
-// default; tests point it at a fake.
+// default; tests point it at a fake. LogFile defaults to LogPath().
 type CLI struct {
-	Bin string
+	Bin     string
+	LogFile string
+}
+
+// Log reads and parses the install log. It reads the file directly, as
+// `hashiru log` itself does: there is nothing for the CLI to add.
+func (c CLI) Log() ([]Run, error) {
+	if c.LogFile == "" {
+		return ReadLog(LogPath())
+	}
+	return ReadLog(c.LogFile)
 }
 
 func (c CLI) bin() string {

@@ -17,6 +17,7 @@ import (
 type Source interface {
 	Status(context.Context) (hashiru.Status, error)
 	Doctor(context.Context) (hashiru.Report, error)
+	Log() ([]hashiru.Run, error)
 	Argv(args ...string) []string
 }
 
@@ -34,11 +35,12 @@ type tab int
 const (
 	tabDashboard tab = iota
 	tabDoctor
+	tabLog
 	tabCount
 )
 
 func (t tab) String() string {
-	return [...]string{"Dashboard", "Doctor"}[t]
+	return [...]string{"Dashboard", "Doctor", "Log"}[t]
 }
 
 // Model is the whole app.
@@ -59,13 +61,15 @@ type Model struct {
 	cursor   int
 	expanded map[string]bool
 
+	logv logView
+
 	note    string // one-line feedback in the footer
 	noteErr bool
 }
 
 // New builds the model. Call Init (bubbletea does) to start loading.
 func New(opts Options) *Model {
-	return &Model{opts: opts, expanded: map[string]bool{}}
+	return &Model{opts: opts, expanded: map[string]bool{}, logv: newLogView()}
 }
 
 // Messages from the commands below back to Update.
@@ -100,7 +104,7 @@ func (m *Model) Init() tea.Cmd {
 	return m.refresh()
 }
 
-// refresh reloads status and doctor in parallel.
+// refresh reloads status, doctor and the log in parallel.
 func (m *Model) refresh() tea.Cmd {
 	m.statusBusy, m.reportBusy = true, true
 	src := m.opts.Source
@@ -117,6 +121,7 @@ func (m *Model) refresh() tea.Cmd {
 			r, err := src.Doctor(ctx)
 			return reportMsg{r, err}
 		},
+		loadLog(src),
 	)
 }
 
@@ -124,6 +129,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
+		// Less the header and its gap, and the note and help lines below.
+		m.logv.setSize(msg.Width, msg.Height-5)
+
+	case logMsg:
+		m.logv.setRuns(msg.runs, msg.err)
+
+	case logTickMsg:
+		if !m.logv.follow {
+			return m, nil // stopped since the tick was scheduled
+		}
+		return m, tea.Batch(loadLog(m.opts.Source), followTick())
 
 	case statusMsg:
 		m.statusBusy = false
@@ -177,6 +193,8 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 		m.tab = tabDashboard
 	case "2":
 		m.tab = tabDoctor
+	case "3":
+		m.tab = tabLog
 	case "r":
 		m.note = ""
 		return m.refresh()
@@ -191,8 +209,11 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 		return m.run(m.opts.Source.Argv("log", "-f"), "hashiru log", false)
 	}
 
-	if m.tab == tabDoctor {
+	switch m.tab {
+	case tabDoctor:
 		return m.handleDoctorKey(msg)
+	case tabLog:
+		return m.logv.handleKey(msg)
 	}
 	return nil
 }

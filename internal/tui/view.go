@@ -39,6 +39,8 @@ func (m *Model) View() tea.View {
 		b.WriteString(m.dashboard())
 	case tabDoctor:
 		b.WriteString(m.doctor())
+	case tabLog:
+		b.WriteString(m.logv.view())
 	}
 
 	// Pin the footer to the bottom.
@@ -68,8 +70,11 @@ func (m *Model) header() string {
 
 func (m *Model) footer() string {
 	help := "tab switch · r refresh · u update · e config · L follow log · q quit"
-	if m.tab == tabDoctor {
+	switch m.tab {
+	case tabDoctor:
 		help = "j/k move · enter expand · " + help
+	case tabLog:
+		help = m.logv.help() + " · " + help
 	}
 	if m.note == "" {
 		return styleMuted.Render(help)
