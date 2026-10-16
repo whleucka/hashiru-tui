@@ -169,19 +169,24 @@ func (lv *logView) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	return nil, true
 }
 
-func (lv *logView) help() string {
-	follow := "f follow"
+func (lv *logView) keys() []Key {
+	follow := Key{Keys: "f", Desc: "follow"}
 	if lv.follow {
-		follow = "f stop following"
+		follow.Desc = "stop following"
 	}
-	filter := "w problems only"
+	filter := Key{Keys: "w", Desc: "problems only"}
 	if lv.problemsOnly {
-		filter = "w all lines"
+		filter.Desc = "all lines"
 	}
 	if lv.inBody {
-		return "j/k scroll · g/G top/bottom · esc back · " + filter + " · " + follow
+		return []Key{
+			{Keys: "j/k", Desc: "scroll"},
+			{Keys: "g/G", Desc: "top/bottom"},
+			{Keys: "esc", Desc: "back"},
+			filter, follow,
+		}
 	}
-	return "j/k run · enter read · " + filter + " · " + follow
+	return []Key{{Keys: "j/k", Desc: "run"}, {Keys: "enter", Desc: "read"}, filter, follow}
 }
 
 // --- Rendering -----------------------------------------------------------------

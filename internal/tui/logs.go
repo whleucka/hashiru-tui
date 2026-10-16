@@ -188,15 +188,22 @@ func (l *logsArea) openUnit() tea.Cmd {
 	return l.e.launch(Launch{Argv: argv, Label: u.Name, Kind: Interactive})
 }
 
-func (l *logsArea) Help() string {
-	common := "s source · J journal · K kernel · L hashiru log"
+func (l *logsArea) Keys() []Key {
+	var keys []Key
 	switch l.src {
 	case srcHashiru:
-		return l.lv.help() + " · " + common
+		keys = l.lv.keys()
 	case srcFailed:
-		return "j/k move · enter its journal · " + common
+		keys = []Key{{Keys: "j/k", Desc: "move"}, {Keys: "enter", Desc: "its journal"}}
+	default:
+		keys = []Key{{Keys: "j/k", Desc: "scroll"}}
 	}
-	return "j/k scroll · " + common
+	return append(keys,
+		Key{Keys: "s", Desc: "source", Group: "Sources"},
+		Key{Keys: "J", Desc: "journal", Group: "Sources"},
+		Key{Keys: "K", Desc: "kernel", Group: "Sources"},
+		Key{Keys: "L", Desc: "hashiru log", Group: "Sources"},
+	)
 }
 
 func (l *logsArea) View(width, height int) string {

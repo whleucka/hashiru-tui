@@ -8,9 +8,9 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 
 ### Task 1: Keys as data
 `Area.Help() string` becomes `Area.Keys() []Key`; the footer renders from it.
-- [ ] `Key{Keys, Desc, Group}`; every area converted, nothing lost from today's help strings
-- [ ] Shell's global keys (sidebar, palette, refresh, quit) are one list
-- [ ] Footer shows the focused area's keys that fit the width, then `? keys`; `TestFooterHelpMatchesFocus` still holds
+- [x] `Key{Keys, Desc, Group}`; every area converted, nothing lost from today's help strings
+- [x] Shell's global keys (sidebar, palette, refresh, quit) are one list
+- [x] Footer shows the focused area's keys that fit the width, then `? keys`; `TestFooterHelpMatchesFocus` still holds
 **Files:** internal/tui/{area,view}.go, every area file, tests. **Deps:** none. **Size:** M (wide, shallow)
 
 ### Task 2: `?` keymap popup

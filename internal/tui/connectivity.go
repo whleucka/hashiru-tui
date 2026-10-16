@@ -43,8 +43,13 @@ func (c *connectivity) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	return nil, false
 }
 
-func (c *connectivity) Help() string {
-	return "w nmtui · b bluetoothctl · B blueman · v mixer"
+func (c *connectivity) Keys() []Key {
+	return []Key{
+		{Keys: "w", Desc: "nmtui"},
+		{Keys: "b", Desc: "bluetoothctl"},
+		{Keys: "B", Desc: "blueman"},
+		{Keys: "v", Desc: "mixer"},
+	}
 }
 
 func (c *connectivity) View(width, height int) string {

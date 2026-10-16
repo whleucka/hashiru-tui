@@ -252,3 +252,32 @@ func TestFooterHelpMatchesFocus(t *testing.T) {
 		t.Errorf("area footer missing its keys: %q", footer)
 	}
 }
+
+func TestKeyLineDropsWholeKeys(t *testing.T) {
+	keys := []Key{{Keys: "j/k", Desc: "move"}, {Keys: "enter", Desc: "edit"}, {Keys: "q", Desc: "quit"}}
+	if got := keyLine(keys, 80); got != "j/k move · enter edit · q quit" {
+		t.Errorf("wide: %q", got)
+	}
+	// "j/k move · enter edit" is 21 cells; one short of that keeps only the first.
+	if got := keyLine(keys, 20); got != "j/k move" {
+		t.Errorf("narrow: %q", got)
+	}
+}
+
+// Every area but Overview has keys, and each one says what it does, so the
+// footer and the keymap popup never show a bare key.
+func TestAreasDescribeTheirKeys(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	for _, a := range m.areas {
+		keys := a.Keys()
+		if len(keys) == 0 && a.Name() != "Overview" {
+			t.Errorf("%s: no keys", a.Name())
+		}
+		for _, k := range keys {
+			if k.Keys == "" || k.Desc == "" {
+				t.Errorf("%s: incomplete key %+v", a.Name(), k)
+			}
+		}
+	}
+}

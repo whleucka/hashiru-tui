@@ -143,7 +143,13 @@ func (w *wallpaper) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	return nil, true
 }
 
-func (w *wallpaper) Help() string { return "j/k choose · enter set · c time-of-day cycle" }
+func (w *wallpaper) Keys() []Key {
+	return []Key{
+		{Keys: "j/k", Desc: "choose"},
+		{Keys: "enter", Desc: "set"},
+		{Keys: "c", Desc: "time-of-day cycle"},
+	}
+}
 
 // apply fixes the wallpaper to the selection and shows it now.
 func (w *wallpaper) apply() tea.Cmd {

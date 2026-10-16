@@ -33,7 +33,7 @@ and the two new areas.
 ## Task list
 
 ### Phase 1: Keys and palette
-- [ ] Task 1: Keys as data; the footer renders from them
+- [x] Task 1: Keys as data; the footer renders from them
 - [ ] Task 2: `?` keymap popup
 - [ ] Task 3: Action IDs, global actions and recents in the palette
 

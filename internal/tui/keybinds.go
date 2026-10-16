@@ -60,11 +60,15 @@ func (k *keybinds) Update(msg tea.Msg) tea.Cmd {
 
 func (k *keybinds) Actions() []Action { return nil }
 
-func (k *keybinds) Help() string {
+func (k *keybinds) Keys() []Key {
 	if k.filtering {
-		return "type to filter · enter keep · esc clear"
+		return []Key{
+			{Keys: "type", Desc: "to filter"},
+			{Keys: "enter", Desc: "keep"},
+			{Keys: "esc", Desc: "clear"},
+		}
 	}
-	return "/ filter · j/k scroll"
+	return []Key{{Keys: "/", Desc: "filter"}, {Keys: "j/k", Desc: "scroll"}}
 }
 
 func (k *keybinds) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {

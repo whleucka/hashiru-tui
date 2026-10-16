@@ -18,7 +18,9 @@ type Area interface {
 	// (esc to the sidebar, q to quit, ...).
 	HandleKey(tea.KeyPressMsg) (tea.Cmd, bool)
 	View(width, height int) string
-	Help() string
+	// Keys are the area's keys right now, for the footer and the keymap
+	// popup. They follow the area's mode (filtering, reading a diff, ...).
+	Keys() []Key
 	// Actions are what the area can do, for the command palette.
 	Actions() []Action
 }
@@ -28,6 +30,13 @@ type Action struct {
 	Title string // "Update the system"
 	Key   string // the area's key for it, if it has one
 	Run   func() tea.Cmd
+}
+
+// Key is one key (or a few that do the same thing) and what it does.
+type Key struct {
+	Keys  string // "j/k"
+	Desc  string // "move"
+	Group string // the popup's heading for it; "" for the area's main keys
 }
 
 // env is what an area gets from the shell.

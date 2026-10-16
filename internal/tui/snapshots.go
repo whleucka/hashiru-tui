@@ -89,14 +89,18 @@ func (s *snapshots) startNaming() tea.Cmd {
 	return s.input.Focus()
 }
 
-func (s *snapshots) Help() string {
+func (s *snapshots) Keys() []Key {
 	switch {
 	case s.naming:
-		return "enter take snapshot · esc cancel"
+		return []Key{{Keys: "enter", Desc: "take snapshot"}, {Keys: "esc", Desc: "cancel"}}
 	case s.diffOf != nil:
-		return "esc back to the list"
+		return []Key{{Keys: "esc", Desc: "back to the list"}}
 	}
-	return "j/k move · enter changes since · n new snapshot"
+	return []Key{
+		{Keys: "j/k", Desc: "move"},
+		{Keys: "enter", Desc: "changes since"},
+		{Keys: "n", Desc: "new snapshot"},
+	}
 }
 
 func (s *snapshots) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {

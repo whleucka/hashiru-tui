@@ -100,7 +100,9 @@ func (c *configArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	return nil, true
 }
 
-func (c *configArea) Help() string { return "j/k move · enter edit" }
+func (c *configArea) Keys() []Key {
+	return []Key{{Keys: "j/k", Desc: "move"}, {Keys: "enter", Desc: "edit"}}
+}
 
 // open edits e in the terminal and rescans after, so a new file shows up.
 func (c *configArea) open(e configEntry) tea.Cmd {

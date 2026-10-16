@@ -18,7 +18,7 @@ func newOverview(e *env) *overview { return &overview{e: e} }
 func (o *overview) Name() string                              { return "Overview" }
 func (o *overview) Update(tea.Msg) tea.Cmd                    { return nil }
 func (o *overview) HandleKey(tea.KeyPressMsg) (tea.Cmd, bool) { return nil, false }
-func (o *overview) Help() string                              { return "" }
+func (o *overview) Keys() []Key                               { return nil }
 func (o *overview) Actions() []Action                         { return nil }
 
 func (o *overview) View(width, height int) string {

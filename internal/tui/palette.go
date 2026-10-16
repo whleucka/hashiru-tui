@@ -131,4 +131,11 @@ func (p *palette) view(width, height int) string {
 	return b.String()
 }
 
-func (p *palette) help() string { return "type to filter · ↑/↓ move · enter run · esc close" }
+func (p *palette) keys() []Key {
+	return []Key{
+		{Keys: "type", Desc: "to filter"},
+		{Keys: "↑/↓", Desc: "move"},
+		{Keys: "enter", Desc: "run"},
+		{Keys: "esc", Desc: "close"},
+	}
+}

@@ -90,8 +90,15 @@ func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	return nil, true
 }
 
-func (u *updates) Help() string {
-	return "u update · a AUR · n news · p all packages · j/k section · enter expand"
+func (u *updates) Keys() []Key {
+	return []Key{
+		{Keys: "u", Desc: "update"},
+		{Keys: "a", Desc: "AUR"},
+		{Keys: "n", Desc: "news"},
+		{Keys: "p", Desc: "all packages"},
+		{Keys: "j/k", Desc: "section", Group: "Health"},
+		{Keys: "enter", Desc: "expand", Group: "Health"},
+	}
 }
 
 func (u *updates) sections() []hashiru.Section {

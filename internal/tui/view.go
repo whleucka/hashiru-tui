@@ -81,18 +81,37 @@ func (m *Model) sidebar() string {
 	return strings.Join(lines, "\n")
 }
 
+// The shell's own keys, from the sidebar and from inside an area.
+var (
+	sidebarKeys = []Key{
+		{Keys: "j/k", Desc: "area", Group: "Global"},
+		{Keys: "1-9", Desc: "jump to area", Group: "Global"},
+		{Keys: "enter", Desc: "open", Group: "Global"},
+		{Keys: ":", Desc: "palette", Group: "Global"},
+		{Keys: "r", Desc: "refresh", Group: "Global"},
+		{Keys: "q", Desc: "quit", Group: "Global"},
+	}
+	inAreaKeys = []Key{
+		{Keys: "esc", Desc: "back", Group: "Global"},
+		{Keys: "ctrl+p", Desc: "palette", Group: "Global"},
+		{Keys: "r", Desc: "refresh", Group: "Global"},
+		{Keys: "q", Desc: "quit", Group: "Global"},
+	}
+)
+
+// keys is everything that works right now, the area's first.
+func (m *Model) keys() []Key {
+	switch {
+	case m.pal.open:
+		return m.pal.keys()
+	case m.inArea:
+		return append(m.area().Keys(), inAreaKeys...)
+	}
+	return sidebarKeys
+}
+
 func (m *Model) footer() string {
-	help := "j/k area · enter open · : palette · r refresh · q quit"
-	if m.inArea {
-		help = "esc back · ctrl+p palette · r refresh · q quit"
-	}
-	if h := m.area().Help(); h != "" && m.inArea {
-		help = h + " · " + help
-	}
-	if m.pal.open {
-		help = m.pal.help()
-	}
-	help = ansi.Truncate(styleMuted.Render(help), m.width, "…")
+	help := styleMuted.Render(keyLine(m.keys(), m.width))
 
 	note := ""
 	switch {
@@ -102,6 +121,24 @@ func (m *Model) footer() string {
 		note = styleOK.Render(m.note)
 	}
 	return ansi.Truncate(note, m.width, "…") + "\n" + help
+}
+
+// keyLine joins keys as "j/k move · enter edit", dropping whole keys from the
+// end rather than cutting one in half.
+func keyLine(keys []Key, width int) string {
+	const sep = " · "
+	line := ""
+	for i, k := range keys {
+		part := k.Keys + " " + k.Desc
+		if i > 0 {
+			part = sep + part
+		}
+		if ansi.StringWidth(line+part) > width {
+			break
+		}
+		line += part
+	}
+	return line
 }
 
 // clip cuts s to h lines of at most w cells, so an area can't push the
