@@ -4,8 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	tea "charm.land/bubbletea/v2"
-
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
 )
 
@@ -21,6 +19,15 @@ const testLog = `[2026-10-14 11:47:50] [INFO] Pulling latest Hashiru into /opt/h
 [2026-10-15 09:00:09] [ERROR] Script failed at line 208 with exit code 1
 `
 
+func logsOf(m *Model) *logsArea {
+	for _, a := range m.areas {
+		if l, ok := a.(*logsArea); ok {
+			return l
+		}
+	}
+	panic("no Logs area")
+}
+
 func parseRuns(t *testing.T, s string) []hashiru.Run {
 	t.Helper()
 	runs, err := hashiru.ParseLog(strings.NewReader(s))
@@ -34,7 +41,7 @@ func logModel(t *testing.T) *Model {
 	t.Helper()
 	m := New(Options{Source: fakeSource{runs: parseRuns(t, testLog)}})
 	load(t, m)
-	m.Update(key("3"))
+	goTo(t, m, "Logs")
 	return m
 }
 
@@ -75,24 +82,24 @@ func TestLogEnterScrollsBodyNotList(t *testing.T) {
 	m := logModel(t)
 	m.Update(key("enter"))
 	m.Update(key("j"))
-	if m.logv.sel != 0 {
-		t.Errorf("j in the body moved the run selection to %d", m.logv.sel)
+	if logsOf(m).lv.sel != 0 {
+		t.Errorf("j in the body moved the run selection to %d", logsOf(m).lv.sel)
 	}
-	m.Update(tea.KeyPressMsg{Code: tea.KeyEscape})
+	m.Update(key("esc"))
 	m.Update(key("j"))
-	if m.logv.sel != 1 {
-		t.Errorf("after esc, j should move to run 1, got %d", m.logv.sel)
+	if logsOf(m).lv.sel != 1 {
+		t.Errorf("after esc, j should move to run 1, got %d", logsOf(m).lv.sel)
 	}
 }
 
 func TestLogKeepsSelectionAsRunsArrive(t *testing.T) {
 	m := logModel(t)
 	m.Update(key("j")) // reading the older run
-	before := m.logv.run().Start
+	before := logsOf(m).lv.run().Start
 
 	more := testLog + "[2026-10-15 10:00:00] [INFO] ===== HASHIRU RUN START =====\n"
 	m.Update(logMsg{runs: parseRuns(t, more)})
-	if got := m.logv.run().Start; !got.Equal(before) {
+	if got := logsOf(m).lv.run().Start; !got.Equal(before) {
 		t.Errorf("selection jumped to the run at %v", got)
 	}
 }
@@ -104,13 +111,13 @@ func TestLogFollowPinsNewest(t *testing.T) {
 	if cmd == nil {
 		t.Fatal("f should schedule a tick")
 	}
-	if m.logv.sel != 0 {
-		t.Errorf("following should select the newest run, sel = %d", m.logv.sel)
+	if logsOf(m).lv.sel != 0 {
+		t.Errorf("following should select the newest run, sel = %d", logsOf(m).lv.sel)
 	}
 
 	more := testLog + "[2026-10-15 10:00:00] [INFO] ===== HASHIRU RUN START =====\n"
 	m.Update(logMsg{runs: parseRuns(t, more)})
-	if m.logv.sel != 0 || !m.logv.run().Start.Equal(parseRuns(t, more)[2].Start) {
+	if logsOf(m).lv.sel != 0 || !logsOf(m).lv.run().Start.Equal(parseRuns(t, more)[2].Start) {
 		t.Error("following should move to a run that just started")
 	}
 

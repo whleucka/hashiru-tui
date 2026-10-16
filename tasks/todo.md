@@ -6,9 +6,9 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 
 ### Task 1: Sidebar shell with the Area interface
 Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, Updates and Logs areas, reading one shared State.
-- [ ] Sidebar lists areas; `j`/`k` (or number keys) select, `enter`/`l` focuses the area, `esc`/`h` returns to the sidebar when the area doesn't use the key
-- [ ] Status, doctor and log load once and both Overview and Updates show them; `r` reloads
-- [ ] Existing behaviour survives: doctor expand, log runs/filter/follow, `u` update
+- [x] Sidebar lists areas; `j`/`k` (or number keys) select, `enter`/`l` focuses the area, `esc`/`h` returns to the sidebar when the area doesn't use the key
+- [x] Status, doctor and log load once and both Overview and Updates show them; `r` reloads
+- [x] Existing behaviour survives: doctor expand, log runs/filter/follow, `u` update
 **Files:** internal/tui/{app,area,state,view,overview,updates,logs}.go, tests. **Deps:** none. **Size:** L (mostly moves)
 
 ### Task 2: Launcher with three kinds

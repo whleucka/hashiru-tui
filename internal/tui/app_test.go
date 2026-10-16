@@ -16,9 +16,15 @@ type fakeSource struct {
 	report    hashiru.Report
 	statusErr error
 	runs      []hashiru.Run
+	calls     *int // counts Status calls, when set
 }
 
-func (f fakeSource) Status(context.Context) (hashiru.Status, error) { return f.status, f.statusErr }
+func (f fakeSource) Status(context.Context) (hashiru.Status, error) {
+	if f.calls != nil {
+		*f.calls++
+	}
+	return f.status, f.statusErr
+}
 func (f fakeSource) Doctor(context.Context) (hashiru.Report, error) { return f.report, nil }
 func (f fakeSource) Log() ([]hashiru.Run, error)                    { return f.runs, nil }
 func (f fakeSource) Argv(args ...string) []string                   { return append([]string{"hashiru"}, args...) }
@@ -34,7 +40,7 @@ func sampleReport() hashiru.Report {
 	return r
 }
 
-// load runs Init's commands synchronously and feeds the results back in.
+// load sizes the model and runs Init's commands synchronously.
 func load(t *testing.T, m *Model) {
 	t.Helper()
 	m.Update(tea.WindowSizeMsg{Width: 120, Height: 40})
@@ -64,23 +70,101 @@ func key(s string) tea.KeyPressMsg {
 		return tea.KeyPressMsg{Code: tea.KeyTab}
 	case "enter":
 		return tea.KeyPressMsg{Code: tea.KeyEnter}
+	case "esc":
+		return tea.KeyPressMsg{Code: tea.KeyEscape}
 	}
 	r := []rune(s)[0]
 	return tea.KeyPressMsg{Code: r, Text: s}
 }
 
-func TestDashboardShowsStatusAndDoctor(t *testing.T) {
+func press(m *Model, keys ...string) {
+	for _, k := range keys {
+		_, cmd := m.Update(key(k))
+		drain(m, cmd)
+	}
+}
+
+// goTo selects the named area in the sidebar and focuses it.
+func goTo(t *testing.T, m *Model, name string) {
+	t.Helper()
+	for i, a := range m.areas {
+		if a.Name() == name {
+			m.sel = i
+			m.inArea = true
+			return
+		}
+	}
+	t.Fatalf("no area %q", name)
+}
+
+func TestSidebarListsAreas(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	out := m.View().Content
+	for _, name := range []string{"Overview", "Updates", "Logs"} {
+		if !strings.Contains(out, name) {
+			t.Errorf("sidebar missing %q:\n%s", name, out)
+		}
+	}
+}
+
+func TestSidebarNavigation(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+
+	press(m, "j")
+	if m.area().Name() != "Updates" {
+		t.Errorf("j: area = %s", m.area().Name())
+	}
+	press(m, "3")
+	if m.area().Name() != "Logs" {
+		t.Errorf("3: area = %s", m.area().Name())
+	}
+	press(m, "k", "k", "k") // stops at the top
+	if m.sel != 0 {
+		t.Errorf("sel = %d", m.sel)
+	}
+
+	press(m, "enter")
+	if !m.inArea {
+		t.Fatal("enter should focus the area")
+	}
+	press(m, "esc")
+	if m.inArea {
+		t.Error("esc should return to the sidebar")
+	}
+}
+
+func TestStateLoadedOnceSharedByAreas(t *testing.T) {
+	calls := 0
 	m := New(Options{Source: fakeSource{
 		status: hashiru.Status{Version: "v1.13.0", Behind: 2, BehindOK: true, Dirty: true},
 		report: sampleReport(),
+		calls:  &calls,
 	}})
 	load(t, m)
+	if calls != 1 {
+		t.Errorf("status fetched %d times, want 1", calls)
+	}
 
-	out := m.View().Content
-	for _, want := range []string{"v1.13.0", "2 commit(s) behind", "dirty", "2 ok", "1 warnings"} {
-		if !strings.Contains(out, want) {
-			t.Errorf("dashboard missing %q:\n%s", want, out)
+	overview := m.View().Content
+	for _, want := range []string{"v1.13.0", "2 commit(s) behind", "2 ok", "1 warnings"} {
+		if !strings.Contains(overview, want) {
+			t.Errorf("Overview missing %q:\n%s", want, overview)
 		}
+	}
+
+	goTo(t, m, "Updates")
+	updates := m.View().Content
+	for _, want := range []string{"2 commit(s) behind", "Install", "Shell"} {
+		if !strings.Contains(updates, want) {
+			t.Errorf("Updates missing %q:\n%s", want, updates)
+		}
+	}
+
+	press(m, "r")
+	if calls != 2 {
+		t.Errorf("after r, status fetched %d times, want 2", calls)
 	}
 }
 
@@ -92,94 +176,51 @@ func TestStatusErrorIsShown(t *testing.T) {
 	}
 }
 
-func TestDoctorShowsProblemsAndExpands(t *testing.T) {
+func TestUpdatesHealthExpands(t *testing.T) {
 	m := New(Options{Source: fakeSource{report: sampleReport()}})
 	load(t, m)
-	m.Update(key("2"))
+	goTo(t, m, "Updates")
 
 	out := m.View().Content
-	if !strings.Contains(out, "2 commit(s) behind") {
-		t.Error("a warning should show without expanding")
-	}
 	if strings.Contains(out, "repo clean") {
 		t.Error("an ok check should be hidden until expanded")
 	}
-
-	m.Update(key("enter"))
+	press(m, "enter")
 	if out := m.View().Content; !strings.Contains(out, "repo clean") {
 		t.Error("enter should expand the section under the cursor")
 	}
-
-	m.Update(key("j"))
-	m.Update(key("j")) // past the end: stays on the last section
-	if m.cursor != 1 {
-		t.Errorf("cursor = %d, want 1", m.cursor)
+	press(m, "j", "j")
+	press(m, "esc")
+	if m.inArea {
+		t.Error("esc in Updates should return to the sidebar")
 	}
 }
 
-func TestActionsOpenHerdrPanes(t *testing.T) {
-	type call struct {
-		argv         string
-		right, focus bool
-	}
-	var got []call
+func TestAreaKeysWorkFromSidebar(t *testing.T) {
+	var got []string
 	m := New(Options{
 		Source: fakeSource{},
-		RunInPane: func(_ context.Context, argv []string, _ string, right, focus bool) error {
-			got = append(got, call{strings.Join(argv, " "), right, focus})
+		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+			got = append(got, strings.Join(argv, " "))
 			return nil
 		},
 	})
-	load(t, m) // 120x40: wide, so panes go right
-
-	for _, k := range []string{"u", "e", "L"} {
-		_, cmd := m.Update(key(k))
-		drain(m, cmd)
-	}
-	want := []call{
-		{"hashiru update", true, true},
-		{"hashiru config", true, true},
-		{"hashiru log -f", true, false}, // watched, not typed into
-	}
-	if len(got) != len(want) {
-		t.Fatalf("calls = %+v", got)
-	}
-	for i := range want {
-		if got[i] != want[i] {
-			t.Errorf("call %d = %+v, want %+v", i, got[i], want[i])
-		}
-	}
-	if !strings.Contains(m.note, "new pane") {
-		t.Errorf("note = %q", m.note)
+	load(t, m)
+	press(m, "j") // Updates, still in the sidebar
+	press(m, "u")
+	if len(got) != 1 || got[0] != "hashiru update" {
+		t.Errorf("u from the sidebar ran %v", got)
 	}
 }
 
-func TestPaneGoesDownOnTallTerminals(t *testing.T) {
-	var right bool
-	m := New(Options{
-		Source: fakeSource{},
-		RunInPane: func(_ context.Context, _ []string, _ string, r, _ bool) error {
-			right = r
-			return nil
-		},
-	})
-	m.Update(tea.WindowSizeMsg{Width: 80, Height: 60})
-	_, cmd := m.Update(key("u"))
-	drain(m, cmd)
-	if right {
-		t.Error("80x60 is tall: the pane should go below")
-	}
-}
-
-func TestTabCycles(t *testing.T) {
+func TestQuit(t *testing.T) {
 	m := New(Options{Source: fakeSource{}})
-	m.Update(key("tab"))
-	if m.tab != tabDoctor {
-		t.Fatalf("tab = %v", m.tab)
+	load(t, m)
+	_, cmd := m.Update(key("q"))
+	if cmd == nil {
+		t.Fatal("q should quit")
 	}
-	m.Update(key("tab"))
-	m.Update(key("tab"))
-	if m.tab != tabDashboard {
-		t.Fatalf("tab = %v, want wrap to Dashboard", m.tab)
+	if _, ok := cmd().(tea.QuitMsg); !ok {
+		t.Error("q should return tea.Quit")
 	}
 }

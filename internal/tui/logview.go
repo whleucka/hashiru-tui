@@ -13,7 +13,7 @@ import (
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
 )
 
-// logView is the Log tab: the install log as a list of runs, newest first, and
+// logView is the Hashiru install log as a list of runs, newest first, and
 // the selected run's lines below it.
 type logView struct {
 	runs []hashiru.Run // oldest first, as parsed
@@ -116,21 +116,22 @@ func (lv *logView) selectRun(i int) {
 	lv.vp.GotoTop()
 }
 
-func (lv *logView) handleKey(msg tea.KeyPressMsg) tea.Cmd {
+// handleKey reports whether it used the key; the rest go back to the shell.
+func (lv *logView) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	switch msg.String() {
 	case "w":
 		lv.problemsOnly = !lv.problemsOnly
 		lv.fill()
 		lv.vp.GotoTop()
-		return nil
+		return nil, true
 	case "f":
 		lv.follow = !lv.follow
 		if !lv.follow {
-			return nil
+			return nil, true
 		}
 		lv.selectRun(0)
 		lv.vp.GotoBottom()
-		return followTick()
+		return followTick(), true
 	}
 
 	if lv.inBody {
@@ -141,12 +142,14 @@ func (lv *logView) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 			lv.vp.GotoTop()
 		case "G", "end":
 			lv.vp.GotoBottom()
-		default:
+		case "j", "k", "up", "down", "pgup", "pgdown", "ctrl+d", "ctrl+u", "space":
 			var cmd tea.Cmd
-			lv.vp, cmd = lv.vp.Update(msg) // j/k, pgup/pgdn, ctrl+d/u
-			return cmd
+			lv.vp, cmd = lv.vp.Update(msg)
+			return cmd, true
+		default:
+			return nil, false
 		}
-		return nil
+		return nil, true
 	}
 
 	switch msg.String() {
@@ -160,8 +163,10 @@ func (lv *logView) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 		lv.selectRun(len(lv.runs) - 1)
 	case "enter", "l", "right":
 		lv.inBody = true
+	default:
+		return nil, false
 	}
-	return nil
+	return nil, true
 }
 
 func (lv *logView) help() string {

@@ -7,6 +7,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
 )
@@ -20,110 +21,96 @@ var (
 	colorFail   = lipgloss.Color("9")
 
 	styleTitle    = lipgloss.NewStyle().Bold(true).Foreground(colorAccent)
-	styleTab      = lipgloss.NewStyle().Padding(0, 1).Foreground(colorMuted)
-	styleTabOn    = lipgloss.NewStyle().Padding(0, 1).Bold(true).Reverse(true)
 	styleMuted    = lipgloss.NewStyle().Foreground(colorMuted)
 	styleKey      = lipgloss.NewStyle().Foreground(colorMuted).Width(11)
 	styleOK       = lipgloss.NewStyle().Foreground(colorOK)
 	styleWarn     = lipgloss.NewStyle().Foreground(colorWarn)
 	styleFail     = lipgloss.NewStyle().Foreground(colorFail)
 	styleSelected = lipgloss.NewStyle().Bold(true)
+	styleItemOn   = lipgloss.NewStyle().Bold(true).Reverse(true)
+	styleSidebar  = lipgloss.NewStyle().
+			Border(lipgloss.NormalBorder(), false, true, false, false).
+			BorderForeground(colorMuted).
+			PaddingRight(1)
 )
 
+const (
+	sidebarWidth = 18 // inside the border
+	footerLines  = 2  // note, help
+)
+
+// areaSize is the room left for the selected area.
+func (m *Model) areaSize() (int, int) {
+	w := m.width - sidebarWidth - 3 // border, padding, gap
+	h := m.height - footerLines
+	return max(w, 10), max(h, 3)
+}
+
 func (m *Model) View() tea.View {
-	var b strings.Builder
-	b.WriteString(m.header())
-	b.WriteString("\n\n")
-	switch m.tab {
-	case tabDashboard:
-		b.WriteString(m.dashboard())
-	case tabDoctor:
-		b.WriteString(m.doctor())
-	case tabLog:
-		b.WriteString(m.logv.view())
-	}
+	w, h := m.areaSize()
 
-	// Pin the footer to the bottom.
-	body := b.String()
-	if pad := m.height - lipgloss.Height(body) - 2; pad > 0 {
-		body += strings.Repeat("\n", pad)
-	}
-	body += "\n" + m.footer()
-
-	v := tea.NewView(body)
+	body := lipgloss.JoinHorizontal(lipgloss.Top,
+		styleSidebar.Height(h).Render(m.sidebar()),
+		" ",
+		clip(m.area().View(w, h), w, h),
+	)
+	v := tea.NewView(body + "\n" + m.footer())
 	v.AltScreen = true
 	return v
 }
 
-func (m *Model) header() string {
-	parts := []string{styleTitle.Render("走 hashiru")}
-	for t := tab(0); t < tabCount; t++ {
-		label := fmt.Sprintf("%d %s", t+1, t)
-		if t == m.tab {
-			parts = append(parts, styleTabOn.Render(label))
-		} else {
-			parts = append(parts, styleTab.Render(label))
+func (m *Model) sidebar() string {
+	lines := []string{styleTitle.Render("走 hashiru"), ""}
+	for i, a := range m.areas {
+		label := fmt.Sprintf("%d %s", i+1, a.Name())
+		label = fmt.Sprintf("%-*s", sidebarWidth, label)
+		switch {
+		case i == m.sel && !m.inArea:
+			label = styleItemOn.Render(label)
+		case i == m.sel:
+			label = styleSelected.Render(label)
+		default:
+			label = styleMuted.Render(label)
 		}
+		lines = append(lines, label)
 	}
-	return strings.Join(parts, " ")
+	return strings.Join(lines, "\n")
 }
 
 func (m *Model) footer() string {
-	help := "tab switch · r refresh · u update · e config · L follow log · q quit"
-	switch m.tab {
-	case tabDoctor:
-		help = "j/k move · enter expand · " + help
-	case tabLog:
-		help = m.logv.help() + " · " + help
+	help := "j/k area · enter open · r refresh · q quit"
+	if m.inArea {
+		help = "esc back · r refresh · q quit"
 	}
-	if m.note == "" {
-		return styleMuted.Render(help)
+	if h := m.area().Help(); h != "" {
+		help = h + " · " + help
 	}
-	note := styleOK.Render(m.note)
-	if m.noteErr {
+	help = ansi.Truncate(styleMuted.Render(help), m.width, "…")
+
+	note := ""
+	switch {
+	case m.note != "" && m.noteErr:
 		note = styleFail.Render(m.note)
+	case m.note != "":
+		note = styleOK.Render(m.note)
 	}
-	return note + "\n" + styleMuted.Render(help)
+	return ansi.Truncate(note, m.width, "…") + "\n" + help
 }
 
-// --- Dashboard -----------------------------------------------------------------
-
-func (m *Model) dashboard() string {
-	var b strings.Builder
-	row := func(k, v string) { b.WriteString(styleKey.Render(k) + v + "\n") }
-
-	switch {
-	case m.status == nil && m.statusBusy:
-		row("status", styleMuted.Render("loading… (fetches upstream)"))
-	case m.status == nil && m.statusErr != nil:
-		row("status", styleFail.Render(m.statusErr.Error()))
-	case m.status != nil:
-		s := m.status
-		row("version", orUnknown(s.Version))
-		row("commit", short(s.Commit))
-		if s.Head != "" && s.Head != s.Commit {
-			row("checkout", short(s.Head)+styleWarn.Render("  (not what was last installed)"))
-		}
-		row("installed", when(s.Installed))
-		if !s.Updated.IsZero() {
-			row("updated", when(s.Updated))
-		}
-		row("repo", s.Repo)
-		row("tree", treeLine(s))
-		row("upstream", upstreamLine(s))
+// clip cuts s to h lines of at most w cells, so an area can't push the
+// footer off screen.
+func clip(s string, w, h int) string {
+	lines := strings.Split(s, "\n")
+	if len(lines) > h {
+		lines = lines[:h]
 	}
-
-	b.WriteString("\n")
-	switch {
-	case m.report == nil && m.reportBusy:
-		row("doctor", styleMuted.Render("running…"))
-	case m.report == nil && m.reportErr != nil:
-		row("doctor", styleFail.Render(m.reportErr.Error()))
-	case m.report != nil:
-		row("doctor", summaryLine(m.report))
+	for i, l := range lines {
+		lines[i] = ansi.Truncate(l, w, "…")
 	}
-	return b.String()
+	return strings.Join(lines, "\n")
 }
+
+// --- Shared pieces -------------------------------------------------------------
 
 func treeLine(s *hashiru.Status) string {
 	line := styleOK.Render("clean")
@@ -143,7 +130,7 @@ func upstreamLine(s *hashiru.Status) string {
 	case s.Behind == 0:
 		return styleOK.Render("up to date")
 	default:
-		return styleWarn.Render(fmt.Sprintf("%d commit(s) behind, press u to update", s.Behind))
+		return styleWarn.Render(fmt.Sprintf("%d commit(s) behind", s.Behind))
 	}
 }
 
@@ -164,41 +151,6 @@ func summaryLine(r *hashiru.Report) string {
 	return strings.Join(parts, styleMuted.Render(" · "))
 }
 
-// --- Doctor --------------------------------------------------------------------
-
-func (m *Model) doctor() string {
-	switch {
-	case m.report == nil && m.reportBusy:
-		return styleMuted.Render("running doctor…")
-	case m.report == nil && m.reportErr != nil:
-		return styleFail.Render(m.reportErr.Error())
-	case m.report == nil:
-		return ""
-	}
-
-	var b strings.Builder
-	b.WriteString(summaryLine(m.report) + "\n\n")
-	for i, sec := range m.sections() {
-		cursor := "  "
-		name := sec.Name
-		if i == m.cursor {
-			cursor = styleTitle.Render("▸ ")
-			name = styleSelected.Render(name)
-		}
-		fmt.Fprintf(&b, "%s%s %s %s\n", cursor, mark(sec.Worst()), name,
-			styleMuted.Render(fmt.Sprintf("(%d)", len(sec.Checks))))
-
-		// Problems are always shown; the rest only when expanded.
-		open := m.expanded[sec.Name]
-		for _, c := range sec.Checks {
-			if open || c.Status == hashiru.Warn || c.Status == hashiru.Fail {
-				fmt.Fprintf(&b, "      %s %s\n", mark(c.Status), c.Message)
-			}
-		}
-	}
-	return b.String()
-}
-
 func mark(l hashiru.Level) string {
 	switch l {
 	case hashiru.OK:
@@ -211,8 +163,6 @@ func mark(l hashiru.Level) string {
 		return styleMuted.Render("·")
 	}
 }
-
-// --- Helpers -------------------------------------------------------------------
 
 func short(commit string) string {
 	if len(commit) > 12 {

@@ -33,7 +33,7 @@ installing the binary).
 ## Task list
 
 ### Phase 1: Shell
-- [ ] Task 1: Sidebar shell with the Area interface; existing views become Overview, Updates, Logs
+- [x] Task 1: Sidebar shell with the Area interface; existing views become Overview, Updates, Logs
 - [ ] Task 2: Launcher with Interactive / Watch / GUI kinds
 - [ ] Task 3: Command palette over areas and actions
 

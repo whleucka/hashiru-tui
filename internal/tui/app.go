@@ -1,19 +1,18 @@
-// Package tui is the bubbletea front end. It holds no Hashiru logic of its own:
-// state comes from package hashiru, and anything that changes the machine runs
-// the hashiru CLI in a herdr pane, or in this terminal when there is no herdr.
+// Package tui is the bubbletea front end: a sidebar of areas, each a view over
+// part of the system, and one way to launch the tools that change it.
 package tui
 
 import (
 	"context"
-	"time"
+	"strconv"
 
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
 )
 
-// Source is where the TUI gets its state. hashiru.CLI satisfies it; tests use
-// a fake.
+// Source is where Hashiru's own state comes from. hashiru.CLI satisfies it;
+// tests use a fake.
 type Source interface {
 	Status(context.Context) (hashiru.Status, error)
 	Doctor(context.Context) (hashiru.Report, error)
@@ -30,38 +29,16 @@ type Options struct {
 	RunInPane func(ctx context.Context, argv []string, label string, right, focus bool) error
 }
 
-type tab int
-
-const (
-	tabDashboard tab = iota
-	tabDoctor
-	tabLog
-	tabCount
-)
-
-func (t tab) String() string {
-	return [...]string{"Dashboard", "Doctor", "Log"}[t]
-}
-
-// Model is the whole app.
+// Model is the shell: sidebar, the selected area, and the footer.
 type Model struct {
 	opts          Options
 	width, height int
-	tab           tab
 
-	status     *hashiru.Status
-	statusErr  error
-	statusBusy bool
-
-	report     *hashiru.Report
-	reportErr  error
-	reportBusy bool
-
-	// Doctor tab: which section the cursor is on, and which are expanded.
-	cursor   int
-	expanded map[string]bool
-
-	logv logView
+	env    *env
+	state  *State
+	areas  []Area
+	sel    int  // selected area
+	inArea bool // keys go to the area first rather than the sidebar
 
 	note    string // one-line feedback in the footer
 	noteErr bool
@@ -69,19 +46,18 @@ type Model struct {
 
 // New builds the model. Call Init (bubbletea does) to start loading.
 func New(opts Options) *Model {
-	return &Model{opts: opts, expanded: map[string]bool{}, logv: newLogView()}
+	m := &Model{opts: opts, state: &State{}}
+	m.env = &env{
+		src:     opts.Source,
+		state:   m.state,
+		run:     m.run,
+		refresh: m.refresh,
+	}
+	m.areas = newAreas(m.env)
+	return m
 }
 
-// Messages from the commands below back to Update.
 type (
-	statusMsg struct {
-		s   hashiru.Status
-		err error
-	}
-	reportMsg struct {
-		r   hashiru.Report
-		err error
-	}
 	noteMsg struct {
 		text string
 		err  error
@@ -91,87 +67,56 @@ type (
 		label string
 		err   error
 	}
-)
-
-// status fetches upstream, which can take ~10s offline, so allow a bit more.
-const (
-	statusTimeout = 20 * time.Second
-	doctorTimeout = 60 * time.Second
-	paneTimeout   = 5 * time.Second
+	// refreshMsg asks areas to reload whatever they load themselves.
+	refreshMsg struct{}
 )
 
 func (m *Model) Init() tea.Cmd {
 	return m.refresh()
 }
 
-// refresh reloads status, doctor and the log in parallel.
+// refresh reloads the shared state and lets every area reload its own.
 func (m *Model) refresh() tea.Cmd {
-	m.statusBusy, m.reportBusy = true, true
-	src := m.opts.Source
-	return tea.Batch(
-		func() tea.Msg {
-			ctx, cancel := context.WithTimeout(context.Background(), statusTimeout)
-			defer cancel()
-			s, err := src.Status(ctx)
-			return statusMsg{s, err}
-		},
-		func() tea.Msg {
-			ctx, cancel := context.WithTimeout(context.Background(), doctorTimeout)
-			defer cancel()
-			r, err := src.Doctor(ctx)
-			return reportMsg{r, err}
-		},
-		loadLog(src),
-	)
+	return tea.Batch(m.state.load(m.opts.Source), m.broadcast(refreshMsg{}))
+}
+
+func (m *Model) area() Area { return m.areas[m.sel] }
+
+// broadcast hands msg to every area.
+func (m *Model) broadcast(msg tea.Msg) tea.Cmd {
+	cmds := make([]tea.Cmd, 0, len(m.areas))
+	for _, a := range m.areas {
+		cmds = append(cmds, a.Update(msg))
+	}
+	return tea.Batch(cmds...)
 }
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
-		// Less the header and its gap, and the note and help lines below.
-		m.logv.setSize(msg.Width, msg.Height-5)
+		w, h := m.areaSize()
+		return m, m.broadcast(areaSizeMsg{w, h})
 
-	case logMsg:
-		m.logv.setRuns(msg.runs, msg.err)
-
-	case logTickMsg:
-		if !m.logv.follow {
-			return m, nil // stopped since the tick was scheduled
-		}
-		return m, tea.Batch(loadLog(m.opts.Source), followTick())
-
-	case statusMsg:
-		m.statusBusy = false
-		m.statusErr = msg.err
-		if msg.err == nil {
-			m.status = &msg.s
-		}
-
-	case reportMsg:
-		m.reportBusy = false
-		m.reportErr = msg.err
-		if msg.err == nil {
-			m.report = &msg.r
-			m.clampCursor()
-		}
+	case tea.KeyPressMsg:
+		return m, m.handleKey(msg)
 
 	case noteMsg:
 		m.setNote(msg.text, msg.err)
+		return m, nil
 
 	case execDoneMsg:
-		// The command may have changed the machine (update, config), so look again.
+		// The command may have changed the machine, so look again.
 		if msg.err != nil {
 			m.setNote(msg.label+" exited", msg.err)
 		} else {
 			m.setNote(msg.label+" finished", nil)
 		}
 		return m, m.refresh()
-
-	case tea.KeyPressMsg:
-		return m, m.handleKey(msg)
 	}
-	return m, nil
+
+	m.state.apply(msg)
+	return m, m.broadcast(msg)
 }
 
 func (m *Model) setNote(text string, err error) {
@@ -182,71 +127,69 @@ func (m *Model) setNote(text string, err error) {
 }
 
 func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
-	switch msg.String() {
-	case "q", "ctrl+c":
+	if msg.String() == "ctrl+c" {
 		return tea.Quit
-	case "tab":
-		m.tab = (m.tab + 1) % tabCount
-	case "shift+tab":
-		m.tab = (m.tab + tabCount - 1) % tabCount
-	case "1":
-		m.tab = tabDashboard
-	case "2":
-		m.tab = tabDoctor
-	case "3":
-		m.tab = tabLog
-	case "r":
-		m.note = ""
-		return m.refresh()
-
-	// Actions. Update and config want the keyboard (sudo, $EDITOR), so their
-	// pane takes focus; a followed log is for watching, so focus stays here.
-	case "u":
-		return m.run(m.opts.Source.Argv("update"), "hashiru update", true)
-	case "e":
-		return m.run(m.opts.Source.Argv("config"), "hashiru config", true)
-	case "L":
-		return m.run(m.opts.Source.Argv("log", "-f"), "hashiru log", false)
 	}
 
-	switch m.tab {
-	case tabDoctor:
-		return m.handleDoctorKey(msg)
-	case tabLog:
-		return m.logv.handleKey(msg)
+	if m.inArea {
+		if cmd, ok := m.area().HandleKey(msg); ok {
+			return cmd
+		}
+		switch msg.String() {
+		case "esc", "h", "left":
+			m.inArea = false
+			return nil
+		}
+		cmd, _ := m.shellKey(msg)
+		return cmd
 	}
-	return nil
-}
 
-func (m *Model) handleDoctorKey(msg tea.KeyPressMsg) tea.Cmd {
-	n := len(m.sections())
 	switch msg.String() {
 	case "j", "down":
-		if m.cursor < n-1 {
-			m.cursor++
-		}
+		m.selectArea(m.sel + 1)
+		return nil
 	case "k", "up":
-		if m.cursor > 0 {
-			m.cursor--
-		}
-	case "enter", "space", "l", "right":
-		if s := m.sections(); m.cursor < len(s) {
-			name := s[m.cursor].Name
-			m.expanded[name] = !m.expanded[name]
-		}
-	}
-	return nil
-}
-
-func (m *Model) sections() []hashiru.Section {
-	if m.report == nil {
+		m.selectArea(m.sel - 1)
+		return nil
+	case "enter", "l", "right":
+		m.inArea = true
 		return nil
 	}
-	return m.report.Sections()
+	if cmd, ok := m.shellKey(msg); ok {
+		return cmd
+	}
+	// The selected area's own action keys work from the sidebar too.
+	cmd, _ := m.area().HandleKey(msg)
+	return cmd
 }
 
-func (m *Model) clampCursor() {
-	if n := len(m.sections()); m.cursor >= n {
-		m.cursor = max(n-1, 0)
+// shellKey handles the keys that mean the same everywhere, reporting whether
+// msg was one.
+func (m *Model) shellKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
+	switch s := msg.String(); s {
+	case "q":
+		return tea.Quit, true
+	case "r":
+		m.note = ""
+		return m.refresh(), true
+	case "tab":
+		m.selectArea((m.sel + 1) % len(m.areas))
+		return nil, true
+	case "shift+tab":
+		m.selectArea((m.sel + len(m.areas) - 1) % len(m.areas))
+		return nil, true
+	default:
+		if n, err := strconv.Atoi(s); err == nil && n >= 1 && n <= len(m.areas) {
+			m.selectArea(n - 1)
+			m.inArea = false
+			return nil, true
+		}
+	}
+	return nil, false
+}
+
+func (m *Model) selectArea(i int) {
+	if i >= 0 && i < len(m.areas) {
+		m.sel = i
 	}
 }
