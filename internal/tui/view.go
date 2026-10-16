@@ -86,7 +86,7 @@ func (m *Model) footer() string {
 	if m.inArea {
 		help = "esc back · ctrl+p palette · r refresh · q quit"
 	}
-	if h := m.area().Help(); h != "" {
+	if h := m.area().Help(); h != "" && m.inArea {
 		help = h + " · " + help
 	}
 	if m.pal.open {

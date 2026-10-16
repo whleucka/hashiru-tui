@@ -38,7 +38,7 @@ installing the binary).
 - [x] Task 3: Command palette over areas and actions
 
 ### Checkpoint A
-- [ ] `go test ./...` and `make build` pass; run in a herdr split, all three areas work, palette opens and runs an action
+- [x] `go test ./...` and `make build` pass; run in a herdr split, all three areas work, palette opens and runs an action
 
 ### Phase 2: Updates and the everyday areas
 - [ ] Task 4: Pending pacman and AUR updates in Updates and Overview

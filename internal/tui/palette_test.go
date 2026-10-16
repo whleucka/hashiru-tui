@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/x/ansi"
 )
 
 func ctrlP() tea.KeyPressMsg { return tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl} }
@@ -93,5 +94,14 @@ func TestPaletteMovesSelection(t *testing.T) {
 	m.Update(tea.KeyPressMsg{Code: tea.KeyUp})
 	if m.pal.cursor != 1 {
 		t.Errorf("cursor = %d, want 1", m.pal.cursor)
+	}
+}
+
+func TestPalettePlaceholderShowsInFull(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	m.Update(ctrlP())
+	if out := ansi.Strip(m.View().Content); !strings.Contains(out, "type to search") {
+		t.Errorf("placeholder cut short:\n%s", out)
 	}
 }

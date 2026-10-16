@@ -224,3 +224,17 @@ func TestQuit(t *testing.T) {
 		t.Error("q should return tea.Quit")
 	}
 }
+
+func TestFooterHelpMatchesFocus(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	press(m, "3") // Logs, from the sidebar
+	footer := m.footer()
+	if strings.Contains(footer, "problems only") {
+		t.Errorf("sidebar footer shows the area's keys: %q", footer)
+	}
+	press(m, "enter")
+	if footer := m.footer(); !strings.Contains(footer, "problems only") {
+		t.Errorf("area footer missing its keys: %q", footer)
+	}
+}

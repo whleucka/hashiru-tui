@@ -23,7 +23,7 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/tui/palette.go, palette_test.go, app.go, view.go. **Deps:** 1, 2. **Size:** M
 
 ### Checkpoint A
-- [ ] Tests, vet, build; manual run in a herdr split
+- [x] Tests, vet, build; manual run in a herdr split (fixed: palette placeholder cut to one cell; sidebar footer mixing in the area's keys)
 
 ## Phase 2
 
