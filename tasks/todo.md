@@ -78,7 +78,7 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/system/wallpaper.go + test, internal/tui/wallpaper.go. **Deps:** 2. **Size:** M
 
 ### Checkpoint C
-- [ ] Tests, vet, build; manual pass of every area
+- [x] Tests, vet, build; manual pass of every area in a herdr pane (wallpaper preview drawn with kitty placeholders; no fixes needed)
 
 ## Phase 4: Hashiru (/opt/hashiru, commits only, not pushed or applied)
 

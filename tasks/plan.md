@@ -57,7 +57,7 @@ installing the binary).
 - [x] Task 12: Wallpaper area
 
 ### Checkpoint C
-- [ ] Tests and build pass; full manual pass of every area
+- [x] Tests and build pass; full manual pass of every area
 
 ### Phase 4: Hashiru side (/opt/hashiru)
 - [ ] Task 13: tahoe-wallpaper respects a fixed wallpaper choice
