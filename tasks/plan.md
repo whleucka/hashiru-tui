@@ -47,7 +47,7 @@ installing the binary).
 - [x] Task 7: Connectivity area (network, bluetooth, audio)
 
 ### Checkpoint B
-- [ ] Tests and build pass; manual run against the real machine
+- [x] Tests and build pass; manual run against the real machine
 
 ### Phase 3: The rest of v1
 - [ ] Task 8: Overview system summary (host, kernel, uptime, memory, disk, battery)

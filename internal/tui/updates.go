@@ -155,6 +155,9 @@ func (u *updates) View(width, height int) string {
 	}
 	b.WriteString(summaryLine(st.Report) + "\n")
 
+	// Scroll as little as possible to keep the cursor's section, and its
+	// checks, on screen: the top stays put until the cursor needs the room.
+	cursorEnd := 0
 	for i, sec := range u.sections() {
 		cursor := "  "
 		name := sec.Name
@@ -172,6 +175,18 @@ func (u *updates) View(width, height int) string {
 				fmt.Fprintf(&b, "      %s %s\n", mark(c.Status), c.Message)
 			}
 		}
+		if i == u.cursor {
+			cursorEnd = strings.Count(b.String(), "\n")
+		}
 	}
-	return b.String()
+	return scrollTo(b.String(), cursorEnd, height)
+}
+
+// scrollTo drops lines off the top until line end (exclusive) fits in height.
+func scrollTo(s string, end, height int) string {
+	if skip := end - height; skip > 0 {
+		lines := strings.Split(s, "\n")
+		return strings.Join(lines[min(skip, len(lines)):], "\n")
+	}
+	return s
 }

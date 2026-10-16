@@ -3,6 +3,8 @@ package tui
 import (
 	"strings"
 	"testing"
+
+	tea "charm.land/bubbletea/v2"
 )
 
 func TestPendingUpdatesShown(t *testing.T) {
@@ -47,5 +49,28 @@ func TestAURUpgradeIsSeparate(t *testing.T) {
 	press(m, "a")
 	if len(ran) != 1 || ran[0] != "yay -Sua" {
 		t.Errorf("a ran %v", ran)
+	}
+}
+
+func TestUpdatesScrollsToHealthCursor(t *testing.T) {
+	var pkgs strings.Builder
+	for _, n := range []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"} {
+		pkgs.WriteString(n + " 1-1 -> 2-1\n")
+	}
+	m := New(Options{
+		Source: fakeSource{report: sampleReport()},
+		Probe:  probe{"checkupdates": pkgs.String()}.run,
+	})
+	m.Update(tea.WindowSizeMsg{Width: 100, Height: 20}) // a small floating window
+	drain(m, m.Init())
+	goTo(t, m, "Updates")
+
+	press(m, "j") // to the last health section
+	out := m.View().Content
+	if !strings.Contains(out, "Shell") {
+		t.Errorf("the selected health section is off screen:\n%s", out)
+	}
+	if strings.Count(out, "\n") > 20 {
+		t.Errorf("view taller than the window: %d lines", strings.Count(out, "\n"))
 	}
 }

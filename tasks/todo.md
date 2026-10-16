@@ -48,7 +48,7 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/system/{network,bluetooth,audio}.go + tests, internal/tui/connectivity.go. **Deps:** 2. **Size:** M
 
 ### Checkpoint B
-- [ ] Tests, vet, build; manual run
+- [x] Tests, vet, build; manual run (fixed: Updates overflowed the window and hid Health; it now scrolls to the cursor)
 
 ## Phase 3
 
