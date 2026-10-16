@@ -36,10 +36,15 @@ type Options struct {
 	// Probe runs the read-only commands areas show (checkupdates, nmcli...).
 	// Defaults to running them for real.
 	Probe system.Run
+	// Get fetches a URL (Arch news). Defaults to a real HTTP GET.
+	Get system.Get
 }
 
 // defaultProbe is a variable so tests can keep every model off the machine.
-var defaultProbe system.Run = system.Command
+var (
+	defaultProbe system.Run = system.Command
+	defaultGet   system.Get = system.HTTPGet
+)
 
 // Model is the shell: sidebar, the selected area, and the footer.
 type Model struct {
@@ -68,6 +73,9 @@ func New(opts Options) *Model {
 	}
 	if opts.Probe == nil {
 		opts.Probe = defaultProbe
+	}
+	if opts.Get == nil {
+		opts.Get = defaultGet
 	}
 	m := &Model{opts: opts, state: &State{}}
 	m.env = &env{
@@ -102,7 +110,7 @@ func (m *Model) Init() tea.Cmd {
 
 // refresh reloads the shared state and lets every area reload its own.
 func (m *Model) refresh() tea.Cmd {
-	return tea.Batch(m.state.load(m.opts.Source, m.opts.Probe), m.broadcast(refreshMsg{}))
+	return tea.Batch(m.state.load(m.opts), m.broadcast(refreshMsg{}))
 }
 
 func (m *Model) area() Area { return m.areas[m.sel] }

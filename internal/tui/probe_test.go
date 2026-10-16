@@ -2,6 +2,7 @@ package tui
 
 import (
 	"context"
+	"errors"
 	"os/exec"
 	"strings"
 
@@ -29,5 +30,12 @@ func recordExec(ran *[]string) func(*exec.Cmd, tea.ExecCallback) tea.Cmd {
 	return func(c *exec.Cmd, done tea.ExecCallback) tea.Cmd {
 		*ran = append(*ran, strings.Join(c.Args, " "))
 		return func() tea.Msg { return done(nil) }
+	}
+}
+
+// Nor the network.
+func init() {
+	defaultGet = func(context.Context, string) ([]byte, error) {
+		return nil, errors.New("offline (test)")
 	}
 }

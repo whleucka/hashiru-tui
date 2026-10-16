@@ -33,8 +33,8 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/system/{exec,updates}.go + tests, internal/tui/updates.go, overview.go. **Deps:** 1. **Size:** M
 
 ### Task 5: Arch news
-- [ ] Fetch archlinux.org/feeds/news/ (timeout), parse RSS titles, dates, links
-- [ ] Items newer than the machine's last update are flagged; `enter`/`o` opens the link with xdg-open (GUI kind)
+- [x] Fetch archlinux.org/feeds/news/ (timeout), parse RSS titles, dates, links
+- [x] Items newer than the machine's last update are flagged; `n` opens the newest unread one (or the news page) with xdg-open (GUI kind). `n`, not `enter`: enter already expands health sections in Updates
 **Files:** internal/system/news.go + test, internal/tui/updates.go. **Deps:** 2, 4. **Size:** S
 
 ### Task 6: Keybinds area

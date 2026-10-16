@@ -41,7 +41,14 @@ func (u *updates) Actions() []Action {
 	return []Action{
 		{Title: "Update the system (hashiru update)", Key: "u", Run: u.update},
 		{Title: "Upgrade AUR packages (yay -Sua)", Key: "a", Run: u.upgradeAUR},
+		{Title: "Read Arch news", Key: "n", Run: u.openNews},
 	}
+}
+
+// openNews opens the newest unread announcement in the browser, or the
+// news page when there is none.
+func (u *updates) openNews() tea.Cmd {
+	return u.e.launch(Launch{Argv: []string{"xdg-open", newsTarget(u.e.state)}, Label: "Arch news", Kind: GUI})
 }
 
 // upgradeAUR is separate because hashiru update runs pacman -Syu but never
@@ -60,6 +67,8 @@ func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		return u.update(), true
 	case "a":
 		return u.upgradeAUR(), true
+	case "n":
+		return u.openNews(), true
 	case "p":
 		u.allPkgs = !u.allPkgs
 	case "j", "down":
@@ -82,7 +91,7 @@ func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 }
 
 func (u *updates) Help() string {
-	return "u update · a AUR · p all packages · j/k section · enter expand"
+	return "u update · a AUR · n news · p all packages · j/k section · enter expand"
 }
 
 func (u *updates) sections() []hashiru.Section {
@@ -125,6 +134,11 @@ func (u *updates) View(width, height int) string {
 		limit = 0
 	}
 	for _, r := range pendingRows(st, limit) {
+		b.WriteString(r + "\n")
+	}
+
+	b.WriteString("\n" + styleTitle.Render("Arch news") + "\n")
+	for _, r := range newsRows(st) {
 		b.WriteString(r + "\n")
 	}
 

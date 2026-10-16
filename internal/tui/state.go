@@ -22,6 +22,18 @@ type State struct {
 
 	Pending     *system.Updates
 	PendingBusy bool
+
+	News     []system.NewsItem
+	NewsErr  error
+	NewsBusy bool
+}
+
+// UnreadNews counts news published since the machine last updated.
+func (st *State) UnreadNews() int {
+	if st.Status == nil {
+		return 0
+	}
+	return system.Unread(st.News, st.Status.Updated)
 }
 
 type (
@@ -34,6 +46,10 @@ type (
 		err error
 	}
 	pendingMsg struct{ u system.Updates }
+	newsMsg    struct {
+		items []system.NewsItem
+		err   error
+	}
 )
 
 // status fetches upstream, which can take ~10s offline, so allow a bit more.
@@ -42,12 +58,14 @@ const (
 	doctorTimeout = 60 * time.Second
 	// checkupdates syncs the package databases, so it needs the network.
 	pendingTimeout = 90 * time.Second
+	newsTimeout    = 15 * time.Second
 	paneTimeout    = 5 * time.Second
 )
 
 // load reloads everything in parallel.
-func (st *State) load(src Source, probe system.Run) tea.Cmd {
-	st.StatusBusy, st.ReportBusy, st.PendingBusy = true, true, true
+func (st *State) load(opts Options) tea.Cmd {
+	src := opts.Source
+	st.StatusBusy, st.ReportBusy, st.PendingBusy, st.NewsBusy = true, true, true, true
 	return tea.Batch(
 		func() tea.Msg {
 			ctx, cancel := context.WithTimeout(context.Background(), statusTimeout)
@@ -64,7 +82,13 @@ func (st *State) load(src Source, probe system.Run) tea.Cmd {
 		func() tea.Msg {
 			ctx, cancel := context.WithTimeout(context.Background(), pendingTimeout)
 			defer cancel()
-			return pendingMsg{system.Pending(ctx, probe)}
+			return pendingMsg{system.Pending(ctx, opts.Probe)}
+		},
+		func() tea.Msg {
+			ctx, cancel := context.WithTimeout(context.Background(), newsTimeout)
+			defer cancel()
+			items, err := system.FetchNews(ctx, opts.Get)
+			return newsMsg{items, err}
 		},
 	)
 }
@@ -85,6 +109,11 @@ func (st *State) apply(msg tea.Msg) bool {
 	case pendingMsg:
 		st.PendingBusy = false
 		st.Pending = &msg.u
+	case newsMsg:
+		st.NewsBusy, st.NewsErr = false, msg.err
+		if msg.err == nil {
+			st.News = msg.items
+		}
 	default:
 		return false
 	}

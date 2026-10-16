@@ -35,6 +35,7 @@ func (o *overview) View(width, height int) string {
 		row("upstream", upstreamLine(s))
 	}
 	row("packages", pendingLine(st))
+	row("arch news", newsLine(st))
 	switch {
 	case st.Report == nil && st.ReportBusy:
 		row("health", styleMuted.Render("running doctor…"))
