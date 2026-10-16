@@ -33,10 +33,10 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 ## Phase 2: Plumbing
 
 ### Task 4: Deep links
-- [ ] `hashiru-tui <area>` opens focused on that area (name, case-insensitive); unknown area prints the list, exits 2
-- [ ] `hashiru-tui --run <id>` opens, then runs the action once areas have loaded; unknown ID exits 2
-- [ ] `hashiru-tui --list-actions` prints `id<TAB>title`, one per line, and exits
-- [ ] Usage line and README updated
+- [x] `hashiru-tui <area>` opens focused on that area (name, case-insensitive); unknown area prints the list, exits 2
+- [x] `hashiru-tui --run <id>` opens, then runs the action once areas have loaded; unknown ID exits 2
+- [x] `hashiru-tui --list-actions` prints `id<TAB>title`, one per line, and exits
+- [x] Usage line and README updated
 **Files:** cmd/hashiru-tui/main.go, internal/tui/{app,options}.go, tests. **Deps:** 3. **Size:** S
 
 ### Task 5: Changelog in Updates

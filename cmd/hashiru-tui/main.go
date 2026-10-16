@@ -3,9 +3,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"runtime/debug"
+	"strings"
 
 	tea "charm.land/bubbletea/v2"
 
@@ -14,17 +16,59 @@ import (
 	"github.com/whleucka/hashiru-tui/internal/tui"
 )
 
-func main() {
-	if len(os.Args) > 1 {
-		switch os.Args[1] {
-		case "--version", "-V":
-			// Hashiru's stage compares this with the tag it pins.
-			fmt.Println(version(debug.ReadBuildInfo()))
-			return
+const usage = `usage: hashiru-tui [area] [--run <action-id>]
+       hashiru-tui --list-actions
+       hashiru-tui --version`
+
+// args is the command line: where to open, or something to print instead.
+type args struct {
+	area, run   string
+	listActions bool
+	version     bool
+}
+
+func parseArgs(argv []string) (args, error) {
+	var a args
+	for i := 0; i < len(argv); i++ {
+		switch s := argv[i]; {
+		case s == "--version" || s == "-V":
+			a.version = true
+		case s == "--list-actions":
+			a.listActions = true
+		case s == "--run":
+			if i+1 >= len(argv) {
+				return a, errors.New("--run needs an action ID")
+			}
+			i++
+			a.run = argv[i]
+		case strings.HasPrefix(s, "--run="):
+			a.run = strings.TrimPrefix(s, "--run=")
+		case s == "-h" || s == "--help":
+			return a, errors.New("")
+		case strings.HasPrefix(s, "-"):
+			return a, fmt.Errorf("unknown flag %s", s)
+		case a.area != "":
+			return a, fmt.Errorf("one area at a time, not %q and %q", a.area, s)
 		default:
-			fmt.Fprintln(os.Stderr, "usage: hashiru-tui [--version]")
-			os.Exit(2)
+			a.area = s
 		}
+	}
+	return a, nil
+}
+
+func main() {
+	a, err := parseArgs(os.Args[1:])
+	if err != nil {
+		if err.Error() != "" {
+			fmt.Fprintln(os.Stderr, "hashiru-tui:", err)
+		}
+		fmt.Fprintln(os.Stderr, usage)
+		os.Exit(2)
+	}
+	if a.version {
+		// Hashiru's stage compares this with the tag it pins.
+		fmt.Println(version(debug.ReadBuildInfo()))
+		return
 	}
 
 	opts := tui.Options{Source: hashiru.CLI{Bin: os.Getenv("HASHIRU_BIN")}}
@@ -35,7 +79,19 @@ func main() {
 		opts.RunInPane = herdr.Open
 	}
 
-	if _, err := tea.NewProgram(tui.New(opts)).Run(); err != nil {
+	m := tui.New(opts)
+	if a.listActions {
+		for _, act := range m.Actions() {
+			fmt.Printf("%s\t%s\n", act.ID, act.Title)
+		}
+		return
+	}
+	if err := m.Start(a.area, a.run); err != nil {
+		fmt.Fprintln(os.Stderr, "hashiru-tui:", err)
+		os.Exit(2)
+	}
+
+	if _, err := tea.NewProgram(m).Run(); err != nil {
 		fmt.Fprintln(os.Stderr, "hashiru-tui:", err)
 		os.Exit(1)
 	}

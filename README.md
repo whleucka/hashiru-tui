@@ -32,6 +32,16 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 
 Each area lists its own keys in the footer. Some to know: `u` update and `a` AUR upgrade and `n` Arch news (Updates), `/` filter (Keybinds), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `s` switch log source (Logs).
 
+## Deep links
+
+```bash
+hashiru-tui updates               # open on an area (any case)
+hashiru-tui --run snapshots.new   # open and run an action
+hashiru-tui --list-actions        # every action's ID and title
+```
+
+IDs are `<area>.<verb>` and don't change when titles do, so a Hyprland bind or a script can go straight to one. The palette shows each action's ID beside it.
+
 ## How tools are launched
 
 - **GUI apps** (blueman, pavucontrol, the browser for news) start detached.

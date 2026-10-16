@@ -81,6 +81,9 @@ type Model struct {
 	// quitting: q was pressed and the footer asks to confirm. Only y quits;
 	// any other key stays, so a stray q doesn't close the window.
 	quitting bool
+	// startRun is the action a deep link asked for; it runs on the first
+	// window size, so what it launches has a laid-out screen to return to.
+	startRun *Action
 
 	note    string // one-line feedback in the footer
 	noteErr bool
@@ -165,7 +168,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
 		w, h := m.areaSize()
-		return m, m.broadcast(areaSizeMsg{w, h})
+		cmd := m.broadcast(areaSizeMsg{w, h})
+		if act := m.startRun; act != nil {
+			m.startRun = nil
+			cmd = tea.Batch(cmd, act.Run())
+		}
+		return m, cmd
 
 	case tea.KeyPressMsg:
 		return m, m.handleKey(msg)
