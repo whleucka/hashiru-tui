@@ -16,6 +16,7 @@ It delegates where a good tool exists (nmtui, bluetoothctl, journalctl, pavucont
 | **Wallpaper** | Pick a wallpaper (previewed with kitty graphics) or go back to Hashiru's time-of-day cycle |
 | **Snapshots** | snapper's snapshots of `/`, what changed since one, take a new one |
 | **Config** | The files Hashiru lets you change, grouped by how they apply, each one key from `$EDITOR` |
+| **Services** | systemd services and timers, system and user, and what's failed; start, stop, restart, enable, disable; `systemctl status`; a timer's next run; follow a unit's journal |
 | **Logs** | Hashiru's install log by run, this boot's journal errors, failed units |
 
 Hashiru's own state comes from its machine-readable output, `hashiru status --porcelain` and `hashiru doctor --json`, and its install log.
@@ -24,7 +25,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 
 | Key | |
 |---|---|
-| `j` `k` / number keys | pick an area |
+| `j` `k` / number keys | pick an area (`0` is the tenth) |
 | `enter` / `esc` | into the area / back to the sidebar |
 | `ctrl+p` (or `:` in the sidebar) | command palette: every area and action |
 | `r` | refresh |
@@ -33,7 +34,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `?` | this area's keys |
 | `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |
 
-Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news (Updates), `S` search, `i` install, `d` remove, `O` remove orphans, `C` clean the cache (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log in a pane (Logs).
+Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news (Updates), `S` search, `i` install, `d` remove, `O` remove orphans, `C` clean the cache (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log in a pane and `enter` on a failed unit goes to it in Services (Logs), `s` `S` `R` start/stop/restart, `e` `d` enable/disable, `l` follow its log (Services: system units through sudo in the terminal, user units in the background).
 
 ## Deep links
 

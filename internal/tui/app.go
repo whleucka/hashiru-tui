@@ -138,6 +138,7 @@ func New(opts Options) *Model {
 		state:   m.state,
 		launch:  m.launch,
 		refresh: m.refresh,
+		jump:    m.jump,
 	}
 	m.areas = newAreas(m.env, opts, opts.Graphics == graphicsOn ||
 		opts.Graphics == graphicsAuto && defaultGraphics())
@@ -314,7 +315,11 @@ func (m *Model) shellKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		m.selectArea((m.sel + len(m.areas) - 1) % len(m.areas))
 		return nil, true
 	default:
-		if n, err := strconv.Atoi(s); err == nil && n >= 1 && n <= len(m.areas) {
+		n, err := strconv.Atoi(s)
+		if s == "0" {
+			n = 10 // the top row's last key
+		}
+		if err == nil && n >= 1 && n <= len(m.areas) {
 			m.selectArea(n - 1)
 			m.inArea = false
 			return nil, true

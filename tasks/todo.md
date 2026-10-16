@@ -91,10 +91,10 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/system/services.go + test + testdata. **Deps:** none. **Size:** M
 
 ### Task 12: Services area
-- [ ] New sidebar entry; `u` toggles system/user, `f` failed only, `/` filters
-- [ ] `s`/`S`/`R` start/stop/restart, `e`/`d` enable/disable: system via launcher with `sudo`, user directly with a note; refresh after
-- [ ] `l` opens `journalctl -u <unit> -f` (Watch)
-- [ ] Logs' failed units: `enter` jumps to the unit in Services
+- [x] New sidebar entry, last (`0`, so Logs keeps `9`); System / User / Failed tabs with `[`/`]` (not `u`/`f`: tabs are `[`/`]` everywhere), `/` filters; `enter` shows `systemctl status`
+- [x] `s`/`S`/`R` start/stop/restart, `e`/`d` enable/disable: system via launcher with `sudo`, user directly with a note; refresh after
+- [x] `l` opens `journalctl -u <unit> -f` (Watch)
+- [x] Logs' failed units: `enter` jumps to the unit in Services; their journal moved to `l`, as in Services
 **Files:** internal/tui/services.go + test, logs.go, area.go. **Deps:** 1, 11. **Size:** M
 
 ### Checkpoint D

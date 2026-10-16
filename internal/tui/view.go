@@ -70,7 +70,7 @@ func (m *Model) View() tea.View {
 func (m *Model) sidebar() string {
 	lines := []string{styleTitle.Render("走 hashiru"), ""}
 	for i, a := range m.areas {
-		label := fmt.Sprintf("%d %s", i+1, a.Name())
+		label := areaDigit(i) + " " + a.Name()
 		label = fmt.Sprintf("%-*s", sidebarWidth, label)
 		switch {
 		case i == m.sel && !m.inArea:
@@ -89,7 +89,7 @@ func (m *Model) sidebar() string {
 var (
 	sidebarKeys = []Key{
 		{Keys: "j/k", Desc: "area", Group: "Global"},
-		{Keys: "1-9", Desc: "jump to area", Group: "Global"},
+		{Keys: "1-9 0", Desc: "jump to area", Group: "Global"},
 		{Keys: "enter", Desc: "open", Group: "Global"},
 		{Keys: ":", Desc: "palette", Group: "Global"},
 		{Keys: "r", Desc: "refresh", Group: "Global"},
@@ -156,6 +156,15 @@ func (m *Model) footer() string {
 		note = styleOK.Render(m.note)
 	}
 	return ansi.Truncate(note, m.width, "…") + "\n" + help
+}
+
+// areaDigit is the number key for the i'th area: 1 to 9, then 0 for the
+// tenth, as on the keyboard's top row.
+func areaDigit(i int) string {
+	if i == 9 {
+		return "0"
+	}
+	return string(rune('1' + i))
 }
 
 // tabKey is the one way to switch tabs, in every area that has them.

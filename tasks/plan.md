@@ -59,7 +59,7 @@ and the two new areas.
 
 ### Phase 4: Services
 - [x] Task 11: systemctl probes (units, unit files, timers; system and user)
-- [ ] Task 12: Services area and actions; Logs' failed units jump here
+- [x] Task 12: Services area and actions; Logs' failed units jump here
 
 ### Checkpoint D
 - [ ] Tests, vet, build; README updated for v2; full manual pass of every area

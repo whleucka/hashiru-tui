@@ -53,7 +53,7 @@ func (m *Model) openPalette() tea.Cmd {
 	for i, a := range m.areas {
 		gotos = append(gotos, paletteItem{
 			title: "Go to " + a.Name(),
-			hint:  string(rune('1' + i)),
+			hint:  areaDigit(i),
 			run: func() tea.Cmd {
 				m.selectArea(i)
 				m.inArea = true

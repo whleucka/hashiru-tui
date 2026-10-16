@@ -159,13 +159,25 @@ func (l *logsArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 			return nil, true
 		}
 		switch k {
-		case "enter", "l", "right":
+		case "enter", "right":
+			return l.toServices(), true
+		case "l":
 			return l.openUnit(), true
 		default:
 			return nil, false
 		}
 	}
 	return nil, false
+}
+
+// toServices goes to the selected failed unit in Services, where it can be
+// restarted.
+func (l *logsArea) toServices() tea.Cmd {
+	if l.failedSel >= len(l.failed) {
+		return nil
+	}
+	u := l.failed[l.failedSel]
+	return l.e.jump("Services", svcFocusMsg{name: u.Name, user: u.User})
 }
 
 // openUnit shows the selected failed unit's journal for this boot, in a
@@ -188,7 +200,7 @@ func (l *logsArea) Keys() []Key {
 	case srcHashiru:
 		keys = l.lv.keys()
 	case srcFailed:
-		keys = []Key{{Keys: "j/k", Desc: "move"}, {Keys: "enter", Desc: "its journal"}}
+		keys = []Key{{Keys: "j/k", Desc: "move"}, {Keys: "enter", Desc: "in Services"}, {Keys: "l", Desc: "its journal"}}
 	default:
 		keys = []Key{{Keys: "j/k", Desc: "scroll"}}
 	}

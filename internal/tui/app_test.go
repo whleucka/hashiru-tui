@@ -103,7 +103,7 @@ func areaKey(t *testing.T, m *Model, name string) string {
 	t.Helper()
 	for i, a := range m.areas {
 		if a.Name() == name {
-			return string(rune('1' + i))
+			return areaDigit(i)
 		}
 	}
 	t.Fatalf("no area %q", name)

@@ -3,6 +3,8 @@ package tui
 import (
 	"fmt"
 	"strings"
+
+	tea "charm.land/bubbletea/v2"
 )
 
 // Start sets where the TUI opens: focused on an area (by name, any case)
@@ -30,6 +32,16 @@ func (m *Model) Start(area, run string) error {
 		m.startRun = &act
 	}
 	return nil
+}
+
+// jump focuses the named area and delivers msg to it.
+func (m *Model) jump(area string, msg tea.Msg) tea.Cmd {
+	i := m.areaIndex(area)
+	if i < 0 {
+		return nil
+	}
+	m.sel, m.inArea = i, true
+	return m.areas[i].Update(msg)
 }
 
 // AreaNames are the sidebar's areas, in order.

@@ -49,9 +49,20 @@ func TestLogsSources(t *testing.T) {
 func TestLogsFailedUnitOpensItsJournal(t *testing.T) {
 	var ran []string
 	m := logsModel(t, Options{Exec: recordExec(&ran)})
-	press(m, "s", "s", "enter")
+	press(m, "s", "s", "l")
 	if len(ran) != 1 || ran[0] != "journalctl -b -u reflector.service" {
 		t.Errorf("ran %v", ran)
+	}
+}
+
+func TestLogsFailedUnitEnterGoesToServices(t *testing.T) {
+	m := logsModel(t, Options{})
+	press(m, "s", "s", "enter")
+	if m.area().Name() != "Services" || !m.inArea {
+		t.Fatalf("on %s", m.area().Name())
+	}
+	if sv := m.area().(*services); sv.tab != tabFailed {
+		t.Errorf("tab %v, want Failed", sv.tab)
 	}
 }
 

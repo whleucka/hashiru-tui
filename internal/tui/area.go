@@ -51,6 +51,9 @@ type env struct {
 	launch func(Launch) tea.Cmd
 	// refresh reloads the shared state.
 	refresh func() tea.Cmd
+	// jump focuses the named area and hands it msg, so one area can send
+	// you to a thing in another (a failed unit in Logs → Services).
+	jump func(area string, msg tea.Msg) tea.Cmd
 }
 
 // areaSizeMsg tells areas how much room the shell gives them.
@@ -67,5 +70,6 @@ func newAreas(e *env, opts Options, graphics bool) []Area {
 		newSnapshots(e),
 		newConfig(e, opts.Home),
 		newLogs(e),
+		newServices(e),
 	}
 }
