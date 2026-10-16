@@ -58,3 +58,22 @@ func TestChoice(t *testing.T) {
 		t.Errorf("clearing twice: %v", err)
 	}
 }
+
+func TestChoiceHonoursXDGConfigHome(t *testing.T) {
+	// Hashiru's lib/common.sh: HASHIRU_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/hashiru"
+	cfg := t.TempDir()
+	t.Setenv("XDG_CONFIG_HOME", cfg)
+	if err := WriteChoice(t.TempDir(), "/w/a.jpg"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(cfg, "hashiru", "wallpaper")); err != nil {
+		t.Errorf("choice not under $XDG_CONFIG_HOME/hashiru: %v", err)
+	}
+	if got := HashiruConfigDir("/home/x"); got != filepath.Join(cfg, "hashiru") {
+		t.Errorf("HashiruConfigDir = %q", got)
+	}
+	t.Setenv("XDG_CONFIG_HOME", "")
+	if got := HashiruConfigDir("/home/x"); got != "/home/x/.config/hashiru" {
+		t.Errorf("HashiruConfigDir without XDG = %q", got)
+	}
+}

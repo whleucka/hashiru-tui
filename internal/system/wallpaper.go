@@ -54,7 +54,17 @@ func ParseAwwwQuery(out []byte) []string {
 // tahoe-wallpaper daemon reads it: when it names a file, the daemon shows
 // that and stops cycling through the time-of-day set.
 func choicePath(home string) string {
-	return filepath.Join(home, ".config", "hashiru", "wallpaper")
+	return filepath.Join(HashiruConfigDir(home), "wallpaper")
+}
+
+// HashiruConfigDir is where a machine's own Hashiru settings live, as
+// Hashiru's lib/common.sh defines it: $XDG_CONFIG_HOME/hashiru, falling back
+// to ~/.config/hashiru.
+func HashiruConfigDir(home string) string {
+	if x := os.Getenv("XDG_CONFIG_HOME"); x != "" {
+		return filepath.Join(x, "hashiru")
+	}
+	return filepath.Join(home, ".config", "hashiru")
 }
 
 // ReadChoice is the fixed wallpaper, or "" when cycling.

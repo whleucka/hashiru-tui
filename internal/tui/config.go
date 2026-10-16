@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
+
+	"github.com/whleucka/hashiru-tui/internal/system"
 )
 
 // configArea lists the files Hashiru lets a machine change, grouped by how
@@ -39,7 +41,7 @@ func newConfig(e *env, home string) *configArea {
 
 // scan builds the list and checks which files exist.
 func (c *configArea) scan() {
-	dir := filepath.Join(c.home, ".config", "hashiru")
+	dir := system.HashiruConfigDir(c.home)
 	var es []configEntry
 	add := func(group, path, note string) {
 		es = append(es, configEntry{group: group, path: path, note: note})

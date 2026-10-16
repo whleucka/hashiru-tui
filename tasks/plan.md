@@ -60,7 +60,7 @@ installing the binary).
 - [x] Tests and build pass; full manual pass of every area
 
 ### Phase 4: Hashiru side (/opt/hashiru)
-- [ ] Task 13: tahoe-wallpaper respects a fixed wallpaper choice
+- [x] Task 13: tahoe-wallpaper respects a fixed wallpaper choice
 - [ ] Task 14: SUPER+ALT+Space bind and installing the binary (**needs a decision first, see Open questions**)
 
 ## Risks and mitigations

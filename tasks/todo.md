@@ -83,9 +83,10 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 ## Phase 4: Hashiru (/opt/hashiru, commits only, not pushed or applied)
 
 ### Task 13: tahoe-wallpaper respects a fixed choice
-- [ ] If ~/.config/hashiru/wallpaper names a readable file, the daemon applies it and stops cycling; removing it resumes the cycle
-- [ ] shellcheck clean; doctor unaffected
+- [x] If ~/.config/hashiru/wallpaper names a readable file, the daemon applies it and stops cycling; removing it resumes the cycle
+- [x] shellcheck clean; doctor unaffected
 **Files:** stow/hyprland/.config/hypr/scripts/tahoe-wallpaper. **Deps:** 12. **Size:** XS
+Done in Hashiru as bc37a5d (local, not pushed), checked against a fake awww: no choice, choice set, choice's image gone, choice cleared. The choice file follows Hashiru's `${XDG_CONFIG_HOME:-~/.config}/hashiru`, and hashiru-tui now does too.
 
 ### Task 14: Keybind and install (STOP: needs a decision)
 - [ ] Decide how the binary reaches the machine (no remote yet)
