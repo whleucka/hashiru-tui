@@ -57,6 +57,9 @@ func init() {
 	defaultHome = func() (string, error) { return "/nonexistent/hashiru-tui-test-home", nil }
 }
 
+// Nor pacman's cache.
+func init() { defaultPacmanCache = "/nonexistent/hashiru-tui-test-cache" }
+
 // Nor timers: drain would follow a ticker forever. Tests that want one pass
 // their own Tick.
 func init() {

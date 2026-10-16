@@ -51,7 +51,7 @@ and the two new areas.
 
 ### Phase 3: Packages
 - [x] Task 8: Package probes and manifest parsing
-- [ ] Task 9: Packages area (groups, filter, info)
+- [x] Task 9: Packages area (groups, filter, info)
 - [ ] Task 10: Search, install, remove, orphans, cache
 
 ### Checkpoint C

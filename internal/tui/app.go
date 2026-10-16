@@ -51,6 +51,9 @@ type Options struct {
 	// Tick schedules a message after a delay, for Overview's live stats.
 	// Defaults to tea.Tick.
 	Tick func(time.Duration, func(time.Time) tea.Msg) tea.Cmd
+	// PacmanCache is pacman's package cache, sized in Packages. Defaults to
+	// /var/cache/pacman/pkg.
+	PacmanCache string
 	// RecentPath is where the palette keeps recently run actions. Defaults
 	// to $XDG_STATE_HOME/hashiru-tui/recent.
 	RecentPath string
@@ -61,7 +64,8 @@ var (
 	defaultProbe system.Run = system.Command
 	defaultGet   system.Get = system.HTTPGet
 
-	defaultTick = tea.Tick
+	defaultTick        = tea.Tick
+	defaultPacmanCache = system.PacmanCache
 
 	defaultHome     = os.UserHomeDir
 	defaultGraphics = func() bool { return kitty.Supported(os.Getenv) }
@@ -117,6 +121,9 @@ func New(opts Options) *Model {
 	}
 	if opts.Home == "" {
 		opts.Home, _ = defaultHome()
+	}
+	if opts.PacmanCache == "" {
+		opts.PacmanCache = defaultPacmanCache
 	}
 	if opts.Tick == nil {
 		opts.Tick = defaultTick

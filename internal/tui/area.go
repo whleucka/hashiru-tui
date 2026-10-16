@@ -60,6 +60,7 @@ func newAreas(e *env, opts Options, graphics bool) []Area {
 	return []Area{
 		newOverview(e),
 		newUpdates(e),
+		newPackages(e, opts.PacmanCache),
 		newKeybinds(e),
 		newConnectivity(e),
 		newWallpaper(e, opts.Home, graphics),

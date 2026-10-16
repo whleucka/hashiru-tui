@@ -325,3 +325,16 @@ func TestAreasDescribeTheirKeys(t *testing.T) {
 		}
 	}
 }
+
+func TestAreaKeysHideTheShellsForTheSameKey(t *testing.T) {
+	keys := withGlobal([]Key{{Keys: "esc", Desc: "back to the list"}}, inAreaKeys)
+	n := 0
+	for _, k := range keys {
+		if k.Keys == "esc" {
+			n++
+		}
+	}
+	if n != 1 || keys[0].Desc != "back to the list" {
+		t.Errorf("esc listed %d times: %+v", n, keys)
+	}
+}

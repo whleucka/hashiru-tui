@@ -53,7 +53,7 @@ func (m *Model) keyHelpView() string {
 	if m.inArea {
 		global = inAreaKeys
 	}
-	keys := append(append([]Key{}, m.area().Keys()...), global...)
+	keys := withGlobal(m.area().Keys(), global)
 
 	width := 0
 	for _, k := range keys {

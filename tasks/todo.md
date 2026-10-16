@@ -69,9 +69,9 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/system/packages.go + test + testdata. **Deps:** none. **Size:** M
 
 ### Task 9: Packages area
-- [ ] New sidebar entry: groups with counts, cache size; `tab` cycles groups, `/` filters
-- [ ] `enter` shows `pacman -Qi <pkg>` in a detail pane
-- [ ] Missing tool or no repo path is a visible line, not an error
+- [x] New sidebar entry after Updates: groups with counts (yours, missing, orphans, foreign, Hashiru's), cache size; `[`/`]` cycle groups (`tab` already switches areas), `/` filters
+- [x] `enter` shows `pacman -Qi <pkg>` in a detail pane (`pacman -Si`, or `yay -Si` for AUR, when it's missing)
+- [x] Missing tool or no repo path is a visible line, not an error
 **Files:** internal/tui/packages.go + test, area.go. **Deps:** 1, 8. **Size:** M
 
 ### Task 10: Package actions

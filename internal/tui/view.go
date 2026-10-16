@@ -2,6 +2,7 @@ package tui
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -110,9 +111,22 @@ func (m *Model) keys() []Key {
 	case m.pal.open:
 		return m.pal.keys()
 	case m.inArea:
-		return append(m.area().Keys(), inAreaKeys...)
+		return withGlobal(m.area().Keys(), inAreaKeys)
 	}
 	return sidebarKeys
+}
+
+// withGlobal is an area's keys, then the shell's that it hasn't claimed: a
+// diff view's "esc back to the list" means the shell's "esc back" doesn't
+// apply.
+func withGlobal(area, global []Key) []Key {
+	out := append([]Key{}, area...)
+	for _, g := range global {
+		if !slices.ContainsFunc(area, func(k Key) bool { return k.Keys == g.Keys }) {
+			out = append(out, g)
+		}
+	}
+	return out
 }
 
 func (m *Model) footer() string {
