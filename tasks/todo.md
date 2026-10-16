@@ -40,9 +40,9 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** cmd/hashiru-tui/main.go, internal/tui/{app,options}.go, tests. **Deps:** 3. **Size:** S
 
 ### Task 5: Changelog in Updates
-- [ ] Parse `hashiru changelog` output (`===== vX.Y.Z.md =====` sections) into tag + body
-- [ ] Behind: notes for the versions newer than this one (see the risk in plan.md); up to date: the current version's
-- [ ] Shown as a collapsible section in Updates; `c` opens the full notes in a pager (Interactive)
+- [x] Release tags and bodies from `docs/releases/vX.Y.Z.md` (git ls-tree + show), sorted by version
+- [x] Behind: notes for the versions newer than this one, read from `@{u}` with git (status has just fetched, so they're there before the pull); up to date: the current version's
+- [x] Shown as a section in Updates (a line per release); `c` reads the full notes in the area (esc back). Native rather than a pager: the upstream notes aren't files `less` could open
 **Files:** internal/hashiru/changelog.go + test + testdata, internal/tui/updates.go. **Deps:** none. **Size:** M
 
 ### Task 6: Re-apply a stage

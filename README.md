@@ -9,7 +9,7 @@ It delegates where a good tool exists (nmtui, bluetoothctl, journalctl, pavucont
 | | |
 |---|---|
 | **Overview** | Host, kernel, uptime, memory, disk, battery; connections; Hashiru version, pending updates, Arch news, health |
-| **Updates** | Hashiru status, pending pacman and AUR packages, Arch news (flagged when newer than your last update), doctor's health checks |
+| **Updates** | Hashiru status, release notes (what an update brings, or this version's), pending pacman and AUR packages, Arch news (flagged when newer than your last update), doctor's health checks |
 | **Keybinds** | Hyprland's binds from `hyprctl binds`, filterable |
 | **Connectivity** | Network devices and wifi, bluetooth, default audio; launches nmtui, bluetoothctl, blueman, pavucontrol |
 | **Wallpaper** | Pick a wallpaper (previewed with kitty graphics) or go back to Hashiru's time-of-day cycle |
@@ -30,7 +30,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `?` | this area's keys |
 | `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |
 
-Each area lists its own keys in the footer. Some to know: `u` update and `a` AUR upgrade and `n` Arch news (Updates), `/` filter (Keybinds), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `s` switch log source (Logs).
+Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes and `n` Arch news (Updates), `/` filter (Keybinds), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `s` switch log source (Logs).
 
 ## Deep links
 

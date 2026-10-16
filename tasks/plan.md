@@ -42,7 +42,7 @@ and the two new areas.
 
 ### Phase 2: Plumbing
 - [x] Task 4: Deep links (`<area>`, `--run`, `--list-actions`)
-- [ ] Task 5: Changelog in Updates
+- [x] Task 5: Changelog in Updates
 - [ ] Task 6: Re-apply a stage
 - [ ] Task 7: Overview refreshes local stats on a timer
 

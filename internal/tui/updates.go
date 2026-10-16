@@ -17,6 +17,7 @@ type updates struct {
 	cursor   int
 	expanded map[string]bool
 	allPkgs  bool // list every pending package, not just the first few
+	notes    notes
 }
 
 // pkgPreview is how many pending packages show before "… N more".
@@ -29,9 +30,24 @@ func newUpdates(e *env) *updates {
 func (u *updates) Name() string { return "Updates" }
 
 func (u *updates) Update(msg tea.Msg) tea.Cmd {
-	if _, ok := msg.(reportMsg); ok {
+	switch msg := msg.(type) {
+	case reportMsg:
 		if n := len(u.sections()); u.cursor >= n {
 			u.cursor = max(n-1, 0)
+		}
+	case areaSizeMsg:
+		u.notes.setSize(msg.width, msg.height)
+	case statusMsg:
+		if cmd := loadNotes(u.e.probe, msg.s); msg.err == nil && cmd != nil {
+			u.notes.busy = true
+			return cmd
+		}
+	case notesMsg:
+		u.notes.releases, u.notes.newer, u.notes.err = msg.releases, msg.newer, msg.err
+		u.notes.busy, u.notes.loaded = false, true
+		u.notes.setSize(u.notes.width, u.notes.height)
+		if u.notes.wanted && len(u.notes.releases) > 0 {
+			u.notes.open()
 		}
 	}
 	return nil
@@ -42,7 +58,19 @@ func (u *updates) Actions() []Action {
 		{ID: "updates.update", Title: "Update the system (hashiru update)", Key: "u", Run: u.update},
 		{ID: "updates.aur", Title: "Upgrade AUR packages (yay -Sua)", Key: "a", Run: u.upgradeAUR},
 		{ID: "updates.news", Title: "Read Arch news", Key: "n", Run: u.openNews},
+		{ID: "updates.notes", Title: "Read Hashiru's release notes", Key: "c", Run: func() tea.Cmd { u.readNotes(); return nil }},
 	}
+}
+
+// readNotes opens the full release notes, or opens them when they arrive if
+// they're still loading (as on `hashiru-tui --run updates.notes`).
+func (u *updates) readNotes() {
+	if len(u.notes.releases) > 0 {
+		u.notes.open()
+		return
+	}
+	// Status may not even be back yet, so "not loaded" rather than "busy".
+	u.notes.wanted = !u.notes.loaded
 }
 
 // openNews opens the newest unread announcement in the browser, or the
@@ -62,7 +90,12 @@ func (u *updates) update() tea.Cmd {
 }
 
 func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
+	if u.notes.reading {
+		return u.notes.handleKey(msg)
+	}
 	switch msg.String() {
+	case "c":
+		u.readNotes()
 	case "u":
 		return u.update(), true
 	case "a":
@@ -91,8 +124,12 @@ func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 }
 
 func (u *updates) Keys() []Key {
+	if u.notes.reading {
+		return u.notes.keys()
+	}
 	return []Key{
 		{Keys: "u", Desc: "update"},
+		{Keys: "c", Desc: "release notes"},
 		{Keys: "a", Desc: "AUR"},
 		{Keys: "n", Desc: "news"},
 		{Keys: "p", Desc: "all packages"},
@@ -109,6 +146,9 @@ func (u *updates) sections() []hashiru.Section {
 }
 
 func (u *updates) View(width, height int) string {
+	if u.notes.reading {
+		return u.notes.view()
+	}
 	st := u.e.state
 	var b strings.Builder
 	row := func(k, v string) { b.WriteString(styleKey.Render(k) + v + "\n") }
@@ -133,6 +173,11 @@ func (u *updates) View(width, height int) string {
 		row("repo", s.Repo)
 		row("tree", treeLine(s))
 		row("upstream", upstreamLine(s))
+	}
+
+	b.WriteString("\n" + u.notes.title() + styleMuted.Render("  c read") + "\n")
+	for _, r := range u.notes.rows() {
+		b.WriteString(r + "\n")
 	}
 
 	b.WriteString("\n" + styleTitle.Render("Packages") + "  " + pendingLine(st) + "\n")
