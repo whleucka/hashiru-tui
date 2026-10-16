@@ -75,9 +75,9 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/tui/packages.go + test, area.go. **Deps:** 1, 8. **Size:** M
 
 ### Task 10: Package actions
-- [ ] `S` search: query → `pacman -Ss` and `yay -Ssa` results in one list, installed ones marked
-- [ ] `i` install (`yay -S`), `x` remove (`sudo pacman -Rns`), `O` remove orphans, `C` clean cache (`paccache -r`); all Interactive, refresh after
-- [ ] Palette actions with IDs for the non-package-specific ones
+- [x] A Search tab (`S` from any tab, `/` on it): query → `pacman -Ss` and `yay -Ssa` in parallel, repos first, installed ones marked, each half's error shown on its own
+- [x] `i` install (`sudo pacman -S`, or `yay -S` for AUR), `d` remove (`sudo pacman -Rns`; `d` as in lazygit/lazydocker), `O` remove orphans, `C` clean cache (`sudo paccache -r`); all Interactive, refresh after, and the search re-runs so "installed" is current
+- [x] Palette actions with IDs for the non-package-specific ones
 **Files:** internal/system/packages.go (search parser) + test, internal/tui/packages.go + test. **Deps:** 9. **Size:** M
 
 ### Checkpoint C

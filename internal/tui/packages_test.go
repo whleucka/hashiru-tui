@@ -40,12 +40,12 @@ func TestPackagesGroups(t *testing.T) {
 		}
 	}
 
-	press(m, "[") // wraps round to Hashiru's
+	press(m, "[", "[") // wraps round past Search to Hashiru's
 	out = ansi.Strip(m.View().Content)
 	if !strings.Contains(out, "aur.txt · AUR") || !strings.Contains(out, "Hashiru's pacman/*.txt") {
 		t.Errorf("Hashiru group:\n%s", out)
 	}
-	press(m, "]", "]", "]") // Yours, Missing, Orphans
+	press(m, "]", "]", "]", "]") // Search, Yours, Missing, Orphans
 	if out := ansi.Strip(m.View().Content); !strings.Contains(out, "wrk-debug") {
 		t.Errorf("orphans:\n%s", out)
 	}
@@ -53,7 +53,7 @@ func TestPackagesGroups(t *testing.T) {
 
 func TestPackagesFilter(t *testing.T) {
 	m := packagesModel(t, "../system/testdata/repo", pacmanFixtures(t))
-	press(m, "[") // Hashiru's, the long list
+	press(m, "[", "[") // Hashiru's, the long list
 	press(m, "/")
 	typeText(m, "chrom")
 	out := ansi.Strip(m.View().Content)

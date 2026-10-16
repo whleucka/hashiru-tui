@@ -27,17 +27,19 @@ const (
 	groupOrphans
 	groupForeign
 	groupManaged
+	groupSearch // the repos and the AUR, to install from
 	groupCount
 )
 
 func (g pkgGroup) String() string {
-	return [...]string{"Yours", "Missing", "Orphans", "Foreign", "Hashiru"}[g]
+	return [...]string{"Yours", "Missing", "Orphans", "Foreign", "Hashiru", "Search"}[g]
 }
 
 // pkgRow is one package in a group's list.
 type pkgRow struct {
 	name string
-	note string // the manifest it's in, for Hashiru's and missing ones
+	note string // the manifest it's in, or a search result's repo and version
+	desc string // search results only
 	aur  bool
 	// installed: -Qi knows it. Missing ones are looked up in the sync db
 	// (or the AUR) instead.
@@ -59,6 +61,12 @@ type packages struct {
 	filtering bool
 	input     textinput.Model
 
+	// Search: the query box, and what it found.
+	querying   bool
+	query      textinput.Model
+	search     *system.Search
+	searchBusy bool
+
 	infoOf  *pkgRow // showing its pacman -Qi / -Si
 	info    string
 	infoErr error
@@ -77,18 +85,35 @@ type (
 )
 
 func newPackages(e *env, cache string) *packages {
-	return &packages{e: e, cache: cache, input: newInput("/", "filter", 30)}
+	return &packages{
+		e:     e,
+		cache: cache,
+		input: newInput("/", "filter", 30),
+		query: newInput("search: ", "package name or words from its description", 50),
+	}
 }
 
-func (p *packages) Name() string      { return "Packages" }
-func (p *packages) Actions() []Action { return nil }
-func (p *packages) Typing() bool      { return p.filtering }
+func (p *packages) Name() string { return "Packages" }
+func (p *packages) Typing() bool { return p.filtering || p.querying }
 
 func (p *packages) Update(msg tea.Msg) tea.Cmd {
 	switch msg := msg.(type) {
 	case areaSizeMsg:
 		p.width, p.height = msg.width, msg.height
 		p.input.SetWidth(msg.width - 2)
+		p.query.SetWidth(msg.width - 10)
+	case refreshMsg:
+		// Again, so "installed" is right after installing one.
+		if p.search != nil {
+			return p.runSearch(p.search.Query)
+		}
+	case searchMsg:
+		if msg.s.Query == p.query.Value() || p.search == nil {
+			p.search, p.searchBusy = &msg.s, false
+			if p.group == groupSearch {
+				p.clampSel()
+			}
+		}
 	case statusMsg:
 		// The manifests are in the checkout status names. Without one,
 		// everything explicit is just yours.
@@ -140,12 +165,17 @@ func (p *packages) rows(g pkgGroup) []pkgRow {
 		names(p.pkgs.Foreign, true)
 	case groupManaged:
 		entries(p.pkgs.Managed, true)
+	case groupSearch:
+		return p.searchRows()
 	}
 	return out
 }
 
 // shown is the current group, filtered by every typed word.
 func (p *packages) shown() []pkgRow {
+	if p.group == groupSearch {
+		return p.rows(groupSearch) // the query already narrowed it
+	}
 	words := strings.Fields(strings.ToLower(p.input.Value()))
 	var out []pkgRow
 outer:
@@ -171,12 +201,23 @@ func (p *packages) Keys() []Key {
 		return []Key{{Keys: "j/k", Desc: "scroll"}, {Keys: "esc", Desc: "back to the list"}}
 	case p.filtering:
 		return []Key{{Keys: "type", Desc: "to filter"}, {Keys: "enter", Desc: "keep"}, {Keys: "esc", Desc: "clear"}}
+	case p.querying:
+		return []Key{{Keys: "type", Desc: "a query"}, {Keys: "enter", Desc: "search"}, {Keys: "esc", Desc: "stop typing"}}
+	}
+	find := Key{Keys: "/", Desc: "filter"}
+	if p.group == groupSearch {
+		find.Desc = "new search"
 	}
 	return []Key{
 		tabKey,
 		{Keys: "j/k", Desc: "move"},
 		{Keys: "enter", Desc: "info"},
-		{Keys: "/", Desc: "filter"},
+		find,
+		{Keys: "S", Desc: "search repos and AUR"},
+		{Keys: "i", Desc: "install", Group: "Change (runs pacman or yay)"},
+		{Keys: "d", Desc: "remove", Group: "Change (runs pacman or yay)"},
+		{Keys: "O", Desc: "remove orphans", Group: "Change (runs pacman or yay)"},
+		{Keys: "C", Desc: "clean the cache", Group: "Change (runs pacman or yay)"},
 	}
 }
 
@@ -201,15 +242,45 @@ func (p *packages) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		p.clampSel()
 		return nil, true
 	}
+	if p.querying {
+		switch msg.String() {
+		case "enter":
+			p.querying = false
+			p.query.Blur()
+			p.sel, p.offset = 0, 0
+			return p.runSearch(p.query.Value()), true
+		case "esc":
+			p.querying = false
+			p.query.Blur()
+		default:
+			var cmd tea.Cmd
+			p.query, cmd = p.query.Update(msg)
+			return cmd, true
+		}
+		return nil, true
+	}
 
 	if g, ok := nextTab(msg.String(), int(p.group), int(groupCount)); ok {
 		p.group, p.sel, p.offset = pkgGroup(g), 0, 0
 		return nil, true
 	}
 	switch msg.String() {
+	case "S":
+		return p.startSearch(), true
 	case "/":
+		if p.group == groupSearch {
+			return p.startSearch(), true
+		}
 		p.filtering = true
 		return p.input.Focus(), true
+	case "i":
+		return p.install(), true
+	case "d":
+		return p.remove(), true
+	case "O":
+		return p.removeOrphans(), true
+	case "C":
+		return p.cleanCache(), true
 	case "esc":
 		if p.input.Value() == "" {
 			return nil, false // back to the sidebar
@@ -289,9 +360,14 @@ func (p *packages) View(width, height int) string {
 
 	var b strings.Builder
 	b.WriteString(p.tabs() + "\n")
-	b.WriteString(p.summary() + "\n")
-	if p.filtering || p.input.Value() != "" {
-		b.WriteString(p.input.View())
+	switch {
+	case p.group == groupSearch:
+		b.WriteString(p.query.View() + "\n" + p.searchStatus())
+	default:
+		b.WriteString(p.summary() + "\n")
+		if p.filtering || p.input.Value() != "" {
+			b.WriteString(p.input.View())
+		}
 	}
 	b.WriteString("\n")
 
@@ -307,14 +383,22 @@ func (p *packages) View(width, height int) string {
 	for i := p.offset; i < len(shown) && i < p.offset+rows; i++ {
 		r := shown[i]
 		name, note := fmt.Sprintf("%-32s", r.name), r.note
-		if r.aur {
+		if r.aur && p.group != groupSearch { // a result's note says aur already
 			note += " · AUR"
 		}
 		cursor := "  "
 		if i == p.sel {
 			cursor, name = styleTitle.Render("▸ "), styleSelected.Render(name)
 		}
-		b.WriteString(cursor + name + styleMuted.Render(note) + "\n")
+		line := cursor + name + styleMuted.Render(note)
+		if p.group == groupSearch {
+			mark := "           "
+			if r.installed {
+				mark = styleOK.Render(" installed ")
+			}
+			line = cursor + name + styleMuted.Render(fmt.Sprintf("%-24s", note)) + mark + styleMuted.Render(r.desc)
+		}
+		b.WriteString(line + "\n")
 	}
 	if len(shown) == 0 {
 		b.WriteString(styleMuted.Render("  " + p.empty()))
@@ -327,6 +411,10 @@ func (p *packages) View(width, height int) string {
 func (p *packages) tabs() string {
 	var labels []string
 	for g := pkgGroup(0); g < groupCount; g++ {
+		if g == groupSearch {
+			labels = append(labels, g.String()) // no count until it's searched
+			continue
+		}
 		labels = append(labels, fmt.Sprintf("%s (%d)", g, len(p.rows(g))))
 	}
 	return tabBar(labels, int(p.group), func(i int) bool {
@@ -355,6 +443,12 @@ func (p *packages) summary() string {
 }
 
 func (p *packages) empty() string {
+	if p.group == groupSearch {
+		if p.search != nil && !p.searchBusy {
+			return "nothing found for " + p.search.Query
+		}
+		return ""
+	}
 	if p.input.Value() != "" {
 		return "nothing matches"
 	}

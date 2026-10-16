@@ -52,7 +52,7 @@ and the two new areas.
 ### Phase 3: Packages
 - [x] Task 8: Package probes and manifest parsing
 - [x] Task 9: Packages area (groups, filter, info)
-- [ ] Task 10: Search, install, remove, orphans, cache
+- [x] Task 10: Search, install, remove, orphans, cache
 
 ### Checkpoint C
 - [ ] Tests, vet, build; manual: groups match `pacman -Qqe` minus the manifests by hand; install and remove a small package

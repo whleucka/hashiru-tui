@@ -10,7 +10,7 @@ It delegates where a good tool exists (nmtui, bluetoothctl, journalctl, pavucont
 |---|---|
 | **Overview** | Host, kernel, uptime, memory, disk, battery (live, every 5s); connections; Hashiru version, pending updates, Arch news, health |
 | **Updates** | Hashiru status, release notes (what an update brings, or this version's), pending pacman and AUR packages, Arch news (flagged when newer than your last update), doctor's health checks |
-| **Packages** | What Hashiru's manifests install vs what you added: yours, missing (drift), orphans, foreign, Hashiru's; cache size; `pacman -Qi` for any |
+| **Packages** | What Hashiru's manifests install vs what you added: yours, missing (drift), orphans, foreign, Hashiru's; cache size; `pacman -Qi` for any. Search the repos and the AUR and install; remove, remove orphans, clean the cache |
 | **Keybinds** | Hyprland's binds from `hyprctl binds`, filterable |
 | **Connectivity** | Network devices and wifi, bluetooth, default audio; launches nmtui, bluetoothctl, blueman, pavucontrol |
 | **Wallpaper** | Pick a wallpaper (previewed with kitty graphics) or go back to Hashiru's time-of-day cycle |
@@ -32,7 +32,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `?` | this area's keys |
 | `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |
 
-Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news (Updates), `enter` info (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log in a pane (Logs).
+Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news (Updates), `S` search, `i` install, `d` remove, `O` remove orphans, `C` clean the cache (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log in a pane (Logs).
 
 ## Deep links
 
