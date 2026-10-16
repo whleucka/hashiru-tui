@@ -4,6 +4,7 @@ package tui
 
 import (
 	"context"
+	"os"
 	"os/exec"
 	"strconv"
 
@@ -41,12 +42,16 @@ type Options struct {
 	// SysRoot is where /proc and /sys are read from; Statfs sizes /.
 	SysRoot string
 	Statfs  system.Statfs
+	// Home is the user's home directory, for the Config area.
+	Home string
 }
 
 // defaultProbe is a variable so tests can keep every model off the machine.
 var (
 	defaultProbe system.Run = system.Command
 	defaultGet   system.Get = system.HTTPGet
+
+	defaultHome = os.UserHomeDir
 
 	defaultSysRoot               = "/"
 	defaultStatfs  system.Statfs = system.RootStatfs
@@ -89,6 +94,9 @@ func New(opts Options) *Model {
 	if opts.Statfs == nil {
 		opts.Statfs = defaultStatfs
 	}
+	if opts.Home == "" {
+		opts.Home, _ = defaultHome()
+	}
 	m := &Model{opts: opts, state: &State{}}
 	m.env = &env{
 		src:     opts.Source,
@@ -97,7 +105,7 @@ func New(opts Options) *Model {
 		launch:  m.launch,
 		refresh: m.refresh,
 	}
-	m.areas = newAreas(m.env)
+	m.areas = newAreas(m.env, opts)
 	return m
 }
 

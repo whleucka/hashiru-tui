@@ -48,3 +48,9 @@ func init() {
 	defaultSysRoot = "../system/testdata/sysroot"
 	defaultStatfs = func(string) (uint64, uint64, error) { return 1000 << 30, 250 << 30, nil }
 }
+
+// Nor the real home directory: one that doesn't exist, so nothing in it
+// does either.
+func init() {
+	defaultHome = func() (string, error) { return "/nonexistent/hashiru-tui-test-home", nil }
+}

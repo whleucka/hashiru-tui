@@ -53,7 +53,7 @@ installing the binary).
 - [x] Task 8: Overview system summary (host, kernel, uptime, memory, disk, battery)
 - [x] Task 9: Snapshots area
 - [x] Task 10: Logs sources: journal errors and failed units
-- [ ] Task 11: Config area
+- [x] Task 11: Config area
 - [ ] Task 12: Wallpaper area
 
 ### Checkpoint C

@@ -67,8 +67,8 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/system/journal.go + test, internal/tui/logs.go. **Deps:** 2. **Size:** M
 
 ### Task 11: Config area
-- [ ] List of Hashiru-changeable files grouped by tier (hashiru.conf; hypr/local.lua + module overrides; kitty, waybar; ~/.zshrc.local), showing which exist
-- [ ] `enter` opens `$EDITOR` (Interactive); `hashiru.conf` goes through `hashiru config` so it gets seeded
+- [x] List of Hashiru-changeable files grouped by tier (hashiru.conf; hypr/local.lua + module overrides; kitty, waybar; ~/.zshrc.local), showing which exist
+- [x] `enter` opens `$EDITOR` (Interactive); `hashiru.conf` goes through `hashiru config` so it gets seeded
 **Files:** internal/tui/config.go + test. **Deps:** 2. **Size:** S
 
 ### Task 12: Wallpaper area
