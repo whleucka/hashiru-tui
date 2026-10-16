@@ -1,0 +1,35 @@
+# Terminal and shell tools
+
+# Terminal emulator
+kitty
+# kitty.conf's custom_shaders (cursor-trail-blaze) are compiled with slang;
+# without it every kitty window opens on a "Failed to load custom shaders" page.
+shader-slang
+
+# Shell
+zsh
+
+# Modern CLI tools
+fzf
+zoxide
+bat
+eza
+ripgrep
+fd
+jq
+tree
+tldr
+
+# Dotfile management
+stow
+
+# Git
+git
+git-delta
+
+# TUI tools
+# gum draws the installer's prompts (lib/ui.sh). install.sh installs it up
+# front on a first run; listing it here keeps it upgraded on every replay.
+gum
+lazygit
+lazydocker

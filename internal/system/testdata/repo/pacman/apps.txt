@@ -1,0 +1,36 @@
+# Desktop applications
+
+# Browser
+# Wayland flags live in stow/chromium/.config/chromium-flags.conf, which Arch's
+# chromium launcher reads. Was omarchy-chromium-bin from the AUR; the repo build
+# is the same browser without depending on another project's packaging.
+chromium
+
+# Office
+libreoffice-fresh
+hunspell-en_us
+
+# Graphics
+gimp
+inkscape
+
+# Media (spotify is AUR — see aur.txt)
+mpv
+imv
+
+# Screenshot/recording
+obs-studio
+
+# Communication
+discord
+
+# Tools
+gnome-calculator
+bitwarden
+yt-dlp
+
+# File sharing
+transmission-gtk
+
+# Gaming (requires multilib repo)
+steam

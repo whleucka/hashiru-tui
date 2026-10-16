@@ -50,7 +50,7 @@ and the two new areas.
 - [ ] Tests, vet, build; manual: `hashiru-tui --run snapshots.new` from a shell, stage 45 re-applied from the TUI
 
 ### Phase 3: Packages
-- [ ] Task 8: Package probes and manifest parsing
+- [x] Task 8: Package probes and manifest parsing
 - [ ] Task 9: Packages area (groups, filter, info)
 - [ ] Task 10: Search, install, remove, orphans, cache
 

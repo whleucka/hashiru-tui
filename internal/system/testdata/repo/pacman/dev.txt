@@ -1,0 +1,88 @@
+# Development tools
+
+# Version control
+github-cli
+
+# Editor (stable neovim from extra)
+neovim
+# tree-sitter-cli: nvim-treesitter (main) shells out to `tree-sitter build`
+# to compile parsers. The `tree-sitter` package is only the library, so
+# without this every :TSInstall fails with ENOENT: 'tree-sitter'.
+tree-sitter-cli
+
+# Build essentials
+base-devel
+cmake
+ninja
+meson
+
+# C/C++
+clang
+llvm
+lldb
+gdb
+
+# Rust
+rustup
+
+# Go (`go install` drops binaries in ~/go/bin, which .zshrc puts on PATH)
+go
+delve
+golangci-lint
+
+# C libraries (graphics)
+glfw
+glm
+
+# Python
+python
+python-pip
+python-pipx
+uv
+
+# Node (via mise, but npm fallback)
+nodejs
+npm
+pnpm
+
+# PHP
+php
+php-sqlite
+php-sodium
+composer
+
+# ISO build and test (iso/build.sh, iso/test-qemu.sh)
+archiso
+# qemu-base, not qemu-desktop: the two conflict, and install_packages runs
+# pacman --noconfirm, which answers "no" to replacing one with the other.
+# qemu-ui-gtk is the display test-qemu.sh opens; edk2-ovmf the UEFI firmware.
+qemu-base
+qemu-ui-gtk
+edk2-ovmf
+
+# Containers
+docker
+docker-compose
+docker-buildx
+
+# LLMs (claude-code is AUR — see aur.txt)
+opencode
+
+# LSPs (from official repos; intelephense is AUR — see aur.txt)
+lua-language-server
+bash-language-server
+typescript-language-server
+yaml-language-server
+pyright
+gopls
+taplo-cli
+vscode-css-languageserver
+vscode-html-languageserver
+
+# Linters
+ruff
+
+# Formatters
+stylua
+shfmt
+prettier

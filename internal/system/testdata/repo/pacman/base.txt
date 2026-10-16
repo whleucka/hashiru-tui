@@ -1,0 +1,97 @@
+# Base system packages
+# Kernel, firmware, microcode, btrfs, networking, power management
+
+# Core
+base
+sudo
+grub
+
+# Kernel and firmware
+linux
+linux-headers
+linux-firmware
+fwupd
+
+# Microcode (install both, only matching CPU loads)
+intel-ucode
+amd-ucode
+
+# Filesystem
+btrfs-progs
+snapper
+snap-pac
+grub-btrfs
+inotify-tools
+
+# Networking
+networkmanager
+network-manager-applet
+bluez
+bluez-utils
+blueman
+
+# Power management (TLP for ThinkPads, conflicts with power-profiles-daemon)
+tlp
+tlp-rdw
+
+# XDG directories
+xdg-user-dirs
+
+# System utilities
+inetutils
+# vim: rescue editor — neovim config is not shipped with Hashiru
+vim
+man-db
+man-pages
+texinfo
+wget
+curl
+unzip
+7zip
+htop
+btop
+powertop
+fastfetch
+reflector
+pacman-contrib
+
+# Transfers
+rsync
+
+# DNS
+bind
+
+# Cron
+cronie
+
+# EFI
+efibootmgr
+
+# Fingerprint
+fprintd
+
+# Thunderbolt/USB4 device authorization (docks). boltd is D-Bus activated —
+# no unit to enable. Devices still need one-time enrollment: boltctl enroll <uuid>
+bolt
+
+# DNS resolver
+openresolv
+
+# Pipe viewer
+pv
+
+# TLP GUI
+tlpui
+
+# WiFi auth
+wpa_supplicant
+
+# ZRAM swap
+zram-generator
+
+# Remote (xorg-xauth: ssh -X forwarding)
+sshfs
+xorg-xauth
+
+# Wireguard
+wireguard-tools

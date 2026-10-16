@@ -1,0 +1,7 @@
+claude-code
+nodejs-intelephense
+spotify
+wrk
+wrk-debug
+yay-bin
+yay-bin-debug

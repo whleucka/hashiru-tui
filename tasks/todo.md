@@ -62,10 +62,10 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 ## Phase 3: Packages
 
 ### Task 8: Package probes
-- [ ] Parse manifests: `pacman/*.txt` under `repo=`, comments and blanks skipped, `aur.txt` marked AUR
-- [ ] `pacman -Qqe`, `-Qqm`, `-Qdtq`, `-Sgq` (group expansion); exit 1 with no output means empty
-- [ ] Pure `Classify(manifests, explicit, foreign, orphans, groups)` → managed / yours / missing / orphan / foreign, tested on captured output
-- [ ] Cache size by walking `/var/cache/pacman/pkg` (root injected)
+- [x] Parse manifests: `pacman/*.txt` under `repo=`, comments and blanks skipped, `aur.txt` marked AUR
+- [x] `pacman -Qq` (everything: a manifest package installed as a dependency isn't missing), `-Qqe`, `-Qqm`, `-Qdtq`, and `-Sgq` only for manifest names that aren't installed; exit 1 with no output means empty
+- [x] Pure `Classify(manifests, explicit, foreign, orphans, groups)` → managed / yours / missing / orphan / foreign, tested on captured output
+- [x] Cache size by walking `/var/cache/pacman/pkg` (root injected)
 **Files:** internal/system/packages.go + test + testdata. **Deps:** none. **Size:** M
 
 ### Task 9: Packages area
