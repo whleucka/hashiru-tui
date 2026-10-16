@@ -9,6 +9,7 @@ import (
 	"time"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/whleucka/hashiru-tui/internal/kitty"
 	"github.com/whleucka/hashiru-tui/internal/system"
@@ -281,10 +282,13 @@ func (w *wallpaper) View(width, height int) string {
 	}
 
 	for i := 0; i < max(len(list), len(right)); i++ {
-		l := strings.Repeat(" ", wallListWidth)
+		// Every row is exactly wallListWidth cells, beside a name or not:
+		// kitty assembles the picture from where its placeholder cells sit.
+		l := ""
 		if i < len(list) {
-			l = list[i]
+			l = ansi.Truncate(list[i], wallListWidth, "…")
 		}
+		l += strings.Repeat(" ", wallListWidth-ansi.StringWidth(l))
 		if i < len(right) {
 			l += "  " + right[i]
 		}

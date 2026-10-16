@@ -99,3 +99,27 @@ func TestWallpaperCurrentThroughSymlink(t *testing.T) {
 		}
 	}
 }
+
+func TestWallpaperPreviewRowsAlign(t *testing.T) {
+	// Every placeholder row must start in the same column, beside a name or
+	// not: kitty assembles the picture from the cells' positions.
+	m, _, _ := wallModel(t, Options{Graphics: graphicsOn})
+	col := -1
+	rows := 0
+	for _, line := range strings.Split(m.View().Content, "\n") {
+		i := strings.Index(line, "\U0010EEEE")
+		if i < 0 {
+			continue
+		}
+		rows++
+		w := ansi.StringWidth(line[:i])
+		if col == -1 {
+			col = w
+		} else if w != col {
+			t.Errorf("placeholder row %d starts at column %d, want %d", rows, w, col)
+		}
+	}
+	if rows < 3 {
+		t.Fatalf("only %d preview rows; the test needs rows beside and below the list", rows)
+	}
+}
