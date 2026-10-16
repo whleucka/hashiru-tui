@@ -27,18 +27,9 @@ func Available() bool {
 }
 
 // Split splits the calling pane, right or down, and returns the new pane's id.
-// focus moves the cursor to it (interactive commands); otherwise focus stays
-// in the TUI (a log to watch).
+// focus moves the cursor to it; otherwise focus stays in the TUI.
 func Split(ctx context.Context, right, focus bool) (string, error) {
-	dir := "down"
-	if right {
-		dir = "right"
-	}
-	args := []string{"pane", "split", "--current", "--direction", dir}
-	if !focus {
-		args = append(args, "--no-focus")
-	}
-	out, err := exec.CommandContext(ctx, "herdr", args...).Output()
+	out, err := exec.CommandContext(ctx, "herdr", splitArgs(right, focus)...).Output()
 	if err != nil {
 		var ee *exec.ExitError
 		if errors.As(err, &ee) {
@@ -47,6 +38,20 @@ func Split(ctx context.Context, right, focus bool) (string, error) {
 		return "", fmt.Errorf("herdr pane split: %w", err)
 	}
 	return parseSplit(out)
+}
+
+// splitArgs says --focus or --no-focus outright: herdr 0.9 has both, and
+// leaving focus to its default left the cursor behind in the TUI.
+func splitArgs(right, focus bool) []string {
+	dir := "down"
+	if right {
+		dir = "right"
+	}
+	f := "--no-focus"
+	if focus {
+		f = "--focus"
+	}
+	return []string{"pane", "split", "--current", "--direction", dir, f}
 }
 
 func parseSplit(out []byte) (string, error) {

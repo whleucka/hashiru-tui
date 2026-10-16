@@ -1,6 +1,9 @@
 package herdr
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestParseSplit(t *testing.T) {
 	id, err := parseSplit([]byte(`{"id":"1","result":{"pane":{"pane_id":"w1:t2:p7","tab_id":"w1:t2"}}}`))
@@ -26,5 +29,16 @@ func TestAvailable(t *testing.T) {
 	t.Setenv("HERDR_PANE_ID", "")
 	if Available() {
 		t.Error("no HERDR_PANE_ID: not available")
+	}
+}
+
+func TestSplitArgsSayFocusOutright(t *testing.T) {
+	got := strings.Join(splitArgs(true, true), " ")
+	if got != "pane split --current --direction right --focus" {
+		t.Errorf("focused: %q", got)
+	}
+	got = strings.Join(splitArgs(false, false), " ")
+	if got != "pane split --current --direction down --no-focus" {
+		t.Errorf("unfocused: %q", got)
 	}
 }

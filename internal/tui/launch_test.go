@@ -38,7 +38,7 @@ func TestLaunchInHerdr(t *testing.T) {
 
 	want := []paneCall{
 		{"nmtui", true, true},
-		{"journalctl -f", true, false}, // watched, not typed into
+		{"journalctl -f", true, true}, // watched, but focused too: you opened it to look
 	}
 	if len(*calls) != 2 || (*calls)[0] != want[0] || (*calls)[1] != want[1] {
 		t.Errorf("panes = %+v, want %+v", *calls, want)

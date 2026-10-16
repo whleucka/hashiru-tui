@@ -45,7 +45,7 @@ IDs are `<area>.<verb>` and don't change when titles do, so a Hyprland bind or a
 ## How tools are launched
 
 - **GUI apps** (blueman, pavucontrol, the browser for news) start detached.
-- **Inside herdr**, terminal tools open in a pane beside the TUI: focused for interactive ones (`hashiru update`, nmtui, `$EDITOR`), unfocused for ones you watch (`journalctl -f`).
+- **Inside herdr**, terminal tools open in a focused pane beside the TUI, whether you type into them (`hashiru update`, nmtui, `$EDITOR`) or watch them (`journalctl -f`).
 - **Otherwise** they take over the terminal until they exit, and the TUI refreshes after anything that may have changed the machine.
 
 ## Build

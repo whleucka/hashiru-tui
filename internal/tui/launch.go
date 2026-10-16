@@ -33,7 +33,8 @@ type Launch struct {
 // launch starts l the best way available:
 //
 //   - GUI: detached, whatever else is true, and the TUI carries on.
-//   - Inside herdr: a new pane, focused for Interactive and not for Watch.
+//   - Inside herdr: a new pane, focused, Watch ones too: you open a pane to
+//     look at it, and staying behind in the TUI meant a click to get there.
 //     It goes right when the terminal is wider than it is tall (cells are
 //     about twice as tall as wide) and below otherwise, as in mantis-tui.
 //   - Otherwise: the tool takes over this terminal until it exits.
@@ -54,11 +55,10 @@ func (m *Model) launch(l Launch) tea.Cmd {
 
 	if run := m.opts.RunInPane; run != nil {
 		right := m.width >= 2*m.height
-		focus := l.Kind == Interactive
 		return func() tea.Msg {
 			ctx, cancel := context.WithTimeout(context.Background(), paneTimeout)
 			defer cancel()
-			if err := run(ctx, l.Argv, l.Label, right, focus); err != nil {
+			if err := run(ctx, l.Argv, l.Label, right, true); err != nil {
 				return noteMsg{text: l.Label, err: err}
 			}
 			msg := l.Label + " opened in a new pane"

@@ -36,7 +36,7 @@ One runner, three cases, picked per action:
 | Kind | Example | Inside herdr | Otherwise |
 |---|---|---|---|
 | Terminal, interactive | nmtui, bluetoothctl, `hashiru update`, `$EDITOR` | new pane, focused | `tea.ExecProcess` (takes over this window until it exits) |
-| Terminal, to watch | `journalctl -f`, btop | new pane, unfocused | `tea.ExecProcess` |
+| Terminal, to watch | `journalctl -f`, btop | new pane, focused (was unfocused until 2026-10-16: you open a pane to look at it) | `tea.ExecProcess` |
 | GUI | blueman-manager, pavucontrol | detached (`setsid`), the TUI stays | same |
 
 herdr is an extra, never required. A floating window opened by the keybind is
