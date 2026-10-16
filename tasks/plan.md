@@ -51,7 +51,7 @@ installing the binary).
 
 ### Phase 3: The rest of v1
 - [x] Task 8: Overview system summary (host, kernel, uptime, memory, disk, battery)
-- [ ] Task 9: Snapshots area
+- [x] Task 9: Snapshots area
 - [ ] Task 10: Logs sources: journal errors and failed units
 - [ ] Task 11: Config area
 - [ ] Task 12: Wallpaper area

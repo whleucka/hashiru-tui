@@ -50,6 +50,7 @@ func newAreas(e *env) []Area {
 		newUpdates(e),
 		newKeybinds(e),
 		newConnectivity(e),
+		newSnapshots(e),
 		newLogs(e),
 	}
 }

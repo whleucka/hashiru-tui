@@ -1,0 +1,500 @@
+{
+  "root": [
+    {
+      "number": 0,
+      "date": "",
+      "type": "single",
+      "description": "current",
+      "cleanup": "",
+      "pre-number": null
+    },
+    {
+      "number": 2,
+      "date": "2026-09-26 10:00:19",
+      "type": "pre",
+      "description": "pacman -S --needed --noconfirm github-cli neovim tree-sitter-cli cmake n",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 3,
+      "date": "2026-09-26 10:00:22",
+      "type": "post",
+      "description": "argon2 bash-language-server clang cmake compiler-rt composer containerd ",
+      "cleanup": "number",
+      "pre-number": 2
+    },
+    {
+      "number": 4,
+      "date": "2026-09-26 10:00:56",
+      "type": "pre",
+      "description": "pacman -S --needed --noconfirm chromium libreoffice-fresh hunspell-en_us",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 6,
+      "date": "2026-09-26 10:01:04",
+      "type": "post",
+      "description": "aalib alsa-plugins appstream babl bitwarden blas botan cblas cfitsio chi",
+      "cleanup": "number",
+      "pre-number": 4
+    },
+    {
+      "number": 8,
+      "date": "2026-09-26 11:00:00",
+      "type": "pre",
+      "description": "pacman -S --config /etc/pacman.conf -- extra/php-sodium",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 9,
+      "date": "2026-09-26 11:00:01",
+      "type": "post",
+      "description": "php-sodium",
+      "cleanup": "number",
+      "pre-number": 8
+    },
+    {
+      "number": 96,
+      "date": "2026-09-28 06:35:26",
+      "type": "pre",
+      "description": "pacman -S --config /etc/pacman.conf -- extra/shader-slang",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 97,
+      "date": "2026-09-28 06:35:26",
+      "type": "post",
+      "description": "miniz shader-slang",
+      "cleanup": "number",
+      "pre-number": 96
+    },
+    {
+      "number": 106,
+      "date": "2026-09-28 10:04:58",
+      "type": "pre",
+      "description": "pacman -S --config /etc/pacman.conf -- extra/archiso",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 107,
+      "date": "2026-09-28 10:04:58",
+      "type": "post",
+      "description": "arch-install-scripts archiso dosfstools erofs-utils libburn libisoburn l",
+      "cleanup": "number",
+      "pre-number": 106
+    },
+    {
+      "number": 108,
+      "date": "2026-09-28 10:14:01",
+      "type": "pre",
+      "description": "pacman -S --config /etc/pacman.conf -- extra/qemu-base",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 109,
+      "date": "2026-09-28 10:14:06",
+      "type": "post",
+      "description": "capstone dtc edk2-ovmf libaio libcbor libslirp libxdp ndctl qemu-base qe",
+      "cleanup": "number",
+      "pre-number": 108
+    },
+    {
+      "number": 110,
+      "date": "2026-09-28 10:16:13",
+      "type": "pre",
+      "description": "pacman -S --config /etc/pacman.conf -- extra/qemu-ui-gtk",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 111,
+      "date": "2026-09-28 10:16:13",
+      "type": "post",
+      "description": "qemu-ui-gtk qemu-ui-opengl vte-common vte3",
+      "cleanup": "number",
+      "pre-number": 110
+    },
+    {
+      "number": 114,
+      "date": "2026-09-28 11:07:54",
+      "type": "pre",
+      "description": "pacman -S gum",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 115,
+      "date": "2026-09-28 11:07:54",
+      "type": "post",
+      "description": "gum",
+      "cleanup": "number",
+      "pre-number": 114
+    },
+    {
+      "number": 144,
+      "date": "2026-09-29 07:46:13",
+      "type": "pre",
+      "description": "pacman -S --config /etc/pacman.conf -- extra/httpie",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 145,
+      "date": "2026-09-29 07:46:13",
+      "type": "post",
+      "description": "httpie python-defusedxml python-markdown-it-py python-mdurl python-multi",
+      "cleanup": "number",
+      "pre-number": 144
+    },
+    {
+      "number": 150,
+      "date": "2026-09-29 09:21:15",
+      "type": "pre",
+      "description": "pacman -S -y -u --config /etc/pacman.conf --",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 151,
+      "date": "2026-09-29 09:21:21",
+      "type": "post",
+      "description": "appstream automake containerd coreutils discord fastfetch glibc hunspell",
+      "cleanup": "number",
+      "pre-number": 150
+    },
+    {
+      "number": 152,
+      "date": "2026-09-29 09:24:36",
+      "type": "pre",
+      "description": "pacman -U --config /etc/pacman.conf -- /home/whleucka/.cache/yay/claude-",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 153,
+      "date": "2026-09-29 09:24:36",
+      "type": "post",
+      "description": "claude-code",
+      "cleanup": "number",
+      "pre-number": 152
+    },
+    {
+      "number": 206,
+      "date": "2026-10-01 07:21:05",
+      "type": "pre",
+      "description": "pacman -S --needed --noconfirm gcr",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 207,
+      "date": "2026-10-01 07:21:05",
+      "type": "post",
+      "description": "gcr",
+      "cleanup": "number",
+      "pre-number": 206
+    },
+    {
+      "number": 345,
+      "date": "2026-10-05 06:29:27",
+      "type": "pre",
+      "description": "pacman -Syu --noconfirm",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 346,
+      "date": "2026-10-05 06:29:39",
+      "type": "post",
+      "description": "archiso clang cmake compiler-rt device-mapper docker docker-buildx docke",
+      "cleanup": "number",
+      "pre-number": 345
+    },
+    {
+      "number": 364,
+      "date": "2026-10-06 06:25:34",
+      "type": "pre",
+      "description": "pacman -Syu --noconfirm",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 365,
+      "date": "2026-10-06 06:25:35",
+      "type": "post",
+      "description": "discord harfbuzz harfbuzz-icu hwdata inotify-tools lazygit libheif upowe",
+      "cleanup": "number",
+      "pre-number": 364
+    },
+    {
+      "number": 395,
+      "date": "2026-10-07 00:00:05",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 408,
+      "date": "2026-10-07 06:53:09",
+      "type": "pre",
+      "description": "pacman -Syu --noconfirm",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 409,
+      "date": "2026-10-07 06:53:18",
+      "type": "post",
+      "description": "7zip adwaita-cursors adwaita-icon-theme at-spi2-core ca-certificates-moz",
+      "cleanup": "number",
+      "pre-number": 408
+    },
+    {
+      "number": 420,
+      "date": "2026-10-07 11:06:27",
+      "type": "pre",
+      "description": "pacman -S --config /etc/pacman.conf -- extra/go",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 421,
+      "date": "2026-10-07 11:06:27",
+      "type": "post",
+      "description": "go",
+      "cleanup": "number",
+      "pre-number": 420
+    },
+    {
+      "number": 422,
+      "date": "2026-10-07 11:08:44",
+      "type": "pre",
+      "description": "pacman -S --needed --noconfirm gopls",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 423,
+      "date": "2026-10-07 11:08:44",
+      "type": "post",
+      "description": "gopls",
+      "cleanup": "number",
+      "pre-number": 422
+    },
+    {
+      "number": 430,
+      "date": "2026-10-08 06:34:28",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 431,
+      "date": "2026-10-08 06:44:52",
+      "type": "pre",
+      "description": "pacman -Syu --noconfirm",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 432,
+      "date": "2026-10-08 06:44:54",
+      "type": "post",
+      "description": "inotify-tools opencode pnpm python-platformdirs qt6-5compat qt6-base qt6",
+      "cleanup": "number",
+      "pre-number": 431
+    },
+    {
+      "number": 458,
+      "date": "2026-10-08 20:51:31",
+      "type": "pre",
+      "description": "pacman -Syu --noconfirm",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 459,
+      "date": "2026-10-08 20:51:34",
+      "type": "post",
+      "description": "docker docker-buildx go libevdev libreoffice-fresh nodejs opencode pytho",
+      "cleanup": "number",
+      "pre-number": 458
+    },
+    {
+      "number": 462,
+      "date": "2026-10-09 07:03:20",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 465,
+      "date": "2026-10-09 08:03:50",
+      "type": "pre",
+      "description": "pacman -S shellcheck",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 466,
+      "date": "2026-10-09 08:03:52",
+      "type": "post",
+      "description": "ghc-libs haskell-aeson haskell-ansi-terminal haskell-ansi-terminal-types",
+      "cleanup": "number",
+      "pre-number": 465
+    },
+    {
+      "number": 481,
+      "date": "2026-10-12 14:55:53",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 482,
+      "date": "2026-10-12 14:57:22",
+      "type": "pre",
+      "description": "pacman -Syu --noconfirm",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 483,
+      "date": "2026-10-12 14:57:27",
+      "type": "post",
+      "description": "aom at-spi2-core chromium fzf gnome-calculator graphicsmagick gst-plugin",
+      "cleanup": "number",
+      "pre-number": 482
+    },
+    {
+      "number": 502,
+      "date": "2026-10-13 00:00:38",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 533,
+      "date": "2026-10-14 07:00:56",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 543,
+      "date": "2026-10-14 11:48:10",
+      "type": "pre",
+      "description": "pacman -Syu --noconfirm",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 544,
+      "date": "2026-10-14 11:48:12",
+      "type": "post",
+      "description": "discord fastfetch graphicsmagick hwloc jbigkit libayatana-appindicator l",
+      "cleanup": "number",
+      "pre-number": 543
+    },
+    {
+      "number": 551,
+      "date": "2026-10-14 14:59:14",
+      "type": "pre",
+      "description": "pacman -S delve golangci-lint",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 552,
+      "date": "2026-10-14 14:59:14",
+      "type": "post",
+      "description": "delve golangci-lint",
+      "cleanup": "number",
+      "pre-number": 551
+    },
+    {
+      "number": 555,
+      "date": "2026-10-14 15:15:24",
+      "type": "pre",
+      "description": "pacman -Syu --noconfirm",
+      "cleanup": "number",
+      "pre-number": null
+    },
+    {
+      "number": 556,
+      "date": "2026-10-14 15:15:24",
+      "type": "post",
+      "description": "qt6-base",
+      "cleanup": "number",
+      "pre-number": 555
+    },
+    {
+      "number": 557,
+      "date": "2026-10-15 06:25:47",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 575,
+      "date": "2026-10-15 16:00:16",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 577,
+      "date": "2026-10-15 17:00:16",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 579,
+      "date": "2026-10-15 18:00:14",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 581,
+      "date": "2026-10-15 19:00:16",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 583,
+      "date": "2026-10-15 20:00:14",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    },
+    {
+      "number": 584,
+      "date": "2026-10-15 20:01:00",
+      "type": "single",
+      "description": "timeline",
+      "cleanup": "timeline",
+      "pre-number": null
+    }
+  ]
+}

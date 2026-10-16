@@ -57,8 +57,8 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/system/sysinfo.go + test, internal/tui/overview.go. **Deps:** 1. **Size:** S
 
 ### Task 9: Snapshots area
-- [ ] `snapper -c root list` parsed (number, date, type, description, newest first)
-- [ ] `enter` shows `snapper status N..0` (changed files); `n` creates one with a description (Interactive: `sudo snapper -c root create -d ...`)
+- [x] `snapper -c root list` parsed (number, date, type, description, newest first)
+- [x] `enter` shows `snapper status N..0` (changed files); `n` creates one with a description (Interactive: `sudo snapper -c root create -d ...`)
 **Files:** internal/system/snapper.go + test, internal/tui/snapshots.go. **Deps:** 2. **Size:** M
 
 ### Task 10: Logs sources
