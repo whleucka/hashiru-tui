@@ -38,8 +38,8 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/system/news.go + test, internal/tui/updates.go. **Deps:** 2, 4. **Size:** S
 
 ### Task 6: Keybinds area
-- [ ] Parse `hyprctl binds` plain text (modmask → Super/Ctrl/Alt/Shift, key, description; skip submaps and undescribed)
-- [ ] List sorted by modifiers; `/` filters as you type
+- [x] Parse `hyprctl binds` plain text (modmask → Super/Ctrl/Alt/Shift, key, description; skip submaps and undescribed)
+- [x] List sorted by modifiers; `/` filters as you type
 **Files:** internal/system/keybinds.go + test, internal/tui/keybinds.go. **Deps:** 1. **Size:** M
 
 ### Task 7: Connectivity area

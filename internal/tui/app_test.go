@@ -97,6 +97,18 @@ func goTo(t *testing.T, m *Model, name string) {
 	t.Fatalf("no area %q", name)
 }
 
+// areaKey is the number key that selects the named area.
+func areaKey(t *testing.T, m *Model, name string) string {
+	t.Helper()
+	for i, a := range m.areas {
+		if a.Name() == name {
+			return string(rune('1' + i))
+		}
+	}
+	t.Fatalf("no area %q", name)
+	return ""
+}
+
 func TestSidebarListsAreas(t *testing.T) {
 	m := New(Options{Source: fakeSource{}})
 	load(t, m)
@@ -116,9 +128,9 @@ func TestSidebarNavigation(t *testing.T) {
 	if m.area().Name() != "Updates" {
 		t.Errorf("j: area = %s", m.area().Name())
 	}
-	press(m, "3")
+	press(m, areaKey(t, m, "Logs"))
 	if m.area().Name() != "Logs" {
-		t.Errorf("3: area = %s", m.area().Name())
+		t.Errorf("number key: area = %s", m.area().Name())
 	}
 	press(m, "k", "k", "k") // stops at the top
 	if m.sel != 0 {
@@ -228,7 +240,7 @@ func TestQuit(t *testing.T) {
 func TestFooterHelpMatchesFocus(t *testing.T) {
 	m := New(Options{Source: fakeSource{}})
 	load(t, m)
-	press(m, "3") // Logs, from the sidebar
+	press(m, areaKey(t, m, "Logs")) // from the sidebar
 	footer := m.footer()
 	if strings.Contains(footer, "problems only") {
 		t.Errorf("sidebar footer shows the area's keys: %q", footer)

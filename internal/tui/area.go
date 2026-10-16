@@ -48,6 +48,7 @@ func newAreas(e *env) []Area {
 	return []Area{
 		newOverview(e),
 		newUpdates(e),
+		newKeybinds(e),
 		newLogs(e),
 	}
 }

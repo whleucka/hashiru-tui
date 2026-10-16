@@ -48,14 +48,8 @@ func (m *Model) openPalette() tea.Cmd {
 		}
 	}
 
-	in := textinput.New()
-	in.Prompt = ": "
-	in.Placeholder = "type to search areas and actions"
-	st := in.Styles()
-	st.Cursor.Blink = false // steady: no redraw every half second
-	in.SetStyles(st)
 	w, _ := m.areaSize()
-	in.SetWidth(w - 3) // the placeholder is cut to the width, and 0 means one cell
+	in := newInput(": ", "type to search areas and actions", w-3)
 	m.pal = palette{open: true, input: in, items: items}
 	m.pal.filter()
 	return m.pal.input.Focus()

@@ -43,7 +43,7 @@ installing the binary).
 ### Phase 2: Updates and the everyday areas
 - [x] Task 4: Pending pacman and AUR updates in Updates and Overview
 - [x] Task 5: Arch news in Updates
-- [ ] Task 6: Keybinds area
+- [x] Task 6: Keybinds area
 - [ ] Task 7: Connectivity area (network, bluetooth, audio)
 
 ### Checkpoint B
