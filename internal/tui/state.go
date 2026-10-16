@@ -101,8 +101,14 @@ func (st *State) load(opts Options) tea.Cmd {
 			defer cancel()
 			return connMsg{system.ReadConnectivity(ctx, opts.Probe)}
 		},
-		func() tea.Msg { return sysMsg{system.ReadSysInfo(opts.SysRoot, opts.Statfs)} },
+		readSys(opts),
 	)
+}
+
+// readSys reads uptime, memory, disk and battery: local files and a statfs,
+// cheap enough for Overview to repeat every few seconds.
+func readSys(opts Options) tea.Cmd {
+	return func() tea.Msg { return sysMsg{system.ReadSysInfo(opts.SysRoot, opts.Statfs)} }
 }
 
 // apply records a load result. It reports whether msg was one.

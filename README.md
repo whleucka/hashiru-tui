@@ -8,7 +8,7 @@ It delegates where a good tool exists (nmtui, bluetoothctl, journalctl, pavucont
 
 | | |
 |---|---|
-| **Overview** | Host, kernel, uptime, memory, disk, battery; connections; Hashiru version, pending updates, Arch news, health |
+| **Overview** | Host, kernel, uptime, memory, disk, battery (live, every 5s); connections; Hashiru version, pending updates, Arch news, health |
 | **Updates** | Hashiru status, release notes (what an update brings, or this version's), pending pacman and AUR packages, Arch news (flagged when newer than your last update), doctor's health checks |
 | **Keybinds** | Hyprland's binds from `hyprctl binds`, filterable |
 | **Connectivity** | Network devices and wifi, bluetooth, default audio; launches nmtui, bluetoothctl, blueman, pavucontrol |

@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -54,6 +55,12 @@ func init() {
 // does either.
 func init() {
 	defaultHome = func() (string, error) { return "/nonexistent/hashiru-tui-test-home", nil }
+}
+
+// Nor timers: drain would follow a ticker forever. Tests that want one pass
+// their own Tick.
+func init() {
+	defaultTick = func(time.Duration, func(time.Time) tea.Msg) tea.Cmd { return nil }
 }
 
 // Nor kitty graphics, unless a test asks.

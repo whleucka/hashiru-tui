@@ -44,7 +44,7 @@ and the two new areas.
 - [x] Task 4: Deep links (`<area>`, `--run`, `--list-actions`)
 - [x] Task 5: Changelog in Updates
 - [x] Task 6: Re-apply a stage
-- [ ] Task 7: Overview refreshes local stats on a timer
+- [x] Task 7: Overview refreshes local stats on a timer
 
 ### Checkpoint B
 - [ ] Tests, vet, build; manual: `hashiru-tui --run snapshots.new` from a shell, stage 45 re-applied from the TUI

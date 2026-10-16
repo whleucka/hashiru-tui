@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"time"
 
 	tea "charm.land/bubbletea/v2"
 
@@ -47,6 +48,9 @@ type Options struct {
 	Home string
 	// Graphics is whether to draw image previews; auto asks the environment.
 	Graphics graphicsMode
+	// Tick schedules a message after a delay, for Overview's live stats.
+	// Defaults to tea.Tick.
+	Tick func(time.Duration, func(time.Time) tea.Msg) tea.Cmd
 	// RecentPath is where the palette keeps recently run actions. Defaults
 	// to $XDG_STATE_HOME/hashiru-tui/recent.
 	RecentPath string
@@ -56,6 +60,8 @@ type Options struct {
 var (
 	defaultProbe system.Run = system.Command
 	defaultGet   system.Get = system.HTTPGet
+
+	defaultTick = tea.Tick
 
 	defaultHome     = os.UserHomeDir
 	defaultGraphics = func() bool { return kitty.Supported(os.Getenv) }
@@ -112,6 +118,9 @@ func New(opts Options) *Model {
 	if opts.Home == "" {
 		opts.Home, _ = defaultHome()
 	}
+	if opts.Tick == nil {
+		opts.Tick = defaultTick
+	}
 	if opts.RecentPath == "" {
 		opts.RecentPath = defaultRecentPath(opts.Home)
 	}
@@ -143,8 +152,18 @@ type (
 	refreshMsg struct{}
 )
 
+// sysInterval is how often Overview's local stats reload while it's shown.
+const sysInterval = 5 * time.Second
+
+type sysTickMsg struct{}
+
 func (m *Model) Init() tea.Cmd {
-	return m.refresh()
+	// The ticker starts here, not in refresh, so r doesn't start another.
+	return tea.Batch(m.refresh(), m.sysTick())
+}
+
+func (m *Model) sysTick() tea.Cmd {
+	return m.opts.Tick(sysInterval, func(time.Time) tea.Msg { return sysTickMsg{} })
 }
 
 // refresh reloads the shared state and lets every area reload its own.
@@ -181,6 +200,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case noteMsg:
 		m.setNote(msg.text, msg.err)
 		return m, nil
+
+	case sysTickMsg:
+		// Only while Overview is on screen; nothing else re-runs.
+		if _, ok := m.area().(*overview); ok && !m.pal.open {
+			return m, tea.Batch(readSys(m.opts), m.sysTick())
+		}
+		return m, m.sysTick()
 
 	case execDoneMsg:
 		if msg.err != nil {

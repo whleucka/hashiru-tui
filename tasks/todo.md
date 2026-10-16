@@ -52,8 +52,8 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/hashiru/cli.go + test, internal/tui/updates.go, tests. **Deps:** 3. **Size:** S
 
 ### Task 7: Overview auto-refresh
-- [ ] Uptime, memory, battery, disk reload every 5s while Overview is the selected area; nothing else re-runs
-- [ ] Ticker injected so tests don't sleep
+- [x] Uptime, memory, battery, disk reload every 5s while Overview is the selected area (and the palette is closed); nothing else re-runs. One ticker, armed in Init, so `r` doesn't add another
+- [x] Ticker injected so tests don't sleep
 **Files:** internal/tui/overview.go, overview_test.go. **Deps:** none. **Size:** S
 
 ### Checkpoint B
