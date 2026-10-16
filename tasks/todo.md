@@ -12,9 +12,9 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/tui/{app,area,state,view,overview,updates,logs}.go, tests. **Deps:** none. **Size:** L (mostly moves)
 
 ### Task 2: Launcher with three kinds
-- [ ] Interactive: herdr pane focused, else ExecProcess, refreshes state on exit when asked
-- [ ] Watch: herdr pane unfocused, else ExecProcess
-- [ ] GUI: detached process through an injected starter (default `setsid`), TUI stays; error shows as a note
+- [x] Interactive: herdr pane focused, else ExecProcess, refreshes state on exit when asked
+- [x] Watch: herdr pane unfocused, else ExecProcess
+- [x] GUI: detached process through an injected starter (default `setsid`), TUI stays; error shows as a note
 **Files:** internal/tui/launch.go, launch_test.go, app.go. **Deps:** 1. **Size:** S
 
 ### Task 3: Command palette

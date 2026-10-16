@@ -40,7 +40,7 @@ func (u *updates) Actions() []Action {
 }
 
 func (u *updates) update() tea.Cmd {
-	return u.e.run(u.e.src.Argv("update"), "hashiru update", true)
+	return u.e.launch(Launch{Argv: u.e.src.Argv("update"), Label: "hashiru update", Kind: Interactive, Refresh: true})
 }
 
 func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {

@@ -30,8 +30,8 @@ type Action struct {
 type env struct {
 	src   Source
 	state *State
-	// run launches argv; see Model.run.
-	run func(argv []string, label string, focus bool) tea.Cmd
+	// launch starts another tool; see Model.launch.
+	launch func(Launch) tea.Cmd
 	// refresh reloads the shared state.
 	refresh func() tea.Cmd
 }

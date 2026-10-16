@@ -4,6 +4,7 @@ package tui
 
 import (
 	"context"
+	"os/exec"
 	"strconv"
 
 	tea "charm.land/bubbletea/v2"
@@ -27,6 +28,10 @@ type Options struct {
 	// below, focused or not. Nil outside herdr; commands then take over this
 	// terminal through tea.ExecProcess instead.
 	RunInPane func(ctx context.Context, argv []string, label string, right, focus bool) error
+	// Detach starts a GUI app in the background. Defaults to a setsid'd process.
+	Detach func(argv []string) error
+	// Exec hands the terminal to a command. Defaults to tea.ExecProcess.
+	Exec func(*exec.Cmd, tea.ExecCallback) tea.Cmd
 }
 
 // Model is the shell: sidebar, the selected area, and the footer.
@@ -46,11 +51,17 @@ type Model struct {
 
 // New builds the model. Call Init (bubbletea does) to start loading.
 func New(opts Options) *Model {
+	if opts.Detach == nil {
+		opts.Detach = detach
+	}
+	if opts.Exec == nil {
+		opts.Exec = tea.ExecProcess
+	}
 	m := &Model{opts: opts, state: &State{}}
 	m.env = &env{
 		src:     opts.Source,
 		state:   m.state,
-		run:     m.run,
+		launch:  m.launch,
 		refresh: m.refresh,
 	}
 	m.areas = newAreas(m.env)
@@ -64,8 +75,9 @@ type (
 	}
 	// execDoneMsg arrives when a command that borrowed the terminal exits.
 	execDoneMsg struct {
-		label string
-		err   error
+		label   string
+		err     error
+		refresh bool
 	}
 	// refreshMsg asks areas to reload whatever they load themselves.
 	refreshMsg struct{}
@@ -106,13 +118,15 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case execDoneMsg:
-		// The command may have changed the machine, so look again.
 		if msg.err != nil {
 			m.setNote(msg.label+" exited", msg.err)
 		} else {
 			m.setNote(msg.label+" finished", nil)
 		}
-		return m, m.refresh()
+		if msg.refresh {
+			return m, m.refresh() // it may have changed the machine
+		}
+		return m, nil
 	}
 
 	m.state.apply(msg)

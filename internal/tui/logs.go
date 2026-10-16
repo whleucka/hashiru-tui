@@ -32,12 +32,12 @@ func (l *logsArea) Update(msg tea.Msg) tea.Cmd {
 
 func (l *logsArea) Actions() []Action {
 	return []Action{
-		{Title: "Follow the Hashiru log in a pane (hashiru log -f)", Key: "L", Run: l.followInPane},
+		{Title: "Follow the Hashiru log (hashiru log -f)", Key: "L", Run: l.followInPane},
 	}
 }
 
 func (l *logsArea) followInPane() tea.Cmd {
-	return l.e.run(l.e.src.Argv("log", "-f"), "hashiru log", false)
+	return l.e.launch(Launch{Argv: l.e.src.Argv("log", "-f"), Label: "hashiru log", Kind: Watch})
 }
 
 func (l *logsArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
@@ -47,6 +47,6 @@ func (l *logsArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	return l.lv.handleKey(msg)
 }
 
-func (l *logsArea) Help() string { return l.lv.help() + " · L pane" }
+func (l *logsArea) Help() string { return l.lv.help() + " · L follow live" }
 
 func (l *logsArea) View(width, height int) string { return l.lv.view() }
