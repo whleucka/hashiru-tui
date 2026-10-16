@@ -1,0 +1,50 @@
+2026-10-13T11:56:36-06:00 t14s hyprlock[4023633]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-13T12:36:29-06:00 t14s hyprlock[4086145]: pam_unix(hyprlock:auth): conversation failed
+2026-10-13T12:36:29-06:00 t14s hyprlock[4086145]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-13T13:10:18-06:00 t14s hyprlock[4132707]: pam_unix(hyprlock:auth): conversation failed
+2026-10-13T13:10:18-06:00 t14s hyprlock[4132707]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-13T14:37:09-06:00 t14s hyprlock[4189787]: pam_unix(hyprlock:auth): conversation failed
+2026-10-13T14:37:09-06:00 t14s hyprlock[4189787]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-13T15:15:53-06:00 t14s hyprlock[79899]: pam_unix(hyprlock:auth): conversation failed
+2026-10-13T15:15:53-06:00 t14s hyprlock[79899]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-14T07:00:56-06:00 t14s wpa_supplicant[2285]: wlp194s0: nl80211: kernel reports: multicast RX registrations are not supported
+2026-10-14T07:00:56-06:00 t14s wpa_supplicant[2285]: p2p-dev-wlp194s: nl80211: kernel reports: multicast RX registrations are not supported
+2026-10-14T07:00:56-06:00 t14s systemd[1]: Failed to start Refresh existing keys of archlinux-keyring.
+2026-10-14T07:01:17-06:00 t14s hyprlock[87015]: pam_unix(hyprlock:auth): conversation failed
+2026-10-14T07:01:17-06:00 t14s hyprlock[87015]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-14T13:23:58-06:00 t14s hyprlock[403444]: pam_unix(hyprlock:auth): conversation failed
+2026-10-14T13:23:58-06:00 t14s hyprlock[403444]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-14T13:26:25-06:00 t14s hyprlock[433588]: pam_unix(hyprlock:auth): conversation failed
+2026-10-14T13:26:25-06:00 t14s hyprlock[433588]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-14T13:42:06-06:00 t14s hyprlock[449335]: pam_unix(hyprlock:auth): conversation failed
+2026-10-14T13:42:06-06:00 t14s hyprlock[449335]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-14T14:08:47-06:00 t14s hyprlock[464783]: pam_unix(hyprlock:auth): conversation failed
+2026-10-14T14:08:47-06:00 t14s hyprlock[464783]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-14T14:37:22-06:00 t14s hyprlock[495016]: pam_unix(hyprlock:auth): conversation failed
+2026-10-14T14:37:22-06:00 t14s hyprlock[495016]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-14T14:58:54-06:00 t14s hyprlock[538910]: pam_unix(hyprlock:auth): conversation failed
+2026-10-14T14:58:54-06:00 t14s hyprlock[538910]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-14T15:03:00-06:00 t14s fuzzel[553259]: config: /home/user/.config/fuzzel/fuzzel.ini:28: [key-bindings].prev: Control+k already mapped to 'delete-line-forward'
+2026-10-15T06:25:47-06:00 t14s wpa_supplicant[2285]: wlp194s0: nl80211: kernel reports: multicast RX registrations are not supported
+2026-10-15T06:25:47-06:00 t14s wpa_supplicant[2285]: p2p-dev-wlp194s: nl80211: kernel reports: multicast RX registrations are not supported
+2026-10-15T06:25:50-06:00 t14s hyprlock[579723]: pam_unix(hyprlock:auth): conversation failed
+2026-10-15T06:25:50-06:00 t14s hyprlock[579723]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-15T09:06:13-06:00 t14s hyprlock[758238]: pam_unix(hyprlock:auth): conversation failed
+2026-10-15T09:06:13-06:00 t14s hyprlock[758238]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-15T09:49:36-06:00 t14s hyprlock[800814]: pam_unix(hyprlock:auth): conversation failed
+2026-10-15T09:49:36-06:00 t14s hyprlock[800814]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-15T10:39:37-06:00 t14s hyprlock[825335]: pam_unix(hyprlock:auth): conversation failed
+2026-10-15T10:39:37-06:00 t14s hyprlock[825335]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-15T12:15:10-06:00 t14s hyprlock[990891]: pam_unix(hyprlock:auth): conversation failed
+2026-10-15T12:15:10-06:00 t14s hyprlock[990891]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-15T12:51:29-06:00 t14s hyprlock[1022475]: pam_unix(hyprlock:auth): conversation failed
+2026-10-15T12:51:29-06:00 t14s hyprlock[1022475]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-15T14:31:39-06:00 t14s hyprlock[1146974]: pam_unix(hyprlock:auth): conversation failed
+2026-10-15T14:31:39-06:00 t14s hyprlock[1146974]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-15T15:54:50-06:00 t14s wpa_supplicant[2285]: wlp194s0: nl80211: kernel reports: multicast RX registrations are not supported
+2026-10-15T15:54:50-06:00 t14s wpa_supplicant[2285]: p2p-dev-wlp194s: nl80211: kernel reports: multicast RX registrations are not supported
+2026-10-15T15:54:53-06:00 t14s kernel: usbhid 5-1.4.2.1:1.2: couldn't find an input interrupt endpoint
+2026-10-15T15:54:59-06:00 t14s hyprlock[1216695]: pam_unix(hyprlock:auth): conversation failed
+2026-10-15T15:54:59-06:00 t14s hyprlock[1216695]: pam_unix(hyprlock:auth): auth could not identify password for [user]
+2026-10-15T19:43:31-06:00 t14s sudo[1539028]: user : a password is required ; PWD=/opt/hashiru/stow/hyprland/.config/hypr ; USER=root ; COMMAND=/usr/bin/snapper list-configs
+2026-10-15T19:45:01-06:00 t14s fuzzel[1541513]: config: /home/user/.config/fuzzel/fuzzel.ini:28: [key-bindings].prev: Control+k already mapped to 'delete-line-forward'

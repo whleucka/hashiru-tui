@@ -62,8 +62,8 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/system/snapper.go + test, internal/tui/snapshots.go. **Deps:** 2. **Size:** M
 
 ### Task 10: Logs sources
-- [ ] Logs has sources: Hashiru (existing), Journal errors (`journalctl -p err -b -o short-iso`), Failed units (`systemctl --failed` system + user)
-- [ ] Actions: follow journal (Watch), `dmesg -w` (Watch, via sudo)
+- [x] Logs has sources: Hashiru (existing), Journal errors (`journalctl -p err -b -o short-iso`), Failed units (`systemctl --failed` system + user)
+- [x] Actions: follow journal (Watch), kernel messages via `journalctl -k -f` (Watch; same messages as `dmesg -w`, without sudo)
 **Files:** internal/system/journal.go + test, internal/tui/logs.go. **Deps:** 2. **Size:** M
 
 ### Task 11: Config area
