@@ -59,8 +59,8 @@ func pendingRows(st *State, limit int) []string {
 			if limit > 0 && shown == limit {
 				break
 			}
-			rows = append(rows, fmt.Sprintf("  %-24s %s %s",
-				p.Name, styleMuted.Render(p.Old+" → "+p.New), styleMuted.Render(g.name)))
+			rows = append(rows, "  "+cell(p.Name, 24)+" "+
+				styleMuted.Render(p.Old+" → "+p.New)+" "+styleMuted.Render(g.name))
 			shown++
 		}
 	}

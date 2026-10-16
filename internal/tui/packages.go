@@ -287,10 +287,8 @@ func (p *packages) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		}
 		p.input.SetValue("")
 		p.clampSel()
-	case "j", "down":
-		p.sel = min(p.sel+1, max(len(p.shown())-1, 0))
-	case "k", "up":
-		p.sel = max(p.sel-1, 0)
+	case "j", "down", "k", "up", "ctrl+d", "ctrl+u":
+		p.sel, _ = moveKey(msg.String(), p.sel, len(p.shown()), p.height-3)
 	case "g", "home":
 		p.sel = 0
 	case "G", "end":
@@ -307,10 +305,8 @@ func (p *packages) infoKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	switch msg.String() {
 	case "esc", "h", "left":
 		p.infoOf = nil
-	case "j", "down":
-		p.infoTop = min(p.infoTop+1, max(strings.Count(p.info, "\n")-1, 0))
-	case "k", "up":
-		p.infoTop = max(p.infoTop-1, 0)
+	case "j", "down", "k", "up", "ctrl+d", "ctrl+u":
+		p.infoTop, _ = moveKey(msg.String(), p.infoTop, strings.Count(p.info, "\n"), p.height-2)
 	default:
 		return nil, false
 	}
@@ -382,7 +378,7 @@ func (p *packages) View(width, height int) string {
 	}
 	for i := p.offset; i < len(shown) && i < p.offset+rows; i++ {
 		r := shown[i]
-		name, note := fmt.Sprintf("%-32s", r.name), r.note
+		name, note := cellMid(r.name, 30)+"  ", r.note
 		if r.aur && p.group != groupSearch { // a result's note says aur already
 			note += " · AUR"
 		}
@@ -396,7 +392,7 @@ func (p *packages) View(width, height int) string {
 			if r.installed {
 				mark = styleOK.Render(" installed ")
 			}
-			line = cursor + name + styleMuted.Render(fmt.Sprintf("%-24s", note)) + mark + styleMuted.Render(r.desc)
+			line = cursor + name + styleMuted.Render(cell(note, 22)) + mark + styleMuted.Render(r.desc)
 		}
 		b.WriteString(line + "\n")
 	}

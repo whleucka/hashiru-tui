@@ -28,6 +28,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `enter` / `esc` | into the area / back to the sidebar |
 | `ctrl+p` (or `:` in the sidebar) | command palette: every area and action |
 | `r` | refresh |
+| `j` `k` / `ctrl+d` `ctrl+u` | move in a list: a row / half a page |
 | `[` `]` | previous / next tab, in an area that has them (Packages, Logs) |
 | `?` | this area's keys |
 | `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |

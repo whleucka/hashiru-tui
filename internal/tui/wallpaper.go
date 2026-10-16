@@ -125,17 +125,11 @@ func (w *wallpaper) Actions() []Action {
 }
 
 func (w *wallpaper) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
+	if i, ok := moveKey(msg.String(), w.sel, len(w.images), w.height-3); ok {
+		w.sel = i
+		return w.preview(), true
+	}
 	switch msg.String() {
-	case "j", "down":
-		if w.sel < len(w.images)-1 {
-			w.sel++
-			return w.preview(), true
-		}
-	case "k", "up":
-		if w.sel > 0 {
-			w.sel--
-			return w.preview(), true
-		}
 	case "enter", "l", "right":
 		return w.apply(), true
 	case "c":
@@ -143,7 +137,6 @@ func (w *wallpaper) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	default:
 		return nil, false
 	}
-	return nil, true
 }
 
 func (w *wallpaper) Keys() []Key {

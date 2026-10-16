@@ -37,6 +37,8 @@ type logsArea struct {
 	failed    []system.Unit
 	failedErr error
 	failedSel int
+
+	height int
 }
 
 type (
@@ -57,6 +59,7 @@ func (l *logsArea) Name() string { return "Logs" }
 func (l *logsArea) Update(msg tea.Msg) tea.Cmd {
 	switch msg := msg.(type) {
 	case areaSizeMsg:
+		l.height = msg.height
 		l.lv.setSize(msg.width, msg.height-2) // less the source bar
 	case refreshMsg:
 		return tea.Batch(loadLog(l.e.src), l.loadJournal(), l.loadFailed())
@@ -145,35 +148,22 @@ func (l *logsArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	case srcHashiru:
 		return l.lv.handleKey(msg)
 	case srcJournal:
-		switch k {
-		case "j", "down":
-			if l.journalTop < len(l.journal)-1 {
-				l.journalTop++
-			}
-		case "k", "up":
-			if l.journalTop > 0 {
-				l.journalTop--
-			}
-		default:
-			return nil, false
+		if i, ok := moveKey(k, l.journalTop, len(l.journal), l.height-2); ok {
+			l.journalTop = i
+			return nil, true
 		}
-		return nil, true
+		return nil, false
 	case srcFailed:
+		if i, ok := moveKey(k, l.failedSel, len(l.failed), l.height-2); ok {
+			l.failedSel = i
+			return nil, true
+		}
 		switch k {
-		case "j", "down":
-			if l.failedSel < len(l.failed)-1 {
-				l.failedSel++
-			}
-		case "k", "up":
-			if l.failedSel > 0 {
-				l.failedSel--
-			}
 		case "enter", "l", "right":
 			return l.openUnit(), true
 		default:
 			return nil, false
 		}
-		return nil, true
 	}
 	return nil, false
 }
@@ -245,7 +235,7 @@ func (l *logsArea) journalView(rows int) string {
 	for i := l.journalTop; i < len(l.journal) && i < l.journalTop+rows; i++ {
 		j := l.journal[i]
 		fmt.Fprintf(&b, "%s  %s  %s\n", styleMuted.Render(j.Time.Format("01-02 15:04:05")),
-			styleWarn.Render(fmt.Sprintf("%-12s", j.Ident)), j.Message)
+			styleWarn.Render(cell(j.Ident, 12)), j.Message)
 	}
 	return b.String()
 }

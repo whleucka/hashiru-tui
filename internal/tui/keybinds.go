@@ -102,15 +102,11 @@ func (k *keybinds) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		}
 		k.input.SetValue("")
 		k.offset = 0
-	case "j", "down":
-		if k.offset < len(k.shown())-1 {
-			k.offset++
-		}
-	case "k", "up":
-		if k.offset > 0 {
-			k.offset--
-		}
 	default:
+		if i, ok := moveKey(msg.String(), k.offset, len(k.shown()), k.height-2); ok {
+			k.offset = i
+			return nil, true
+		}
 		return nil, false
 	}
 	return nil, true
@@ -150,7 +146,7 @@ func (k *keybinds) View(width, height int) string {
 	rows := height - 2
 	for i := k.offset; i < len(shown) && i < k.offset+rows; i++ {
 		bind := shown[i]
-		fmt.Fprintf(&b, "%s %s\n", styleTitle.Render(fmt.Sprintf("%-22s", bind.Combo())), bind.Description)
+		fmt.Fprintf(&b, "%s %s\n", styleTitle.Render(cell(bind.Combo(), 22)), bind.Description)
 	}
 	if len(shown) == 0 {
 		b.WriteString(styleMuted.Render("no binds match"))

@@ -127,14 +127,8 @@ func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		return u.openNews(), true
 	case "p":
 		u.allPkgs = !u.allPkgs
-	case "j", "down":
-		if u.cursor < len(u.sections())-1 {
-			u.cursor++
-		}
-	case "k", "up":
-		if u.cursor > 0 {
-			u.cursor--
-		}
+	case "j", "down", "k", "up", "ctrl+d", "ctrl+u":
+		u.cursor, _ = moveKey(msg.String(), u.cursor, len(u.sections()), u.notes.height)
 	case "enter", "space", "l", "right":
 		if s := u.sections(); u.cursor < len(s) {
 			name := s[u.cursor].Name

@@ -96,6 +96,7 @@ var (
 		{Keys: "q", Desc: "quit", Group: "Global"},
 	}
 	inAreaKeys = []Key{
+		{Keys: "ctrl+d/u", Desc: "half page down/up", Group: "Global"},
 		{Keys: "esc", Desc: "back", Group: "Global"},
 		{Keys: "ctrl+p", Desc: "palette", Group: "Global"},
 		{Keys: "r", Desc: "refresh", Group: "Global"},
@@ -188,6 +189,29 @@ func nextTab(key string, i, n int) (int, bool) {
 		return (i + n - 1) % n, true
 	}
 	return i, false
+}
+
+// cell fits s to a column w cells wide: cut with "…" when it's longer,
+// padded when it's shorter, by display width so wide (CJK) text lines up
+// too. Leave a gap after it; cell doesn't.
+func cell(s string, w int) string {
+	if ansi.StringWidth(s) > w {
+		s = ansi.Truncate(s, w, "…")
+	}
+	return s + strings.Repeat(" ", max(0, w-ansi.StringWidth(s)))
+}
+
+// cellMid is cell for names that differ at the end, like a package's
+// language packs (firefox-i18n-da, firefox-i18n-de): it cuts the middle,
+// keeping the start and the last third.
+func cellMid(s string, w int) string {
+	r := []rune(s)
+	if ansi.StringWidth(s) <= w || w < 5 || len(r) != ansi.StringWidth(s) {
+		return cell(s, w) // fits, too narrow to split, or wide text
+	}
+	tail := (w - 1) / 3
+	head := w - 1 - tail
+	return string(r[:head]) + "…" + string(r[len(r)-tail:])
 }
 
 // keyLine joins keys as "j/k move · enter edit", dropping whole keys from the

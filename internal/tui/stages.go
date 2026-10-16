@@ -67,10 +67,8 @@ func (p *stagePicker) handleKey(u *updates, msg tea.KeyPressMsg) (tea.Cmd, bool)
 	switch msg.String() {
 	case "esc", "h", "left", "s":
 		p.open = false
-	case "j", "down":
-		p.sel = min(p.sel+1, len(p.stages)-1)
-	case "k", "up":
-		p.sel = max(p.sel-1, 0)
+	case "j", "down", "k", "up", "ctrl+d", "ctrl+u":
+		p.sel, _ = moveKey(msg.String(), p.sel, len(p.stages), u.notes.height-2)
 	case "enter", "l", "right":
 		p.open = false
 		if p.sel < len(p.stages) {

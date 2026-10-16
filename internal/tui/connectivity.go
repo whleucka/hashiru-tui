@@ -76,7 +76,7 @@ func (c *connectivity) View(width, height int) string {
 		if d.Type == "wifi" && conn.WifiSSID != "" && d.Connection != "" {
 			what = fmt.Sprintf("%s  %d%%", conn.WifiSSID, conn.WifiSignal)
 		}
-		row(d.Type, fmt.Sprintf("%-12s %s  %s", d.Name, state, what))
+		row(d.Type, cell(d.Name, 12)+" "+state+"  "+what)
 	}
 
 	b.WriteString("\n" + styleTitle.Render("Bluetooth") + styleMuted.Render("  b bluetoothctl · B blueman") + "\n")

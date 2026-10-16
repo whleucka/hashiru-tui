@@ -131,15 +131,11 @@ func (s *snapshots) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		return nil, false
 	}
 
+	if i, ok := moveKey(msg.String(), s.sel, len(s.snaps), s.height-2); ok {
+		s.sel = i
+		return nil, true
+	}
 	switch msg.String() {
-	case "j", "down":
-		if s.sel < len(s.snaps)-1 {
-			s.sel++
-		}
-	case "k", "up":
-		if s.sel > 0 {
-			s.sel--
-		}
 	case "enter", "l", "right":
 		return s.diff(), true
 	case "n":
@@ -147,7 +143,6 @@ func (s *snapshots) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	default:
 		return nil, false
 	}
-	return nil, true
 }
 
 func (s *snapshots) diff() tea.Cmd {

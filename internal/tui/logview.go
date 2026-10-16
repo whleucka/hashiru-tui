@@ -152,11 +152,11 @@ func (lv *logView) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		return nil, true
 	}
 
+	if i, ok := moveKey(msg.String(), lv.sel, len(lv.runs), lv.listHeight()); ok {
+		lv.selectRun(i)
+		return nil, true
+	}
 	switch msg.String() {
-	case "j", "down":
-		lv.selectRun(lv.sel + 1)
-	case "k", "up":
-		lv.selectRun(lv.sel - 1)
 	case "g", "home":
 		lv.selectRun(0)
 	case "G", "end":

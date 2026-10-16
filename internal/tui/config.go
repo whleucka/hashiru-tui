@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,6 +18,7 @@ type configArea struct {
 	home    string
 	entries []configEntry
 	sel     int
+	height  int
 }
 
 type configEntry struct {
@@ -68,8 +68,11 @@ func (c *configArea) scan() {
 func (c *configArea) Name() string { return "Config" }
 
 func (c *configArea) Update(msg tea.Msg) tea.Cmd {
-	if _, ok := msg.(refreshMsg); ok {
+	switch msg := msg.(type) {
+	case refreshMsg:
 		c.scan()
+	case areaSizeMsg:
+		c.height = msg.height
 	}
 	return nil
 }
@@ -99,21 +102,16 @@ func (c *configArea) actionID(e configEntry) string {
 }
 
 func (c *configArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
+	if i, ok := moveKey(msg.String(), c.sel, len(c.entries), c.height); ok {
+		c.sel = i
+		return nil, true
+	}
 	switch msg.String() {
-	case "j", "down":
-		if c.sel < len(c.entries)-1 {
-			c.sel++
-		}
-	case "k", "up":
-		if c.sel > 0 {
-			c.sel--
-		}
 	case "enter", "e", "l", "right":
 		return c.open(c.entries[c.sel]), true
 	default:
 		return nil, false
 	}
-	return nil, true
 }
 
 func (c *configArea) Keys() []Key {
@@ -164,7 +162,7 @@ func (c *configArea) View(width, height int) string {
 		if e.exists {
 			mark = styleOK.Render("● ")
 		}
-		line := fmt.Sprintf("%s%-44s %s", mark, c.short(e.path), styleMuted.Render(e.note))
+		line := mark + cell(c.short(e.path), 44) + " " + styleMuted.Render(e.note)
 		if i == c.sel {
 			line = styleTitle.Render("▸ ") + line
 			cursorLine = strings.Count(b.String(), "\n") + 1
