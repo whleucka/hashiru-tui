@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 
 	tea "charm.land/bubbletea/v2"
 
@@ -14,6 +15,18 @@ import (
 )
 
 func main() {
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "--version", "-V":
+			// Hashiru's stage compares this with the tag it pins.
+			fmt.Println(version(debug.ReadBuildInfo()))
+			return
+		default:
+			fmt.Fprintln(os.Stderr, "usage: hashiru-tui [--version]")
+			os.Exit(2)
+		}
+	}
+
 	opts := tui.Options{Source: hashiru.CLI{Bin: os.Getenv("HASHIRU_BIN")}}
 
 	// Inside herdr, commands open in a split beside the TUI, as in
@@ -26,4 +39,13 @@ func main() {
 		fmt.Fprintln(os.Stderr, "hashiru-tui:", err)
 		os.Exit(1)
 	}
+}
+
+// version is the module version `go install ...@vX.Y.Z` stamps into the
+// binary, or "devel" for a local build.
+func version(info *debug.BuildInfo, ok bool) string {
+	if !ok || info == nil || info.Main.Version == "" || info.Main.Version == "(devel)" {
+		return "devel"
+	}
+	return info.Main.Version
 }
