@@ -1,29 +1,41 @@
 # hashiru-tui
 
-A terminal UI for a [Hashiru](https://hashiru.williamhleucka.com) machine. It runs after install only; it is not part of the ISO installer.
+A keyboard-driven control center for a [Hashiru](https://hashiru.williamhleucka.com) machine: update it, check it, change it, and reach the tools that manage it. It runs after install only; it is not part of the ISO installer. See [SPEC.md](SPEC.md) for the design.
 
-It holds no Hashiru logic of its own. Its state comes from the CLI's machine-readable output:
+It delegates where a good tool exists (nmtui, bluetoothctl, journalctl, pavucontrol) and only draws its own screens where none does.
 
-- `hashiru status --porcelain`: key=value lines (release stamp, checkout, upstream)
-- `hashiru doctor --json`: every check, grouped by section
+## Areas
 
-The install log (`~/.local/share/hashiru/install.log`) is read directly, as `hashiru log` does.
+| | |
+|---|---|
+| **Overview** | Host, kernel, uptime, memory, disk, battery; connections; Hashiru version, pending updates, Arch news, health |
+| **Updates** | Hashiru status, pending pacman and AUR packages, Arch news (flagged when newer than your last update), doctor's health checks |
+| **Keybinds** | Hyprland's binds from `hyprctl binds`, filterable |
+| **Connectivity** | Network devices and wifi, bluetooth, default audio; launches nmtui, bluetoothctl, blueman, pavucontrol |
+| **Wallpaper** | Pick a wallpaper (previewed with kitty graphics) or go back to Hashiru's time-of-day cycle |
+| **Snapshots** | snapper's snapshots of `/`, what changed since one, take a new one |
+| **Config** | The files Hashiru lets you change, grouped by how they apply, each one key from `$EDITOR` |
+| **Logs** | Hashiru's install log by run, this boot's journal errors, failed units |
 
-Anything that changes the machine (`update`, `config`) runs the real `hashiru` command. Inside herdr that happens in a split beside the TUI, as in mantis-tui. Outside herdr, the command takes over the terminal until it exits.
+Hashiru's own state comes from its machine-readable output, `hashiru status --porcelain` and `hashiru doctor --json`, and its install log.
 
 ## Keys
 
 | Key | |
 |---|---|
-| `1` `2` `3` / `tab` | Dashboard, Doctor, Log |
+| `j` `k` / number keys | pick an area |
+| `enter` / `esc` | into the area / back to the sidebar |
+| `ctrl+p` (or `:` in the sidebar) | command palette: every area and action |
 | `r` | refresh |
-| `u` | `hashiru update` (pane, focused) |
-| `e` | `hashiru config` (pane, focused) |
-| `L` | `hashiru log -f` (pane, focus stays here) |
-| `j` `k` `enter` | Doctor: move, expand a section |
-| `j` `k` `enter` `esc` | Log: pick a run, read it, back to the list |
-| `w` / `f` | Log: warnings and errors only / follow the newest run |
 | `q` | quit |
+
+Each area lists its own keys in the footer. Some to know: `u` update and `a` AUR upgrade and `n` Arch news (Updates), `/` filter (Keybinds), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `s` switch log source (Logs).
+
+## How tools are launched
+
+- **GUI apps** (blueman, pavucontrol, the browser for news) start detached.
+- **Inside herdr**, terminal tools open in a pane beside the TUI: focused for interactive ones (`hashiru update`, nmtui, `$EDITOR`), unfocused for ones you watch (`journalctl -f`).
+- **Otherwise** they take over the terminal until they exit, and the TUI refreshes after anything that may have changed the machine.
 
 ## Build
 
@@ -36,15 +48,8 @@ make test
 
 ## Layout
 
-- `internal/hashiru`: runs the CLI and parses its output. No TUI imports.
+- `internal/hashiru`: runs the hashiru CLI and parses its output.
+- `internal/system`: everything else it reads: checkupdates, nmcli, hyprctl, snapper, journalctl, /proc. Commands go through one injected `Run`; parsers are pure and tested against output captured from a real machine.
+- `internal/kitty`: kitty graphics through Unicode placeholders.
 - `internal/herdr`: `herdr pane split/run/rename`.
-- `internal/tui`: the bubbletea model. Takes a `Source` and an optional `RunInPane`, so tests need neither hashiru nor herdr.
-
-## Roadmap
-
-- **Stages**: `scripts/NN-*.sh` with last-run result; re-run one (`45`) or from one (`45+`)
-- **Changelog**: `docs/releases/*.md` rendered with glamour; shows what's new when behind
-- **Update preview**: incoming commits and release notes before confirming `u`
-- **Config**: `hashiru.conf` values and which `~/.config/hashiru/` overrides exist
-- **Packages**, **Fingerprint**, command palette
-- Ship it: `hashiru tui`, installed by a Hashiru stage
+- `internal/tui`: the bubbletea app. One `Area` per sidebar entry; tests inject every command, URL and path, so they touch nothing on the machine running them.
