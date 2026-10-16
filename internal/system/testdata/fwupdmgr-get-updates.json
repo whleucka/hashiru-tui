@@ -1,0 +1,109 @@
+{
+  "Devices": [
+    {
+      "Name": "System Firmware",
+      "DeviceId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "Guid": [
+        "754992b0-a138-4d84-96ad-a75d970412e1"
+      ],
+      "Summary": "UEFI System Resource Table device (updated via NVRAM)",
+      "Plugin": "uefi_capsule",
+      "Protocols": [
+        "org.uefi.capsule"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "can-verify",
+        "usable-during-update"
+      ],
+      "RequestFlags": [
+        "allow-generic-message"
+      ],
+      "Checksums": [
+        "a383e716aae9baffdb3d5a2eb81b4ac4ff4f87c0a8894de149177ddc8c5fb112",
+        "b3efc0d5f3b27bed70fb0d74ed8e4db8ded1d8a63136d525e1136908d2e960d81f48701b94005af65612411638f84296"
+      ],
+      "Vendor": "LENOVO",
+      "VendorIds": [
+        "DMI:LENOVO"
+      ],
+      "Version": "65549",
+      "VersionFormat": "number",
+      "VersionRaw": 65549,
+      "Icons": [
+        "computer"
+      ],
+      "Created": 1792168872,
+      "UpdateState": 2,
+      "Releases": [
+        {
+          "AppstreamId": "com.lenovo.ThinkPadR33ET.firmware",
+          "RemoteId": "lvfs",
+          "Summary": "Lenovo ThinkPad T14s Gen 6 System Firmware",
+          "Description": "<p>Lenovo ThinkPad T14s Gen 6 System Firmware</p><ul><li>Fixed an issue where the system might hang on resume.</li></ul>",
+          "Version": "0.1.15",
+          "Vendor": "Lenovo Ltd.",
+          "Size": 33554432,
+          "Created": 1790000000,
+          "Flags": [
+            "is-upgrade"
+          ]
+        },
+        {
+          "AppstreamId": "com.lenovo.ThinkPadR33ET.firmware",
+          "RemoteId": "lvfs",
+          "Summary": "Lenovo ThinkPad T14s Gen 6 System Firmware",
+          "Description": "<p>Older.</p>",
+          "Version": "0.1.14",
+          "Vendor": "Lenovo Ltd.",
+          "Created": 1785000000,
+          "Flags": [
+            "is-upgrade"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Integrated Camera",
+      "DeviceId": "d787669ee4a103fe0b361fe31c10ea037c72f27c",
+      "InstanceIds": [
+        "USB\\VID_5986&PID_11B0"
+      ],
+      "Guid": [
+        "265f8829-ec97-5378-bd31-5a8824fb1b59"
+      ],
+      "Plugin": "dfu",
+      "Protocols": [
+        "org.usb.dfu"
+      ],
+      "Flags": [
+        "updatable",
+        "can-emulation-tag"
+      ],
+      "Vendor": "Bison Electronics Inc.",
+      "VendorIds": [
+        "USB:0x5986"
+      ],
+      "Version": "35.12",
+      "VersionFormat": "bcd",
+      "VersionRaw": 13586,
+      "Icons": [
+        "camera-web"
+      ],
+      "Created": 1792168872,
+      "Releases": [
+        {
+          "Summary": "Camera firmware",
+          "Description": "<p>Stability.</p>",
+          "Version": "35.14",
+          "Flags": [
+            "is-upgrade"
+          ]
+        }
+      ]
+    }
+  ]
+}

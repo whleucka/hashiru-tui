@@ -1,0 +1,791 @@
+{
+  "Devices": [
+    {
+      "Name": "B140UAN04.7",
+      "DeviceId": "aec1a869eb0df71b7cea6b3ac71d39b830faf164",
+      "ParentDeviceId": "e7509615d330e48a229d2012ea768cb805694e19",
+      "CompositeId": "4bde70ba4e39b28f9eab1628f9dd6e6244c03027",
+      "InstanceIds": [
+        "DRM\\VEN_LEN&DEV_41C6"
+      ],
+      "Guid": [
+        "14451b5b-4c3a-5eee-b891-e257b6e030ca"
+      ],
+      "Plugin": "linux_display",
+      "VendorIds": [
+        "PNP:LEN"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "Fingerprint Sensor",
+      "DeviceId": "28a4aa67dfde939ffdb66e6975c4b676643e27dc",
+      "InstanceIds": [
+        "USB\\VID_27C6&PID_6594"
+      ],
+      "Guid": [
+        "14450e82-8667-54c3-98e1-098d8c6dc3b8"
+      ],
+      "Summary": "Match-On-Chip fingerprint sensor",
+      "Plugin": "goodix_moc",
+      "Protocols": [
+        "com.goodix.goodixmoc"
+      ],
+      "Flags": [
+        "updatable",
+        "self-recovery",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Vendor": "Goodix",
+      "VendorIds": [
+        "USB:0x27C6"
+      ],
+      "Version": "01010114",
+      "VersionFormat": "plain",
+      "VersionRaw": 256,
+      "InstallDuration": 10,
+      "Created": 1792168872
+    },
+    {
+      "Name": "GPIO controller",
+      "DeviceId": "f685512aa07369c9e77742acef941d779d31e766",
+      "InstanceIds": [
+        "GPIO\\ID_AMDI0030:00"
+      ],
+      "Guid": [
+        "37b440a9-2473-5087-a39b-db84f32a8ed8"
+      ],
+      "Plugin": "gpio",
+      "Flags": [
+        "can-emulation-tag"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "Integrated Camera",
+      "DeviceId": "d787669ee4a103fe0b361fe31c10ea037c72f27c",
+      "InstanceIds": [
+        "USB\\VID_5986&PID_11B0"
+      ],
+      "Guid": [
+        "265f8829-ec97-5378-bd31-5a8824fb1b59"
+      ],
+      "Plugin": "dfu",
+      "Protocols": [
+        "org.usb.dfu"
+      ],
+      "Flags": [
+        "updatable",
+        "can-emulation-tag"
+      ],
+      "Vendor": "Bison Electronics Inc.",
+      "VendorIds": [
+        "USB:0x5986"
+      ],
+      "Version": "35.12",
+      "VersionFormat": "bcd",
+      "VersionRaw": 13586,
+      "Icons": [
+        "camera-web"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "KBG6AZNV1T02 LA KIOXIA",
+      "DeviceId": "83eba1fa14bdefee1f6b4bcf06069b298e1c338f",
+      "InstanceIds": [
+        "NVME\\VEN_1E0F&DEV_001A",
+        "NVME\\VEN_1E0F&DEV_001A&SUBSYS_1E0F001A",
+        "KBG6AZNV1T02 LA KIOXIA"
+      ],
+      "Guid": [
+        "9ba52709-4ede-51f1-9955-74a00752433c",
+        "e6373704-db20-5d69-b720-6d4a8badf7d0",
+        "30535335-3256-3436-3936-000000000000",
+        "e9c322d3-9ff5-591a-b265-a690d3f7a1ad"
+      ],
+      "Summary": "NVM Express solid state drive",
+      "Plugin": "nvme",
+      "Protocols": [
+        "org.nvmexpress"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "usable-during-update",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Vendor": "KIOXIA",
+      "VendorIds": [
+        "PCI:0x1E0F"
+      ],
+      "Version": "1112ASLA",
+      "VersionFormat": "plain",
+      "Icons": [
+        "drive-harddisk"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "KEK CA",
+      "DeviceId": "b7a1d3d90faa1f6275d9a98da4fb3be7118e61c7",
+      "ParentDeviceId": "2a4c23bfb79b5dabe474cb7b1b3e604645d6f9c6",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "InstanceIds": [
+        "UEFI\\VENDOR_Microsoft&NAME_Microsoft-KEK-CA",
+        "UEFI\\CRT_DEC64D7746D983DB3774829A00BF829D9F19E9CF"
+      ],
+      "Guid": [
+        "814e950f-1449-566a-a190-42c9d3a3a2df",
+        "cd94ec34-7163-5f27-8549-1bd4b7872ae8"
+      ],
+      "Plugin": "uefi_kek",
+      "Protocols": [
+        "org.uefi.dbx2"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "needs-reboot",
+        "usable-during-update",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Vendor": "Microsoft",
+      "VendorIds": [
+        "UEFI:Microsoft"
+      ],
+      "Version": "2023",
+      "VersionFormat": "number",
+      "VersionRaw": 2023,
+      "Icons": [
+        "application-certificate"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "KEK CA",
+      "DeviceId": "1d7ed610471d175df43bc895f9bda7c47d8dae3c",
+      "ParentDeviceId": "2a4c23bfb79b5dabe474cb7b1b3e604645d6f9c6",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "InstanceIds": [
+        "UEFI\\VENDOR_Lenovo&NAME_Lenovo-KEK-CA",
+        "UEFI\\CRT_FC8101E5585E1C8093A3BF0FEC728C6C22AB3C90"
+      ],
+      "Guid": [
+        "955078db-02bc-510f-875c-65c0167f06fa",
+        "daf7dd1a-f55b-51fa-8815-2a3921d5d8e5"
+      ],
+      "Plugin": "uefi_kek",
+      "Protocols": [
+        "org.uefi.dbx2"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "needs-reboot",
+        "usable-during-update",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Vendor": "Lenovo",
+      "VendorIds": [
+        "UEFI:Lenovo"
+      ],
+      "Version": "2012",
+      "VersionFormat": "number",
+      "VersionRaw": 2012,
+      "Icons": [
+        "application-certificate"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "PK CA",
+      "DeviceId": "6924110cde4fa051bfdc600a60620dc7aa9d3c6a",
+      "ParentDeviceId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "InstanceIds": [
+        "UEFI\\VENDOR_Lenovo&NAME_Lenovo-PK-CA",
+        "UEFI\\CRT_B3774BC6C8B48919DD686E9CAEB68AF6DE0B4ED9"
+      ],
+      "Guid": [
+        "77aa207b-e13e-55f1-9f07-bec1957a61df",
+        "6c200e38-b742-59d4-8928-51274abd4b8c"
+      ],
+      "Summary": "UEFI Platform Key",
+      "Plugin": "uefi_pk",
+      "Flags": [
+        "internal"
+      ],
+      "Vendor": "Lenovo",
+      "Version": "2012",
+      "VersionFormat": "number",
+      "VersionRaw": 2012,
+      "Icons": [
+        "application-certificate"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "Radeon 860M Graphics",
+      "DeviceId": "e7509615d330e48a229d2012ea768cb805694e19",
+      "ParentDeviceId": "4bde70ba4e39b28f9eab1628f9dd6e6244c03027",
+      "CompositeId": "4bde70ba4e39b28f9eab1628f9dd6e6244c03027",
+      "InstanceIds": [
+        "AMD\\113-STRIXE"
+      ],
+      "Guid": [
+        "cc72cddc-68ef-5809-afce-bb1e5bcf571f"
+      ],
+      "Summary": "AMD STRIX_B0_GENERIC",
+      "Plugin": "amd_gpu",
+      "Flags": [
+        "internal",
+        "can-emulation-tag"
+      ],
+      "Vendor": "AMD",
+      "VendorIds": [
+        "PCI:0x1002"
+      ],
+      "Version": "1",
+      "VersionFormat": "number",
+      "VersionRaw": 1,
+      "Icons": [
+        "video-display"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "Ryzen AI 7 PRO 350 w/ Radeon 860M",
+      "DeviceId": "4bde70ba4e39b28f9eab1628f9dd6e6244c03027",
+      "InstanceIds": [
+        "CPUID\\PRO_0&FAM_1A&MOD_60",
+        "CPUID\\PRO_0&FAM_1A&MOD_60&STP_0"
+      ],
+      "Guid": [
+        "e18396bd-f52d-58b8-ad26-9c62ab2b812a",
+        "9b0249ea-4fbc-5ea6-b0fa-bdf457bef490"
+      ],
+      "Plugin": "cpu",
+      "Flags": [
+        "internal"
+      ],
+      "Vendor": "AMD",
+      "Version": "0x0b600037",
+      "VersionFormat": "hex",
+      "VersionRaw": 190840887,
+      "Icons": [
+        "computer"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "Secure Processor",
+      "DeviceId": "c54ab0237d7a8db8c717b68e0be78e4374a2a079",
+      "ParentDeviceId": "4bde70ba4e39b28f9eab1628f9dd6e6244c03027",
+      "CompositeId": "4bde70ba4e39b28f9eab1628f9dd6e6244c03027",
+      "InstanceIds": [
+        "PCI\\VEN_1022&DEV_17E0"
+      ],
+      "Guid": [
+        "92c96a95-c187-5183-ae27-eab2f47e0f63"
+      ],
+      "Summary": "AGESA StrixKrackanPI-FP8 1.1.0.0f",
+      "Plugin": "pci_psp",
+      "Flags": [
+        "internal",
+        "can-emulation-tag"
+      ],
+      "Vendor": "AMD",
+      "VendorIds": [
+        "PCI:0x1022"
+      ],
+      "Version": "00.3e.0f.74",
+      "VersionBootloader": "74.0f.3e.00",
+      "VersionFormat": "plain",
+      "Icons": [
+        "computer"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "System Firmware",
+      "DeviceId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "Guid": [
+        "754992b0-a138-4d84-96ad-a75d970412e1"
+      ],
+      "Summary": "UEFI System Resource Table device (updated via NVRAM)",
+      "Plugin": "uefi_capsule",
+      "Protocols": [
+        "org.uefi.capsule"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "can-verify",
+        "usable-during-update"
+      ],
+      "RequestFlags": [
+        "allow-generic-message"
+      ],
+      "Checksums": [
+        "a383e716aae9baffdb3d5a2eb81b4ac4ff4f87c0a8894de149177ddc8c5fb112",
+        "b3efc0d5f3b27bed70fb0d74ed8e4db8ded1d8a63136d525e1136908d2e960d81f48701b94005af65612411638f84296"
+      ],
+      "Vendor": "LENOVO",
+      "VendorIds": [
+        "DMI:LENOVO"
+      ],
+      "Version": "65549",
+      "VersionFormat": "number",
+      "VersionRaw": 65549,
+      "Icons": [
+        "computer"
+      ],
+      "Created": 1792168872,
+      "UpdateState": 2
+    },
+    {
+      "Name": "System Management Unit (SMU)",
+      "DeviceId": "db0330716216c629bb2c07256e5d018f499eb6ce",
+      "ParentDeviceId": "4bde70ba4e39b28f9eab1628f9dd6e6244c03027",
+      "CompositeId": "4bde70ba4e39b28f9eab1628f9dd6e6244c03027",
+      "InstanceIds": [
+        "/sys/devices/platform/AMDI000A:00"
+      ],
+      "Guid": [
+        "a0e3c12e-67da-5e9a-94fc-be35467ee328"
+      ],
+      "Summary": "Microcontroller used within CPU/APU program 11",
+      "Plugin": "amd_pmc",
+      "Flags": [
+        "internal",
+        "can-emulation-tag"
+      ],
+      "Vendor": "AMD",
+      "Version": "101.24.0",
+      "VersionFormat": "triplet",
+      "Icons": [
+        "computer"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "TPM",
+      "DeviceId": "1d8d50a4dbc65618f5c399c2ae827b632b3ccc11",
+      "InstanceIds": [
+        "TPM\\VEN_STM&DEV_0000",
+        "TPM\\VEN_STM&MOD_ST33KTPM2XSPI",
+        "TPM\\VEN_STM&DEV_0000&VER_2.0",
+        "TPM\\VEN_STM&MOD_ST33KTPM2XSPI&VER_2.0"
+      ],
+      "Guid": [
+        "3680fbf1-593f-586f-91ac-c528b37e8373",
+        "b32f3efb-e38f-566b-95fa-ce96830be9a8",
+        "8d0b4adc-a42f-59eb-9df8-665923afa086",
+        "3f485b9a-29fb-5a2d-994a-958aacc1b287"
+      ],
+      "Plugin": "tpm",
+      "Protocols": [
+        "org.trustedcomputinggroup.tpm2"
+      ],
+      "Flags": [
+        "internal",
+        "require-ac",
+        "needs-reboot",
+        "self-recovery",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Vendor": "ST Microelectronics",
+      "VendorIds": [
+        "TPM:STM"
+      ],
+      "Version": "9.258.0.0",
+      "VersionFormat": "quad",
+      "VersionRaw": 2534382891958272,
+      "Icons": [
+        "computer"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "ThinkPad Product CA",
+      "DeviceId": "a296b1dd86b8c548adbf0412d995e69e2154bfe5",
+      "ParentDeviceId": "0352a8acc949c7df21fec16e566ba9a74e797a97",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "InstanceIds": [
+        "UEFI\\VENDOR_Lenovo&NAME_ThinkPad-Product-CA",
+        "UEFI\\CRT_373EE20565D7F1E05A19ABE0BE1278309068DE5E"
+      ],
+      "Guid": [
+        "d9087fb0-a15e-564e-9307-c9fc954a69fd",
+        "792101a9-8a7e-5612-be00-7447ad96be66"
+      ],
+      "Plugin": "uefi_db",
+      "Protocols": [
+        "org.uefi.dbx2"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "needs-reboot",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Vendor": "Lenovo",
+      "VendorIds": [
+        "UEFI:Lenovo"
+      ],
+      "Version": "2012",
+      "VersionFormat": "number",
+      "VersionRaw": 2012,
+      "Icons": [
+        "application-certificate"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "UEFI CA",
+      "DeviceId": "163c5a91853ab68fd09dd15bef3c13dc9a9c1d15",
+      "ParentDeviceId": "0352a8acc949c7df21fec16e566ba9a74e797a97",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "InstanceIds": [
+        "UEFI\\VENDOR_Lenovo&NAME_Lenovo-UEFI-CA",
+        "UEFI\\CRT_DAD2D12C61D6878808FB095EB66C42752BCCE557"
+      ],
+      "Guid": [
+        "6e98b506-553c-57f1-9020-ed7a1db2c014",
+        "ae9d1031-26a3-56aa-b118-b3977d8129d6"
+      ],
+      "Plugin": "uefi_db",
+      "Protocols": [
+        "org.uefi.dbx2"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "needs-reboot",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Vendor": "Lenovo",
+      "VendorIds": [
+        "UEFI:Lenovo"
+      ],
+      "Version": "2014",
+      "VersionFormat": "number",
+      "VersionRaw": 2014,
+      "Icons": [
+        "application-certificate"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "UEFI Device Firmware",
+      "DeviceId": "aaa67084d6b6078104c309a1372280cbb5b49831",
+      "Guid": [
+        "62af20c0-7016-424a-9bf8-9ccc86584090"
+      ],
+      "Summary": "UEFI System Resource Table device (updated via NVRAM)",
+      "Plugin": "uefi_capsule",
+      "Protocols": [
+        "org.uefi.capsule"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "usable-during-update"
+      ],
+      "RequestFlags": [
+        "allow-generic-message"
+      ],
+      "VendorIds": [
+        "DMI:LENOVO"
+      ],
+      "Version": "2",
+      "VersionLowest": "1",
+      "VersionFormat": "number",
+      "VersionRaw": 2,
+      "VersionLowestRaw": 1,
+      "Created": 1792168872,
+      "UpdateState": 2
+    },
+    {
+      "Name": "UEFI Device Firmware",
+      "DeviceId": "bede098fde861317d555511f082f412aa2285b09",
+      "Guid": [
+        "023a338b-246f-47e0-b4e5-304203184ec1"
+      ],
+      "Summary": "UEFI System Resource Table device (updated via NVRAM)",
+      "Plugin": "uefi_capsule",
+      "Protocols": [
+        "org.uefi.capsule"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "usable-during-update"
+      ],
+      "RequestFlags": [
+        "allow-generic-message"
+      ],
+      "VendorIds": [
+        "DMI:LENOVO"
+      ],
+      "Version": "3344935",
+      "VersionFormat": "number",
+      "VersionRaw": 3344935,
+      "Created": 1792168872,
+      "UpdateState": 2
+    },
+    {
+      "Name": "UEFI Device Firmware",
+      "DeviceId": "5a5bf9a7b4a165e2b052b3a59327ae07b2a6ffc4",
+      "Guid": [
+        "1a6194ab-9dad-4c3b-8d54-b1b8a3a29a03"
+      ],
+      "Summary": "UEFI System Resource Table device (updated via NVRAM)",
+      "Plugin": "uefi_capsule",
+      "Protocols": [
+        "org.uefi.capsule"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "usable-during-update"
+      ],
+      "RequestFlags": [
+        "allow-generic-message"
+      ],
+      "VendorIds": [
+        "DMI:LENOVO"
+      ],
+      "Version": "262144",
+      "VersionLowest": "57374",
+      "VersionFormat": "number",
+      "VersionRaw": 262144,
+      "VersionLowestRaw": 57374,
+      "Created": 1792168872,
+      "UpdateState": 2
+    },
+    {
+      "Name": "UEFI Device Firmware",
+      "DeviceId": "d697aaec023fb00b681fba4c8a2997128e600977",
+      "Guid": [
+        "42470175-ba17-4977-84f1-8238de2afcf8"
+      ],
+      "Summary": "UEFI System Resource Table device (updated via NVRAM)",
+      "Plugin": "uefi_capsule",
+      "Protocols": [
+        "org.uefi.capsule"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "usable-during-update"
+      ],
+      "RequestFlags": [
+        "allow-generic-message"
+      ],
+      "VendorIds": [
+        "DMI:LENOVO"
+      ],
+      "Version": "13586",
+      "VersionLowest": "1",
+      "VersionFormat": "number",
+      "VersionRaw": 13586,
+      "VersionLowestRaw": 1,
+      "Created": 1792168872,
+      "UpdateState": 2
+    },
+    {
+      "Name": "UEFI Device Firmware",
+      "DeviceId": "ad5ee627b803d3436a86a5b78e17db8b758f5bd9",
+      "Guid": [
+        "5fd508e3-c6a1-40b1-840d-30faf8764356"
+      ],
+      "Summary": "UEFI System Resource Table device (updated via NVRAM)",
+      "Plugin": "uefi_capsule",
+      "Protocols": [
+        "org.uefi.capsule"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "usable-during-update"
+      ],
+      "RequestFlags": [
+        "allow-generic-message"
+      ],
+      "VendorIds": [
+        "DMI:LENOVO"
+      ],
+      "Version": "16908296",
+      "VersionLowest": "1",
+      "VersionFormat": "number",
+      "VersionRaw": 16908296,
+      "VersionLowestRaw": 1,
+      "Created": 1792168872,
+      "UpdateState": 2
+    },
+    {
+      "Name": "UEFI Device Firmware",
+      "DeviceId": "8c7dd7ff034550c7449fa73860fcad3493eafbeb",
+      "Guid": [
+        "2af3e4c5-d9fa-4c0c-b349-d5247c1cb76a"
+      ],
+      "Summary": "UEFI System Resource Table device (updated via NVRAM)",
+      "Plugin": "uefi_capsule",
+      "Protocols": [
+        "org.uefi.capsule"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "require-ac",
+        "needs-reboot",
+        "usable-during-update"
+      ],
+      "RequestFlags": [
+        "allow-generic-message"
+      ],
+      "VendorIds": [
+        "DMI:LENOVO"
+      ],
+      "Version": "590082",
+      "VersionLowest": "590082",
+      "VersionFormat": "number",
+      "VersionRaw": 590082,
+      "VersionLowestRaw": 590082,
+      "Created": 1792168872,
+      "UpdateState": 2
+    },
+    {
+      "Name": "UEFI Key Exchange Key",
+      "DeviceId": "2a4c23bfb79b5dabe474cb7b1b3e604645d6f9c6",
+      "ParentDeviceId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "Plugin": "uefi_kek",
+      "Flags": [
+        "internal"
+      ],
+      "Icons": [
+        "application-certificate"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "UEFI Signature Database",
+      "DeviceId": "0352a8acc949c7df21fec16e566ba9a74e797a97",
+      "ParentDeviceId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "Plugin": "uefi_db",
+      "Flags": [
+        "internal"
+      ],
+      "Icons": [
+        "application-certificate"
+      ],
+      "Created": 1792168872
+    },
+    {
+      "Name": "UEFI dbx",
+      "DeviceId": "362301da643102b9f38477387e2193e57abaa590",
+      "ParentDeviceId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "InstanceIds": [
+        "UEFI\\CRT_A9087D1044AD18F7A94916D284CBC01827CF23CD8F60B79072C9CAA1FEF4D649&ARCH_X64",
+        "UEFI\\CRT_A1117F516A32CEFCBA3F2D1ACE10A87972FD6BBE8FE0D0B996E09E65D802A503&ARCH_X64",
+        "UEFI\\CRT_3CD3F0309EDAE228767A976DD40D9F4AFFC4FBD5218F2E8CC3C9DD97E8AC6F9D&ARCH_X64"
+      ],
+      "Guid": [
+        "5971a208-da00-5fce-b5f5-1234342f9cf7",
+        "f8ba2887-9411-5c36-9cee-88995bb39731",
+        "d07ff664-b0e1-5f4e-a723-d7fbcbfcb94f"
+      ],
+      "Summary": "UEFI revocation database",
+      "Plugin": "uefi_dbx",
+      "Protocols": [
+        "org.uefi.dbx2"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "needs-reboot",
+        "usable-during-update",
+        "only-version-upgrade",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Checksums": [
+        "2ea557c44b83c0ad6b71efb7edcc18b6337ad1c1d682155dd9451b051b62ff40"
+      ],
+      "Vendor": "Microsoft",
+      "VendorIds": [
+        "UEFI:Microsoft"
+      ],
+      "Version": "20260707",
+      "VersionLowest": "20260707",
+      "VersionFormat": "number",
+      "Icons": [
+        "application-certificate"
+      ],
+      "InstallDuration": 1,
+      "Created": 1792168872
+    },
+    {
+      "Name": "Windows UEFI CA",
+      "DeviceId": "d31da5f926c6d962ed810b284fab5a2ef623007b",
+      "ParentDeviceId": "0352a8acc949c7df21fec16e566ba9a74e797a97",
+      "CompositeId": "593a3ffeab2d8f1471ce4fccc76c181aab972b9c",
+      "InstanceIds": [
+        "UEFI\\VENDOR_Microsoft&NAME_Windows-UEFI-CA",
+        "UEFI\\CRT_A794240D25F0CCB2EC8142DC2F7411890717DEAD"
+      ],
+      "Guid": [
+        "914015a8-9d92-5462-9a9b-f2b361e4faae",
+        "89a825bf-78b5-5f1c-905b-e982b2f02584"
+      ],
+      "Plugin": "uefi_db",
+      "Protocols": [
+        "org.uefi.dbx2"
+      ],
+      "Flags": [
+        "internal",
+        "updatable",
+        "needs-reboot",
+        "signed-payload",
+        "can-emulation-tag"
+      ],
+      "Vendor": "Microsoft",
+      "VendorIds": [
+        "UEFI:Microsoft"
+      ],
+      "Version": "2023",
+      "VersionFormat": "number",
+      "VersionRaw": 2023,
+      "Icons": [
+        "application-certificate"
+      ],
+      "Created": 1792168872
+    }
+  ]
+}

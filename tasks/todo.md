@@ -16,10 +16,10 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/tui/{start,area,packages,logs,services}.go, cmd/hashiru-tui/main.go, tests. **Deps:** none. **Size:** S
 
 ### Task 2: fwupd probes
-- [ ] `system.FirmwareDevices` from `fwupdmgr get-devices --json`: name, vendor, version, updatable, flags
-- [ ] `system.FirmwareUpdates` from `fwupdmgr get-updates --json`: device, version from → to, summary, needs reboot
-- [ ] Exit codes captured on this machine; "no updates" is an empty list, not an error
-- [ ] Fixtures from this T14s in testdata; fwupdmgr missing → a typed "not installed" error
+- [x] `system.FirmwareDevices` from `fwupdmgr get-devices --json`: name, vendor, version, updatable, flags
+- [x] `system.FirmwareUpdates` from `fwupdmgr get-updates --json`: device, version from → to, summary, needs reboot
+- [x] Exit codes captured on this machine (0 with an empty list); exit 2, fwupd's "nothing to do", is an empty list too
+- [x] Fixtures from this T14s in testdata; `ReadFirmware` flags fwupdmgr missing rather than erroring, as `ReadConnectivity` does; serials scrubbed from the fixture; the updates fixture is hand-made in fwupd's shape (nothing pending here)
 **Files:** internal/system/firmware.go (new), firmware_test.go, testdata. **Deps:** none. **Size:** S
 
 ### Task 3: Hardware area with its Firmware tab
