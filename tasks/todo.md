@@ -28,8 +28,8 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 ## Phase 2
 
 ### Task 4: Pending pacman and AUR updates
-- [ ] `checkupdates` and `yay -Qua` parsed into package/old/new; exit 2 from checkupdates means none
-- [ ] Updates lists them; Overview shows counts; missing yay shows "not installed"
+- [x] `checkupdates` and `yay -Qua` parsed into package/old/new; exit 2 from checkupdates means none
+- [x] Updates lists them; Overview shows counts; missing yay shows "not installed"
 **Files:** internal/system/{exec,updates}.go + tests, internal/tui/updates.go, overview.go. **Deps:** 1. **Size:** M
 
 ### Task 5: Arch news

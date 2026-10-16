@@ -41,7 +41,7 @@ installing the binary).
 - [x] `go test ./...` and `make build` pass; run in a herdr split, all three areas work, palette opens and runs an action
 
 ### Phase 2: Updates and the everyday areas
-- [ ] Task 4: Pending pacman and AUR updates in Updates and Overview
+- [x] Task 4: Pending pacman and AUR updates in Updates and Overview
 - [ ] Task 5: Arch news in Updates
 - [ ] Task 6: Keybinds area
 - [ ] Task 7: Connectivity area (network, bluetooth, audio)

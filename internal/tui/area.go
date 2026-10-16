@@ -1,6 +1,10 @@
 package tui
 
-import tea "charm.land/bubbletea/v2"
+import (
+	tea "charm.land/bubbletea/v2"
+
+	"github.com/whleucka/hashiru-tui/internal/system"
+)
 
 // Area is one entry in the sidebar: Overview, Updates, Logs, and so on.
 // Adding one is a type implementing this and a line in newAreas.
@@ -29,6 +33,7 @@ type Action struct {
 // env is what an area gets from the shell.
 type env struct {
 	src   Source
+	probe system.Run
 	state *State
 	// launch starts another tool; see Model.launch.
 	launch func(Launch) tea.Cmd

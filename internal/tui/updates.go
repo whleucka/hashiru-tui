@@ -16,7 +16,11 @@ type updates struct {
 	// Health: which section the cursor is on, and which are expanded.
 	cursor   int
 	expanded map[string]bool
+	allPkgs  bool // list every pending package, not just the first few
 }
+
+// pkgPreview is how many pending packages show before "… N more".
+const pkgPreview = 8
 
 func newUpdates(e *env) *updates {
 	return &updates{e: e, expanded: map[string]bool{}}
@@ -36,7 +40,14 @@ func (u *updates) Update(msg tea.Msg) tea.Cmd {
 func (u *updates) Actions() []Action {
 	return []Action{
 		{Title: "Update the system (hashiru update)", Key: "u", Run: u.update},
+		{Title: "Upgrade AUR packages (yay -Sua)", Key: "a", Run: u.upgradeAUR},
 	}
+}
+
+// upgradeAUR is separate because hashiru update runs pacman -Syu but never
+// upgrades AUR packages; stage 20 only installs the missing ones.
+func (u *updates) upgradeAUR() tea.Cmd {
+	return u.e.launch(Launch{Argv: []string{"yay", "-Sua"}, Label: "yay -Sua", Kind: Interactive, Refresh: true})
 }
 
 func (u *updates) update() tea.Cmd {
@@ -47,6 +58,10 @@ func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	switch msg.String() {
 	case "u":
 		return u.update(), true
+	case "a":
+		return u.upgradeAUR(), true
+	case "p":
+		u.allPkgs = !u.allPkgs
 	case "j", "down":
 		if u.cursor < len(u.sections())-1 {
 			u.cursor++
@@ -66,7 +81,9 @@ func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	return nil, true
 }
 
-func (u *updates) Help() string { return "u update · j/k section · enter expand" }
+func (u *updates) Help() string {
+	return "u update · a AUR · p all packages · j/k section · enter expand"
+}
 
 func (u *updates) sections() []hashiru.Section {
 	if u.e.state.Report == nil {
@@ -100,6 +117,15 @@ func (u *updates) View(width, height int) string {
 		row("repo", s.Repo)
 		row("tree", treeLine(s))
 		row("upstream", upstreamLine(s))
+	}
+
+	b.WriteString("\n" + styleTitle.Render("Packages") + "  " + pendingLine(st) + "\n")
+	limit := pkgPreview
+	if u.allPkgs {
+		limit = 0
+	}
+	for _, r := range pendingRows(st, limit) {
+		b.WriteString(r + "\n")
 	}
 
 	b.WriteString("\n" + styleTitle.Render("Health") + "  ")

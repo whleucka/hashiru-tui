@@ -10,6 +10,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
+	"github.com/whleucka/hashiru-tui/internal/system"
 )
 
 // Source is where Hashiru's own state comes from. hashiru.CLI satisfies it;
@@ -32,7 +33,13 @@ type Options struct {
 	Detach func(argv []string) error
 	// Exec hands the terminal to a command. Defaults to tea.ExecProcess.
 	Exec func(*exec.Cmd, tea.ExecCallback) tea.Cmd
+	// Probe runs the read-only commands areas show (checkupdates, nmcli...).
+	// Defaults to running them for real.
+	Probe system.Run
 }
+
+// defaultProbe is a variable so tests can keep every model off the machine.
+var defaultProbe system.Run = system.Command
 
 // Model is the shell: sidebar, the selected area, and the footer.
 type Model struct {
@@ -59,9 +66,13 @@ func New(opts Options) *Model {
 	if opts.Exec == nil {
 		opts.Exec = tea.ExecProcess
 	}
+	if opts.Probe == nil {
+		opts.Probe = defaultProbe
+	}
 	m := &Model{opts: opts, state: &State{}}
 	m.env = &env{
 		src:     opts.Source,
+		probe:   opts.Probe,
 		state:   m.state,
 		launch:  m.launch,
 		refresh: m.refresh,
@@ -91,7 +102,7 @@ func (m *Model) Init() tea.Cmd {
 
 // refresh reloads the shared state and lets every area reload its own.
 func (m *Model) refresh() tea.Cmd {
-	return tea.Batch(m.state.load(m.opts.Source), m.broadcast(refreshMsg{}))
+	return tea.Batch(m.state.load(m.opts.Source, m.opts.Probe), m.broadcast(refreshMsg{}))
 }
 
 func (m *Model) area() Area { return m.areas[m.sel] }

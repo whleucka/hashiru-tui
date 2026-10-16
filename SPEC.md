@@ -62,8 +62,9 @@ users more than this audience.)
   sync db), AUR (`yay -Qua`), Hashiru (`status --porcelain` behind count).
 - **Arch news**: latest items from archlinux.org's news feed, flagged when one is
   newer than the last update. The thing that bites people who update blindly.
-- Action: update everything. `hashiru update` already runs `pacman -Syu` in
-  stage 10, so one action covers all three.
+- Actions: `hashiru update` (stage 10 runs `pacman -Syu`, so it covers
+  pacman and Hashiru), and `yay -Sua` separately: no stage upgrades AUR
+  packages, stage 20 only installs missing ones.
 - Doctor lives here as "health", with its sections and problems (already built).
 
 **Wallpaper** (native)
