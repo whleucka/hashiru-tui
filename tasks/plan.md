@@ -35,7 +35,7 @@ and the two new areas.
 ### Phase 1: Keys and palette
 - [x] Task 1: Keys as data; the footer renders from them
 - [x] Task 2: `?` keymap popup
-- [ ] Task 3: Action IDs, global actions and recents in the palette
+- [x] Task 3: Action IDs, global actions and recents in the palette
 
 ### Checkpoint A
 - [ ] Tests, vet, build; manual: `?` in every area, `?` inside a filter types `?`, palette recents survive a restart

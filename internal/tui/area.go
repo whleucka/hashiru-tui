@@ -27,6 +27,9 @@ type Area interface {
 
 // Action is something an area can do, named for the palette.
 type Action struct {
+	// ID is "<area>.<verb>": stable, for deep links and the palette's
+	// recents. Titles can change; IDs don't.
+	ID    string
 	Title string // "Update the system"
 	Key   string // the area's key for it, if it has one
 	Run   func() tea.Cmd

@@ -47,6 +47,9 @@ type Options struct {
 	Home string
 	// Graphics is whether to draw image previews; auto asks the environment.
 	Graphics graphicsMode
+	// RecentPath is where the palette keeps recently run actions. Defaults
+	// to $XDG_STATE_HOME/hashiru-tui/recent.
+	RecentPath string
 }
 
 // defaultProbe is a variable so tests can keep every model off the machine.
@@ -73,7 +76,8 @@ type Model struct {
 	inArea bool // keys go to the area first rather than the sidebar
 
 	pal     palette
-	keyHelp bool // the ? popup is open
+	keyHelp bool     // the ? popup is open
+	recent  []string // IDs of actions run from the palette, newest first
 
 	note    string // one-line feedback in the footer
 	noteErr bool
@@ -102,7 +106,10 @@ func New(opts Options) *Model {
 	if opts.Home == "" {
 		opts.Home, _ = defaultHome()
 	}
-	m := &Model{opts: opts, state: &State{}}
+	if opts.RecentPath == "" {
+		opts.RecentPath = defaultRecentPath(opts.Home)
+	}
+	m := &Model{opts: opts, state: &State{}, recent: loadRecent(opts.RecentPath)}
 	m.env = &env{
 		src:     opts.Source,
 		probe:   opts.Probe,

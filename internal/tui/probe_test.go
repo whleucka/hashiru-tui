@@ -59,6 +59,9 @@ func init() {
 // Nor kitty graphics, unless a test asks.
 func init() { defaultGraphics = func() bool { return false } }
 
-// Config paths come from Home, not from whatever XDG_CONFIG_HOME the person
-// running the tests has.
-func init() { os.Unsetenv("XDG_CONFIG_HOME") }
+// Config paths and the palette's recents come from Home, not from whatever
+// XDG_CONFIG_HOME or XDG_STATE_HOME the person running the tests has.
+func init() {
+	os.Unsetenv("XDG_CONFIG_HOME")
+	os.Unsetenv("XDG_STATE_HOME")
+}

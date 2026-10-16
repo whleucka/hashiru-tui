@@ -80,7 +80,7 @@ func (s *snapshots) Update(msg tea.Msg) tea.Cmd {
 }
 
 func (s *snapshots) Actions() []Action {
-	return []Action{{Title: "Take a snapshot of / now (snapper)", Key: "n", Run: s.startNaming}}
+	return []Action{{ID: "snapshots.new", Title: "Take a snapshot of / now (snapper)", Key: "n", Run: s.startNaming}}
 }
 
 func (s *snapshots) startNaming() tea.Cmd {

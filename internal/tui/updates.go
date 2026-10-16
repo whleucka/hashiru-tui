@@ -39,9 +39,9 @@ func (u *updates) Update(msg tea.Msg) tea.Cmd {
 
 func (u *updates) Actions() []Action {
 	return []Action{
-		{Title: "Update the system (hashiru update)", Key: "u", Run: u.update},
-		{Title: "Upgrade AUR packages (yay -Sua)", Key: "a", Run: u.upgradeAUR},
-		{Title: "Read Arch news", Key: "n", Run: u.openNews},
+		{ID: "updates.update", Title: "Update the system (hashiru update)", Key: "u", Run: u.update},
+		{ID: "updates.aur", Title: "Upgrade AUR packages (yay -Sua)", Key: "a", Run: u.upgradeAUR},
+		{ID: "updates.news", Title: "Read Arch news", Key: "n", Run: u.openNews},
 	}
 }
 

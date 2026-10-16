@@ -120,7 +120,7 @@ func (w *wallpaper) load() tea.Cmd {
 
 func (w *wallpaper) Actions() []Action {
 	return []Action{
-		{Title: "Wallpaper: back to the time-of-day cycle", Key: "c", Run: w.cycle},
+		{ID: "wallpaper.cycle", Title: "Wallpaper: back to the time-of-day cycle", Key: "c", Run: w.cycle},
 	}
 }
 

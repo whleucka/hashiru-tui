@@ -21,10 +21,10 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/tui/keyhelp.go (new), app.go, view.go, wallpaper.go, tests. **Deps:** 1. **Size:** M
 
 ### Task 3: Palette: IDs, global actions, recents
-- [ ] `Action.ID` on every action (`<area>.<verb>`), unique, tested
-- [ ] Palette lists global actions too: refresh, show keys, quit
-- [ ] Running an action records its ID in `~/.local/state/hashiru-tui/recent` (last 10); with an empty filter, recents come first
-- [ ] Path injected through Options; unreadable file means no recents
+- [x] `Action.ID` on every action (`<area>.<verb>`), unique, tested
+- [x] Palette lists global actions too: refresh, show keys, quit
+- [x] Running an action records its ID in `~/.local/state/hashiru-tui/recent` (last 10); with an empty filter, recents come first
+- [x] Path injected through Options; unreadable file means no recents
 **Files:** internal/tui/{area,palette,app}.go, recent.go (new), every area's Actions, tests. **Deps:** 1. **Size:** M
 
 ### Checkpoint A

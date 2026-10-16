@@ -111,9 +111,9 @@ func (l *logsArea) loadFailed() tea.Cmd {
 
 func (l *logsArea) Actions() []Action {
 	return []Action{
-		{Title: "Follow the journal (journalctl -f)", Key: "J", Run: l.watch("journal", "journalctl", "-f")},
-		{Title: "Follow kernel messages (journalctl -k -f)", Key: "K", Run: l.watch("kernel", "journalctl", "-k", "-f")},
-		{Title: "Follow the Hashiru log (hashiru log -f)", Key: "L", Run: func() tea.Cmd {
+		{ID: "logs.follow-journal", Title: "Follow the journal (journalctl -f)", Key: "J", Run: l.watch("journal", "journalctl", "-f")},
+		{ID: "logs.follow-kernel", Title: "Follow kernel messages (journalctl -k -f)", Key: "K", Run: l.watch("kernel", "journalctl", "-k", "-f")},
+		{ID: "logs.follow-hashiru", Title: "Follow the Hashiru log (hashiru log -f)", Key: "L", Run: func() tea.Cmd {
 			return l.e.launch(Launch{Argv: l.e.src.Argv("log", "-f"), Label: "hashiru log", Kind: Watch})
 		}},
 	}

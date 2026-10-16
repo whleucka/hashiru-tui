@@ -20,10 +20,10 @@ func (c *connectivity) Update(tea.Msg) tea.Cmd { return nil }
 
 func (c *connectivity) Actions() []Action {
 	return []Action{
-		{Title: "Network: connect to wifi, edit connections (nmtui)", Key: "w", Run: c.tool("nmtui", Interactive)},
-		{Title: "Bluetooth: pair and connect (bluetoothctl)", Key: "b", Run: c.tool("bluetoothctl", Interactive)},
-		{Title: "Bluetooth manager (blueman)", Key: "B", Run: c.tool("blueman-manager", GUI)},
-		{Title: "Audio mixer (pavucontrol)", Key: "v", Run: c.tool("pavucontrol", GUI)},
+		{ID: "connectivity.nmtui", Title: "Network: connect to wifi, edit connections (nmtui)", Key: "w", Run: c.tool("nmtui", Interactive)},
+		{ID: "connectivity.bluetoothctl", Title: "Bluetooth: pair and connect (bluetoothctl)", Key: "b", Run: c.tool("bluetoothctl", Interactive)},
+		{ID: "connectivity.blueman", Title: "Bluetooth manager (blueman)", Key: "B", Run: c.tool("blueman-manager", GUI)},
+		{ID: "connectivity.mixer", Title: "Audio mixer (pavucontrol)", Key: "v", Run: c.tool("pavucontrol", GUI)},
 	}
 }
 

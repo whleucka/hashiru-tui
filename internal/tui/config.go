@@ -75,11 +75,27 @@ func (c *configArea) Update(msg tea.Msg) tea.Cmd {
 }
 
 func (c *configArea) Actions() []Action {
-	acts := []Action{{Title: "Edit hashiru.conf (hashiru config)", Run: func() tea.Cmd { return c.open(c.entries[0]) }}}
+	acts := []Action{{ID: c.actionID(c.entries[0]), Title: "Edit hashiru.conf (hashiru config)", Run: func() tea.Cmd { return c.open(c.entries[0]) }}}
 	for _, e := range c.entries[1:] {
-		acts = append(acts, Action{Title: "Edit " + c.short(e.path), Run: func() tea.Cmd { return c.open(e) }})
+		acts = append(acts, Action{ID: c.actionID(e), Title: "Edit " + c.short(e.path), Run: func() tea.Cmd { return c.open(e) }})
 	}
 	return acts
+}
+
+// actionID names an entry by its path under Hashiru's config directory (or
+// home, for .zshrc.local): config.hypr-local-lua, config.zshrc-local.
+func (c *configArea) actionID(e configEntry) string {
+	rel, err := filepath.Rel(system.HashiruConfigDir(c.home), e.path)
+	if err != nil || strings.HasPrefix(rel, "..") {
+		rel, _ = filepath.Rel(c.home, e.path)
+	}
+	slug := strings.Map(func(r rune) rune {
+		if r >= 'a' && r <= 'z' || r >= '0' && r <= '9' {
+			return r
+		}
+		return '-'
+	}, strings.ToLower(rel))
+	return "config.edit-" + strings.Trim(slug, "-")
 }
 
 func (c *configArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
