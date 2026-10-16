@@ -21,7 +21,8 @@ const (
 	srcCount
 )
 
-// logsArea shows logs from a few sources, s to switch. Following anything
+// logsArea shows logs from a few sources, [ and ] to switch (s too, as
+// before tabs were the same everywhere). Following anything
 // live is a launch (J, K, L), since journalctl -f already does it well.
 type logsArea struct {
 	e   *env
@@ -128,7 +129,10 @@ func (l *logsArea) watch(label string, argv ...string) func() tea.Cmd {
 func (l *logsArea) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	k := msg.String()
 	if k == "s" {
-		l.src = (l.src + 1) % srcCount
+		k = "]"
+	}
+	if src, ok := nextTab(k, int(l.src), int(srcCount)); ok {
+		l.src = logSource(src)
 		return nil, true
 	}
 	for _, a := range l.Actions() {
@@ -198,11 +202,10 @@ func (l *logsArea) Keys() []Key {
 	default:
 		keys = []Key{{Keys: "j/k", Desc: "scroll"}}
 	}
-	return append(keys,
-		Key{Keys: "s", Desc: "source", Group: "Sources"},
-		Key{Keys: "J", Desc: "journal", Group: "Sources"},
-		Key{Keys: "K", Desc: "kernel", Group: "Sources"},
-		Key{Keys: "L", Desc: "hashiru log", Group: "Sources"},
+	return append(append([]Key{tabKey}, keys...),
+		Key{Keys: "J", Desc: "journal", Group: "Follow (in a pane)"},
+		Key{Keys: "K", Desc: "kernel", Group: "Follow (in a pane)"},
+		Key{Keys: "L", Desc: "hashiru log", Group: "Follow (in a pane)"},
 	)
 }
 
@@ -226,17 +229,9 @@ func (l *logsArea) sourceBar() string {
 		fmt.Sprintf("Journal errors (%d)", len(l.journal)),
 		fmt.Sprintf("Failed units (%d)", len(l.failed)),
 	}
-	for i, n := range names {
-		switch {
-		case logSource(i) == l.src:
-			names[i] = styleItemOn.Render(" " + n + " ")
-		case logSource(i) == srcFailed && len(l.failed) > 0:
-			names[i] = styleWarn.Render(" " + n + " ")
-		default:
-			names[i] = styleMuted.Render(" " + n + " ")
-		}
-	}
-	return strings.Join(names, " ")
+	return tabBar(names, int(l.src), func(i int) bool {
+		return logSource(i) == srcFailed && len(l.failed) > 0
+	})
 }
 
 func (l *logsArea) journalView(rows int) string {

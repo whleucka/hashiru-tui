@@ -63,3 +63,25 @@ func TestLogsFollowActions(t *testing.T) {
 		t.Errorf("ran %v", ran)
 	}
 }
+
+func TestLogsTabsSwitchWithBrackets(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	goTo(t, m, "Logs")
+	l := m.area().(*logsArea)
+	press(m, "]")
+	if l.src != srcJournal {
+		t.Errorf("] → %d, want journal", l.src)
+	}
+	press(m, "[", "[") // back to Hashiru, then wraps to failed units
+	if l.src != srcFailed {
+		t.Errorf("[ [ → %d, want failed units", l.src)
+	}
+	press(m, "s") // the old key still goes forward
+	if l.src != srcHashiru {
+		t.Errorf("s → %d, want Hashiru", l.src)
+	}
+	if out := ansi.Strip(m.View().Content); !strings.Contains(out, "[ ]") {
+		t.Errorf("tab bar has no [ ] hint:\n%s", out)
+	}
+}

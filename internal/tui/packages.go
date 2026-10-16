@@ -173,7 +173,7 @@ func (p *packages) Keys() []Key {
 		return []Key{{Keys: "type", Desc: "to filter"}, {Keys: "enter", Desc: "keep"}, {Keys: "esc", Desc: "clear"}}
 	}
 	return []Key{
-		{Keys: "[/]", Desc: "group"},
+		tabKey,
 		{Keys: "j/k", Desc: "move"},
 		{Keys: "enter", Desc: "info"},
 		{Keys: "/", Desc: "filter"},
@@ -202,11 +202,11 @@ func (p *packages) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		return nil, true
 	}
 
+	if g, ok := nextTab(msg.String(), int(p.group), int(groupCount)); ok {
+		p.group, p.sel, p.offset = pkgGroup(g), 0, 0
+		return nil, true
+	}
 	switch msg.String() {
-	case "]":
-		p.setGroup((p.group + 1) % groupCount)
-	case "[":
-		p.setGroup((p.group + groupCount - 1) % groupCount)
 	case "/":
 		p.filtering = true
 		return p.input.Focus(), true
@@ -230,10 +230,6 @@ func (p *packages) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		return nil, false
 	}
 	return nil, true
-}
-
-func (p *packages) setGroup(g pkgGroup) {
-	p.group, p.sel, p.offset = g, 0, 0
 }
 
 func (p *packages) infoKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
@@ -326,22 +322,16 @@ func (p *packages) View(width, height int) string {
 	return b.String()
 }
 
-// tabs is the group bar: each group and its count, the current one lit.
+// tabs is the group bar: each group and its count. Missing warns when
+// there's drift.
 func (p *packages) tabs() string {
-	var parts []string
+	var labels []string
 	for g := pkgGroup(0); g < groupCount; g++ {
-		label := fmt.Sprintf(" %s (%d) ", g, len(p.rows(g)))
-		switch {
-		case g == p.group:
-			label = styleItemOn.Render(label)
-		case g == groupMissing && len(p.rows(g)) > 0:
-			label = styleWarn.Render(label)
-		default:
-			label = styleMuted.Render(label)
-		}
-		parts = append(parts, label)
+		labels = append(labels, fmt.Sprintf("%s (%d)", g, len(p.rows(g))))
 	}
-	return strings.Join(parts, "")
+	return tabBar(labels, int(p.group), func(i int) bool {
+		return pkgGroup(i) == groupMissing && len(p.rows(groupMissing)) > 0
+	})
 }
 
 // summary is the line under the tabs: what this group is, and the cache.

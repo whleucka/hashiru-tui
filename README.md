@@ -28,10 +28,11 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `enter` / `esc` | into the area / back to the sidebar |
 | `ctrl+p` (or `:` in the sidebar) | command palette: every area and action |
 | `r` | refresh |
+| `[` `]` | previous / next tab, in an area that has them (Packages, Logs) |
 | `?` | this area's keys |
 | `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |
 
-Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news (Updates), `[` `]` group and `enter` info (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `s` switch log source (Logs).
+Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news (Updates), `enter` info (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log in a pane (Logs).
 
 ## Deep links
 

@@ -17,7 +17,7 @@ func TestKeyHelpOpensOverTheArea(t *testing.T) {
 		t.Fatal("? didn't open the popup")
 	}
 	out := ansi.Strip(m.View().Content)
-	for _, want := range []string{"Logs", "Sources", "hashiru log", "Global", "ctrl+p"} {
+	for _, want := range []string{"Logs", "Follow (in a pane)", "hashiru log", "switch tab", "Global", "ctrl+p"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("popup missing %q:\n%s", want, out)
 		}

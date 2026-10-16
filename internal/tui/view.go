@@ -157,6 +157,39 @@ func (m *Model) footer() string {
 	return ansi.Truncate(note, m.width, "…") + "\n" + help
 }
 
+// tabKey is the one way to switch tabs, in every area that has them.
+var tabKey = Key{Keys: "[/]", Desc: "switch tab"}
+
+// tabBar draws an area's tabs, the current one lit and any that warn in
+// the warning colour, then the hint for switching.
+func tabBar(labels []string, cur int, warn func(int) bool) string {
+	parts := make([]string, len(labels))
+	for i, l := range labels {
+		l = " " + l + " "
+		switch {
+		case i == cur:
+			parts[i] = styleItemOn.Render(l)
+		case warn(i):
+			parts[i] = styleWarn.Render(l)
+		default:
+			parts[i] = styleMuted.Render(l)
+		}
+	}
+	return strings.Join(parts, " ") + styleMuted.Render("  [ ]")
+}
+
+// nextTab is i moved by "[" or "]" among n tabs, wrapping; ok is false for
+// any other key.
+func nextTab(key string, i, n int) (int, bool) {
+	switch key {
+	case "]":
+		return (i + 1) % n, true
+	case "[":
+		return (i + n - 1) % n, true
+	}
+	return i, false
+}
+
 // keyLine joins keys as "j/k move · enter edit", dropping whole keys from the
 // end rather than cutting one in half.
 func keyLine(keys []Key, width int) string {
