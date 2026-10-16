@@ -35,7 +35,7 @@ installing the binary).
 ### Phase 1: Shell
 - [x] Task 1: Sidebar shell with the Area interface; existing views become Overview, Updates, Logs
 - [x] Task 2: Launcher with Interactive / Watch / GUI kinds
-- [ ] Task 3: Command palette over areas and actions
+- [x] Task 3: Command palette over areas and actions
 
 ### Checkpoint A
 - [ ] `go test ./...` and `make build` pass; run in a herdr split, all three areas work, palette opens and runs an action

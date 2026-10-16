@@ -49,10 +49,14 @@ func (m *Model) areaSize() (int, int) {
 func (m *Model) View() tea.View {
 	w, h := m.areaSize()
 
+	content := m.area().View(w, h)
+	if m.pal.open {
+		content = m.pal.view(w, h)
+	}
 	body := lipgloss.JoinHorizontal(lipgloss.Top,
 		styleSidebar.Height(h).Render(m.sidebar()),
 		" ",
-		clip(m.area().View(w, h), w, h),
+		clip(content, w, h),
 	)
 	v := tea.NewView(body + "\n" + m.footer())
 	v.AltScreen = true
@@ -78,12 +82,15 @@ func (m *Model) sidebar() string {
 }
 
 func (m *Model) footer() string {
-	help := "j/k area · enter open · r refresh · q quit"
+	help := "j/k area · enter open · : palette · r refresh · q quit"
 	if m.inArea {
-		help = "esc back · r refresh · q quit"
+		help = "esc back · ctrl+p palette · r refresh · q quit"
 	}
 	if h := m.area().Help(); h != "" {
 		help = h + " · " + help
+	}
+	if m.pal.open {
+		help = m.pal.help()
 	}
 	help = ansi.Truncate(styleMuted.Render(help), m.width, "…")
 

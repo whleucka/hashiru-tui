@@ -18,8 +18,8 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/tui/launch.go, launch_test.go, app.go. **Deps:** 1. **Size:** S
 
 ### Task 3: Command palette
-- [ ] `ctrl+p` (and `:` from the sidebar) opens a filter over "Go to <area>" and every area's actions
-- [ ] Typing filters by words in any order; `enter` runs; `esc` closes
+- [x] `ctrl+p` (and `:` from the sidebar) opens a filter over "Go to <area>" and every area's actions
+- [x] Typing filters by words in any order; `enter` runs; `esc` closes
 **Files:** internal/tui/palette.go, palette_test.go, app.go, view.go. **Deps:** 1, 2. **Size:** M
 
 ### Checkpoint A

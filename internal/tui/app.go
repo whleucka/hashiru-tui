@@ -45,6 +45,8 @@ type Model struct {
 	sel    int  // selected area
 	inArea bool // keys go to the area first rather than the sidebar
 
+	pal palette
+
 	note    string // one-line feedback in the footer
 	noteErr bool
 }
@@ -141,8 +143,16 @@ func (m *Model) setNote(text string, err error) {
 }
 
 func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
-	if msg.String() == "ctrl+c" {
+	switch msg.String() {
+	case "ctrl+c":
 		return tea.Quit
+	case "ctrl+p":
+		if !m.pal.open {
+			return m.openPalette()
+		}
+	}
+	if m.pal.open {
+		return m.handlePaletteKey(msg)
 	}
 
 	if m.inArea {
@@ -168,6 +178,8 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 	case "enter", "l", "right":
 		m.inArea = true
 		return nil
+	case ":":
+		return m.openPalette()
 	}
 	if cmd, ok := m.shellKey(msg); ok {
 		return cmd
