@@ -23,11 +23,11 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/system/firmware.go (new), firmware_test.go, testdata. **Deps:** none. **Size:** S
 
 ### Task 3: Hardware area with its Firmware tab
-- [ ] Area `hardware` in the sidebar (eleventh row, no number key); tab bar with Firmware only for now
-- [ ] Pending updates first and flagged, then devices; `enter` shows details
-- [ ] `F` `hardware.firmware-refresh` and `u` `hardware.firmware-update` run Interactive through the launcher; re-probe after
-- [ ] fwupd missing or daemon down: the tab says so with the command; `r` re-probes this tab
-- [ ] Implements `Tabbed`; keys in `Keys()`; actions in palette and `--list-actions`
+- [x] Area `hardware` in the sidebar (eleventh row, no number key); tab bar with Firmware only for now
+- [x] Pending updates first and flagged, then devices; `enter` shows details
+- [x] `F` `hardware.firmware-refresh` and `u` `hardware.firmware-update` run Interactive through the launcher; re-probe after
+- [x] fwupd missing or daemon down: the tab says so with the command; `r` re-probes (every tab, like every area)
+- [x] Implements `Tabbed`; keys in `Keys()`; actions in palette and `--list-actions`
 **Files:** internal/tui/hardware.go, hardware_firmware.go (new), app.go, tests. **Deps:** 1, 2. **Size:** M
 
 ### Checkpoint A

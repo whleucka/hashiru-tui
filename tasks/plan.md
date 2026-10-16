@@ -41,7 +41,7 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 ### Phase 1: Tab deep links, Firmware
 - [x] Task 1: `Tabbed` and `area.tab` deep links (Packages, Logs)
 - [x] Task 2: fwupd probes
-- [ ] Task 3: Hardware area with its Firmware tab
+- [x] Task 3: Hardware area with its Firmware tab
 
 ### Checkpoint A
 - [ ] Tests, vet, build; manual: `hashiru-tui packages.orphans`, `hashiru-tui hardware.firmware`, `F` and `u` open fwupdmgr in a herdr pane and outside herdr

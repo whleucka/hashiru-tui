@@ -159,10 +159,14 @@ func (m *Model) footer() string {
 }
 
 // areaDigit is the number key for the i'th area: 1 to 9, then 0 for the
-// tenth, as on the keyboard's top row.
+// tenth, as on the keyboard's top row. Areas past that have none (a blank
+// the same width): j/k and the palette reach them.
 func areaDigit(i int) string {
-	if i == 9 {
+	switch {
+	case i == 9:
 		return "0"
+	case i > 9:
+		return " "
 	}
 	return string(rune('1' + i))
 }

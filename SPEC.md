@@ -234,7 +234,8 @@ and `power` degrades (read-only, with a note) on a Hashiru that predates it.
   `--run` keeps action IDs; a positional `area.tab` is never an action.
 - Action IDs are `hardware.<verb>` (below). Everything that needs root goes
   through the launcher as Interactive, so sudo and the tool's own prompts show.
-- `r` re-probes the current tab only.
+- `r` re-probes every tab, as it reloads every area (all three probes are
+  fast: fwupd answers in ~40 ms here).
 
 ### Monitors (native)
 
