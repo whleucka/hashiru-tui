@@ -88,7 +88,9 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** stow/hyprland/.config/hypr/scripts/tahoe-wallpaper. **Deps:** 12. **Size:** XS
 Done in Hashiru as bc37a5d (local, not pushed), checked against a fake awww: no choice, choice set, choice's image gone, choice cleared. The choice file follows Hashiru's `${XDG_CONFIG_HOME:-~/.config}/hashiru`, and hashiru-tui now does too.
 
-### Task 14: Keybind and install (STOP: needs a decision)
-- [ ] Decide how the binary reaches the machine (no remote yet)
-- [ ] SUPER+ALT+Space opens it floating; a stage installs it
+### Task 14: Keybind and install
+- [x] Decided: a stage runs `go install github.com/whleucka/hashiru-tui/cmd/hashiru-tui@<tag>` (2026-10-15)
+- [x] SUPER+ALT+Space opens it floating; stage 99 installs it (Go comes from dev.txt there); `hashiru tui` runs it. Hashiru 0b135a0, local. hashiru-tui has `--version` for the stage's check.
+- [ ] Rewrite history to drop the SSID, MAC and the other tool's name; force-push main; tag and push v0.1.0 (blocked here as a destructive git operation; left to William)
+- [ ] Verify `go install ...@v0.1.0` and `hashiru install 99`
 **Deps:** 13 + decision.
