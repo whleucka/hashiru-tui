@@ -38,12 +38,18 @@ type Options struct {
 	Probe system.Run
 	// Get fetches a URL (Arch news). Defaults to a real HTTP GET.
 	Get system.Get
+	// SysRoot is where /proc and /sys are read from; Statfs sizes /.
+	SysRoot string
+	Statfs  system.Statfs
 }
 
 // defaultProbe is a variable so tests can keep every model off the machine.
 var (
 	defaultProbe system.Run = system.Command
 	defaultGet   system.Get = system.HTTPGet
+
+	defaultSysRoot               = "/"
+	defaultStatfs  system.Statfs = system.RootStatfs
 )
 
 // Model is the shell: sidebar, the selected area, and the footer.
@@ -76,6 +82,12 @@ func New(opts Options) *Model {
 	}
 	if opts.Get == nil {
 		opts.Get = defaultGet
+	}
+	if opts.SysRoot == "" {
+		opts.SysRoot = defaultSysRoot
+	}
+	if opts.Statfs == nil {
+		opts.Statfs = defaultStatfs
 	}
 	m := &Model{opts: opts, state: &State{}}
 	m.env = &env{

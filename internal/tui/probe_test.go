@@ -42,3 +42,9 @@ func init() {
 		return nil, errors.New("offline (test)")
 	}
 }
+
+// /proc and /sys come from the fixture tree, and / is a 1000 GiB disk.
+func init() {
+	defaultSysRoot = "../system/testdata/sysroot"
+	defaultStatfs = func(string) (uint64, uint64, error) { return 1000 << 30, 250 << 30, nil }
+}

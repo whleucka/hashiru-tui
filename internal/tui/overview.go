@@ -1,9 +1,13 @@
 package tui
 
 import (
+	"fmt"
 	"strings"
+	"time"
 
 	tea "charm.land/bubbletea/v2"
+
+	"github.com/whleucka/hashiru-tui/internal/system"
 )
 
 // overview is the home screen: the machine at a glance.
@@ -21,6 +25,29 @@ func (o *overview) View(width, height int) string {
 	st := o.e.state
 	var b strings.Builder
 	row := func(k, v string) { b.WriteString(styleKey.Render(k) + v + "\n") }
+
+	if si := st.Sys; si != nil {
+		b.WriteString(styleTitle.Render(orUnknown(si.Host)) + styleMuted.Render("  "+si.Kernel+"  up "+uptime(si.Uptime)) + "\n")
+		if si.MemTotal > 0 {
+			used := si.MemTotal - si.MemAvail
+			row("memory", fmt.Sprintf("%s used of %s", system.HumanBytes(used), system.HumanBytes(si.MemTotal)))
+		}
+		if si.DiskTotal > 0 {
+			disk := fmt.Sprintf("%s free of %s", system.HumanBytes(si.DiskFree), system.HumanBytes(si.DiskTotal))
+			if si.DiskFree*10 < si.DiskTotal {
+				disk = styleWarn.Render(disk)
+			}
+			row("disk /", disk)
+		}
+		if bat := si.Battery; bat != nil {
+			line := fmt.Sprintf("%d%% %s", bat.Percent, strings.ToLower(bat.Status))
+			if bat.Percent <= 15 && bat.Status == "Discharging" {
+				line = styleWarn.Render(line)
+			}
+			row("battery", line)
+		}
+		b.WriteString("\n")
+	}
 
 	b.WriteString(styleTitle.Render("Hashiru") + "\n")
 	switch {
@@ -52,4 +79,16 @@ func (o *overview) View(width, height int) string {
 		row("health", summaryLine(st.Report))
 	}
 	return b.String()
+}
+
+// uptime is "14d 13h", "5h 2m" or "12m".
+func uptime(d time.Duration) string {
+	switch {
+	case d >= 24*time.Hour:
+		return fmt.Sprintf("%dd %dh", int(d.Hours())/24, int(d.Hours())%24)
+	case d >= time.Hour:
+		return fmt.Sprintf("%dh %dm", int(d.Hours()), int(d.Minutes())%60)
+	default:
+		return fmt.Sprintf("%dm", int(d.Minutes()))
+	}
 }

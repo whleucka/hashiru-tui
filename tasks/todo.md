@@ -53,7 +53,7 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 ## Phase 3
 
 ### Task 8: Overview system summary
-- [ ] Host, kernel, uptime, memory, root disk use, battery (from /proc, /sys, statfs; no shelling out)
+- [x] Host, kernel, uptime, memory, root disk use, battery (from /proc, /sys, statfs; no shelling out)
 **Files:** internal/system/sysinfo.go + test, internal/tui/overview.go. **Deps:** 1. **Size:** S
 
 ### Task 9: Snapshots area
