@@ -86,8 +86,8 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 ## Phase 4: Services
 
 ### Task 11: systemctl probes
-- [ ] `systemctl [--user] list-units --type=service,timer --all --plain --no-legend`, `list-unit-files`, `list-timers --all`, parsed
-- [ ] Merged into one unit list: name, load/active/sub, enabled, description, next run (timers)
+- [x] `systemctl [--user] list-units --type=service,timer --all`, `list-unit-files`, `list-timers --all`, all `--output=json` (descriptions have spaces; timers' times span columns)
+- [x] Merged into one unit list: name, load/active/sub, unit-file state, description, next/last run (timers). Unloaded unit files that are enabled/disabled/masked are listed too (sshd, to enable); not-found references and templates aren't
 **Files:** internal/system/services.go + test + testdata. **Deps:** none. **Size:** M
 
 ### Task 12: Services area

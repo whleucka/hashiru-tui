@@ -58,7 +58,7 @@ and the two new areas.
 - [ ] Tests, vet, build; manual: groups match `pacman -Qqe` minus the manifests by hand; install and remove a small package
 
 ### Phase 4: Services
-- [ ] Task 11: systemctl probes (units, unit files, timers; system and user)
+- [x] Task 11: systemctl probes (units, unit files, timers; system and user)
 - [ ] Task 12: Services area and actions; Logs' failed units jump here
 
 ### Checkpoint D
