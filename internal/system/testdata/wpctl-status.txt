@@ -1,0 +1,56 @@
+PipeWire 'pipewire-0' [1.6.9, whleucka@t14s, cookie:1161098860]
+ └─ Clients:
+        32. xdg-desktop-portal                  [1.6.9, whleucka@t14s, pid:2716]
+        33. WirePlumber                         [1.6.9, whleucka@t14s, pid:2842]
+        40. xdg-desktop-portal-hyprland         [1.6.9, whleucka@t14s, pid:2868]
+        43. WirePlumber [client]                [1.6.9, whleucka@t14s, pid:2842]
+        44. pipewire                            [1.6.9, whleucka@t14s, pid:2935]
+        47. Blueman                             [1.6.9, whleucka@t14s, pid:2674]
+        78. waybar                              [1.6.9, whleucka@t14s, pid:2657]
+        90. wpctl                               [1.6.9, whleucka@t14s, pid:1577700]
+        97. Chromium input                      [1.6.9, whleucka@t14s, pid:587639]
+       107. SwayOSD                             [1.6.9, whleucka@t14s, pid:2669]
+
+Audio
+ ├─ Devices:
+ │      48. Radeon High Definition Audio Controller [alsa]
+ │      49. Ryzen HD Audio Controller           [alsa]
+ │      84. PCM2902 Audio Codec                 [alsa]
+ │     104. ThinkPad Thunderbolt 4 Dock USB Audio [alsa]
+ │  
+ ├─ Sinks:
+ │      58. Ryzen HD Audio Controller Speaker   [vol: 1.00]
+ │      67. Radeon High Definition Audio Controller HDMI / DisplayPort 2 Output [vol: 1.00]
+ │      73. Radeon High Definition Audio Controller HDMI / DisplayPort 3 Output [vol: 0.40]
+ │     101. Radeon High Definition Audio Controller HDMI / DisplayPort 1 Output [vol: 1.00]
+ │  *  102. PCM2902 Audio Codec Analog Stereo   [vol: 0.40]
+ │     103. Radeon High Definition Audio Controller HDMI / DisplayPort 4 Output [vol: 1.00]
+ │     114. ThinkPad Thunderbolt 4 Dock USB Audio Analog Stereo [vol: 0.40]
+ │  
+ ├─ Sources:
+ │      59. Ryzen HD Audio Controller Digital Microphone [vol: 1.00]
+ │      65. Ryzen HD Audio Controller Stereo Microphone [vol: 1.00]
+ │  *   80. PCM2902 Audio Codec Analog Stereo   [vol: 1.00]
+ │      96. ThinkPad Thunderbolt 4 Dock USB Audio Mono [vol: 1.00]
+ │  
+ ├─ Filters:
+ │  
+ └─ Streams:
+
+Video
+ ├─ Devices:
+ │      53. Integrated Camera                   [v4l2]
+ │      57. Integrated Camera                   [v4l2]
+ │  
+ ├─ Sinks:
+ │  
+ ├─ Sources:
+ │  *   68. Integrated Camera (V4L2)           
+ │  
+ ├─ Filters:
+ │  
+ └─ Streams:
+
+Settings
+ └─ Default Configured Devices:
+         0. Audio/Sink    bluez_output.A8_62_20_5C_98_3E.1

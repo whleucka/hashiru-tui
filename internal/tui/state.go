@@ -26,6 +26,8 @@ type State struct {
 	News     []system.NewsItem
 	NewsErr  error
 	NewsBusy bool
+
+	Conn *system.Connectivity
 }
 
 // UnreadNews counts news published since the machine last updated.
@@ -46,6 +48,7 @@ type (
 		err error
 	}
 	pendingMsg struct{ u system.Updates }
+	connMsg    struct{ c system.Connectivity }
 	newsMsg    struct {
 		items []system.NewsItem
 		err   error
@@ -59,6 +62,7 @@ const (
 	// checkupdates syncs the package databases, so it needs the network.
 	pendingTimeout = 90 * time.Second
 	newsTimeout    = 15 * time.Second
+	connTimeout    = 10 * time.Second
 	paneTimeout    = 5 * time.Second
 )
 
@@ -90,6 +94,11 @@ func (st *State) load(opts Options) tea.Cmd {
 			items, err := system.FetchNews(ctx, opts.Get)
 			return newsMsg{items, err}
 		},
+		func() tea.Msg {
+			ctx, cancel := context.WithTimeout(context.Background(), connTimeout)
+			defer cancel()
+			return connMsg{system.ReadConnectivity(ctx, opts.Probe)}
+		},
 	)
 }
 
@@ -109,6 +118,8 @@ func (st *State) apply(msg tea.Msg) bool {
 	case pendingMsg:
 		st.PendingBusy = false
 		st.Pending = &msg.u
+	case connMsg:
+		st.Conn = &msg.c
 	case newsMsg:
 		st.NewsBusy, st.NewsErr = false, msg.err
 		if msg.err == nil {

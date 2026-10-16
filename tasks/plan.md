@@ -44,7 +44,7 @@ installing the binary).
 - [x] Task 4: Pending pacman and AUR updates in Updates and Overview
 - [x] Task 5: Arch news in Updates
 - [x] Task 6: Keybinds area
-- [ ] Task 7: Connectivity area (network, bluetooth, audio)
+- [x] Task 7: Connectivity area (network, bluetooth, audio)
 
 ### Checkpoint B
 - [ ] Tests and build pass; manual run against the real machine

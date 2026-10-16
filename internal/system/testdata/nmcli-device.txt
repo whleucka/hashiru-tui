@@ -1,0 +1,22 @@
+wlp194s0:wifi:connected:HomeNet
+br-39e1a0909e23:bridge:connected (externally):br-39e1a0909e23
+br-5c55c556efd1:bridge:connected (externally):br-5c55c556efd1
+docker0:bridge:connected (externally):docker0
+lo:loopback:connected (externally):lo
+wg_client:wireguard:connected (externally):wg_client
+p2p-dev-wlp194s0:wifi-p2p:disconnected:
+eth0:ethernet:unavailable:
+veth1708665:ethernet:unmanaged:
+veth37ef84d:ethernet:unmanaged:
+veth68037c0:ethernet:unmanaged:
+veth7469838:ethernet:unmanaged:
+veth7ed6a0e:ethernet:unmanaged:
+veth8532e7c:ethernet:unmanaged:
+veth94dbb92:ethernet:unmanaged:
+veth9d5ef45:ethernet:unmanaged:
+veth9db7ff4:ethernet:unmanaged:
+vetha818c49:ethernet:unmanaged:
+vethae2a56a:ethernet:unmanaged:
+vethda7da88:ethernet:unmanaged:
+vethed2424a:ethernet:unmanaged:
+vethf27f7c5:ethernet:unmanaged:

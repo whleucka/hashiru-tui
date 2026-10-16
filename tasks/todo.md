@@ -43,8 +43,8 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/system/keybinds.go + test, internal/tui/keybinds.go. **Deps:** 1. **Size:** M
 
 ### Task 7: Connectivity area
-- [ ] Network: active connections from `nmcli -t`; Bluetooth: powered + connected devices from `bluetoothctl`; Audio: default sink and volume from `wpctl`
-- [ ] Actions: nmtui, bluetoothctl (Interactive), blueman-manager, pavucontrol (GUI)
+- [x] Network: active connections from `nmcli -t`; Bluetooth: powered + connected devices from `bluetoothctl`; Audio: default sink and volume from `wpctl`
+- [x] Actions: nmtui, bluetoothctl (Interactive), blueman-manager, pavucontrol (GUI)
 **Files:** internal/system/{network,bluetooth,audio}.go + tests, internal/tui/connectivity.go. **Deps:** 2. **Size:** M
 
 ### Checkpoint B

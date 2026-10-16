@@ -9,12 +9,15 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-// probe is a fake system.Run: canned stdout per command name, and "not
-// installed" for anything else.
+// probe is a fake system.Run: canned stdout keyed by the full command line,
+// or failing that the command name, and "not installed" for anything else.
 type probe map[string]string
 
-func (p probe) run(_ context.Context, name string, _ ...string) ([]byte, error) {
-	out, ok := p[name]
+func (p probe) run(_ context.Context, name string, args ...string) ([]byte, error) {
+	out, ok := p[strings.Join(append([]string{name}, args...), " ")]
+	if !ok {
+		out, ok = p[name]
+	}
 	if !ok {
 		return nil, &exec.Error{Name: name, Err: exec.ErrNotFound}
 	}

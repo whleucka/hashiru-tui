@@ -34,6 +34,13 @@ func (o *overview) View(width, height int) string {
 		row("updated", when(s.Updated))
 		row("upstream", upstreamLine(s))
 	}
+	if st.Conn != nil {
+		b.WriteString("\n" + styleTitle.Render("Connections") + "\n")
+		row("network", networkLine(st.Conn))
+		row("bluetooth", bluetoothLine(st.Conn))
+		row("audio", audioLine(st.Conn))
+	}
+	b.WriteString("\n" + styleTitle.Render("Updates") + "\n")
 	row("packages", pendingLine(st))
 	row("arch news", newsLine(st))
 	switch {

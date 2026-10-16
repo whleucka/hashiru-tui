@@ -132,7 +132,9 @@ func TestSidebarNavigation(t *testing.T) {
 	if m.area().Name() != "Logs" {
 		t.Errorf("number key: area = %s", m.area().Name())
 	}
-	press(m, "k", "k", "k") // stops at the top
+	for range len(m.areas) + 1 {
+		press(m, "k") // stops at the top
+	}
 	if m.sel != 0 {
 		t.Errorf("sel = %d", m.sel)
 	}
