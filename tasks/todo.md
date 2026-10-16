@@ -46,9 +46,9 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/hashiru/changelog.go + test + testdata, internal/tui/updates.go. **Deps:** none. **Size:** M
 
 ### Task 6: Re-apply a stage
-- [ ] Stages from `hashiru install --list`
-- [ ] `s` in Updates opens a picker; `enter` runs `hashiru install N` Interactive and refreshes after
-- [ ] One palette action per stage ("Re-apply stage 45-config", ID `updates.stage-45`)
+- [x] Stages from `hashiru install --list`
+- [x] `s` in Updates opens a picker; `enter` runs `hashiru install N` Interactive and refreshes after
+- [x] One palette action per stage ("Re-apply stage 45-config", ID `updates.stage-45`)
 **Files:** internal/hashiru/cli.go + test, internal/tui/updates.go, tests. **Deps:** 3. **Size:** S
 
 ### Task 7: Overview auto-refresh

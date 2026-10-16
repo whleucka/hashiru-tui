@@ -30,7 +30,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `?` | this area's keys |
 | `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |
 
-Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes and `n` Arch news (Updates), `/` filter (Keybinds), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `s` switch log source (Logs).
+Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news (Updates), `/` filter (Keybinds), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `s` switch log source (Logs).
 
 ## Deep links
 

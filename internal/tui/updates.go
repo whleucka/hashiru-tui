@@ -18,13 +18,18 @@ type updates struct {
 	expanded map[string]bool
 	allPkgs  bool // list every pending package, not just the first few
 	notes    notes
+	stage    stagePicker
 }
 
 // pkgPreview is how many pending packages show before "… N more".
 const pkgPreview = 8
 
 func newUpdates(e *env) *updates {
-	return &updates{e: e, expanded: map[string]bool{}}
+	u := &updates{e: e, expanded: map[string]bool{}}
+	// Now, not on the first refresh: a deep link to a stage's action is
+	// checked before the program runs.
+	u.stage.stages = u.readStages()
+	return u
 }
 
 func (u *updates) Name() string { return "Updates" }
@@ -37,6 +42,11 @@ func (u *updates) Update(msg tea.Msg) tea.Cmd {
 		}
 	case areaSizeMsg:
 		u.notes.setSize(msg.width, msg.height)
+	case refreshMsg:
+		return u.loadStages()
+	case stagesMsg:
+		u.stage.stages = msg.stages
+		u.stage.sel = min(u.stage.sel, max(len(msg.stages)-1, 0))
 	case statusMsg:
 		if cmd := loadNotes(u.e.probe, msg.s); msg.err == nil && cmd != nil {
 			u.notes.busy = true
@@ -54,11 +64,19 @@ func (u *updates) Update(msg tea.Msg) tea.Cmd {
 }
 
 func (u *updates) Actions() []Action {
-	return []Action{
+	acts := []Action{
 		{ID: "updates.update", Title: "Update the system (hashiru update)", Key: "u", Run: u.update},
 		{ID: "updates.aur", Title: "Upgrade AUR packages (yay -Sua)", Key: "a", Run: u.upgradeAUR},
 		{ID: "updates.news", Title: "Read Arch news", Key: "n", Run: u.openNews},
 		{ID: "updates.notes", Title: "Read Hashiru's release notes", Key: "c", Run: func() tea.Cmd { u.readNotes(); return nil }},
+		{ID: "updates.stage", Title: "Re-apply a stage (hashiru install N)", Key: "s", Run: func() tea.Cmd { u.pickStage(); return nil }},
+	}
+	return append(acts, u.stageActions()...)
+}
+
+func (u *updates) pickStage() {
+	if len(u.stage.stages) > 0 {
+		u.stage.open = true
 	}
 }
 
@@ -93,7 +111,12 @@ func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	if u.notes.reading {
 		return u.notes.handleKey(msg)
 	}
+	if u.stage.open {
+		return u.stage.handleKey(u, msg)
+	}
 	switch msg.String() {
+	case "s":
+		u.pickStage()
 	case "c":
 		u.readNotes()
 	case "u":
@@ -127,9 +150,13 @@ func (u *updates) Keys() []Key {
 	if u.notes.reading {
 		return u.notes.keys()
 	}
+	if u.stage.open {
+		return u.stage.keys()
+	}
 	return []Key{
 		{Keys: "u", Desc: "update"},
 		{Keys: "c", Desc: "release notes"},
+		{Keys: "s", Desc: "re-apply a stage"},
 		{Keys: "a", Desc: "AUR"},
 		{Keys: "n", Desc: "news"},
 		{Keys: "p", Desc: "all packages"},
@@ -148,6 +175,9 @@ func (u *updates) sections() []hashiru.Section {
 func (u *updates) View(width, height int) string {
 	if u.notes.reading {
 		return u.notes.view()
+	}
+	if u.stage.open {
+		return u.stage.view(u)
 	}
 	st := u.e.state
 	var b strings.Builder

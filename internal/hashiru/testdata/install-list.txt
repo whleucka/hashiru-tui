@@ -1,0 +1,10 @@
+Available stages:
+  10-base.sh
+  15-grub.sh
+  20-aur.sh
+  30-desktop.sh
+  35-zsh.sh
+  45-config.sh
+  50-snapper.sh
+  60-herdr.sh
+  99-apps.sh
