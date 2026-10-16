@@ -27,7 +27,8 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `enter` / `esc` | into the area / back to the sidebar |
 | `ctrl+p` (or `:` in the sidebar) | command palette: every area and action |
 | `r` | refresh |
-| `q` | quit |
+| `?` | this area's keys |
+| `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |
 
 Each area lists its own keys in the footer. Some to know: `u` update and `a` AUR upgrade and `n` Arch news (Updates), `/` filter (Keybinds), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `s` switch log source (Logs).
 

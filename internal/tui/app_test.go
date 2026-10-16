@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
 )
@@ -227,15 +228,58 @@ func TestAreaKeysWorkFromSidebar(t *testing.T) {
 	}
 }
 
-func TestQuit(t *testing.T) {
+func quits(cmd tea.Cmd) bool {
+	if cmd == nil {
+		return false
+	}
+	_, ok := cmd().(tea.QuitMsg)
+	return ok
+}
+
+func TestQuitAsksFirst(t *testing.T) {
 	m := New(Options{Source: fakeSource{}})
 	load(t, m)
-	_, cmd := m.Update(key("q"))
-	if cmd == nil {
-		t.Fatal("q should quit")
+	if _, cmd := m.Update(key("q")); quits(cmd) {
+		t.Fatal("q quit without asking")
 	}
-	if _, ok := cmd().(tea.QuitMsg); !ok {
-		t.Error("q should return tea.Quit")
+	if f := ansi.Strip(m.footer()); !strings.Contains(f, "Quit hashiru-tui?") || !strings.Contains(f, "y quit") {
+		t.Errorf("footer doesn't ask: %q", f)
+	}
+	if _, cmd := m.Update(key("y")); !quits(cmd) {
+		t.Error("y after q should quit")
+	}
+}
+
+func TestQuitAnyOtherKeyStays(t *testing.T) {
+	for _, k := range []string{"n", "q", "esc", "j"} {
+		m := New(Options{Source: fakeSource{}})
+		load(t, m)
+		sel := m.sel
+		press(m, "q")
+		if _, cmd := m.Update(key(k)); quits(cmd) {
+			t.Errorf("q then %s quit", k)
+		}
+		if m.quitting || m.sel != sel {
+			t.Errorf("q then %s: still asking %v, sel %d→%d (the key should only answer)", k, m.quitting, sel, m.sel)
+		}
+	}
+}
+
+func TestQuitFromAnArea(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	goTo(t, m, "Config")
+	press(m, "q")
+	if _, cmd := m.Update(key("y")); !quits(cmd) {
+		t.Error("q, y inside an area should quit")
+	}
+}
+
+func TestCtrlCQuitsAtOnce(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	if _, cmd := m.Update(tea.KeyPressMsg{Code: 'c', Mod: tea.ModCtrl}); !quits(cmd) {
+		t.Error("ctrl+c should quit without asking")
 	}
 }
 

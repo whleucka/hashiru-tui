@@ -102,6 +102,8 @@ var (
 	}
 )
 
+var quitKeys = []Key{{Keys: "y", Desc: "quit"}, {Keys: "any other key", Desc: "stay"}}
+
 // keys is everything that works right now, the area's first.
 func (m *Model) keys() []Key {
 	switch {
@@ -116,6 +118,8 @@ func (m *Model) keys() []Key {
 func (m *Model) footer() string {
 	var help string
 	switch {
+	case m.quitting:
+		help = keyLine(quitKeys, m.width)
 	case m.keyHelp:
 		help = keyLine(keyHelpKeys, m.width)
 	case m.pal.open || m.typing():
@@ -129,6 +133,8 @@ func (m *Model) footer() string {
 
 	note := ""
 	switch {
+	case m.quitting:
+		note = styleWarn.Render("Quit hashiru-tui?")
 	case m.note != "" && m.noteErr:
 		note = styleFail.Render(m.note)
 	case m.note != "":

@@ -78,6 +78,9 @@ type Model struct {
 	pal     palette
 	keyHelp bool     // the ? popup is open
 	recent  []string // IDs of actions run from the palette, newest first
+	// quitting: q was pressed and the footer asks to confirm. Only y quits;
+	// any other key stays, so a stray q doesn't close the window.
+	quitting bool
 
 	note    string // one-line feedback in the footer
 	noteErr bool
@@ -199,6 +202,13 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 	case "ctrl+c":
 		return tea.Quit
 	}
+	if m.quitting {
+		m.quitting = false
+		if msg.String() == "y" {
+			return tea.Quit
+		}
+		return nil // the key only answers the question
+	}
 	if m.keyHelp {
 		return m.handleKeyHelpKey(msg)
 	}
@@ -251,7 +261,8 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 func (m *Model) shellKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	switch s := msg.String(); s {
 	case "q":
-		return tea.Quit, true
+		m.quitting = true
+		return nil, true
 	case "r":
 		m.note = ""
 		return m.refresh(), true
