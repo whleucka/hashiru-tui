@@ -58,6 +58,9 @@ func (m *Model) View() tea.View {
 		" ",
 		clip(content, w, h),
 	)
+	if m.keyHelp {
+		body = m.overKeyHelp(body, w, h)
+	}
 	v := tea.NewView(body + "\n" + m.footer())
 	v.AltScreen = true
 	return v
@@ -111,7 +114,18 @@ func (m *Model) keys() []Key {
 }
 
 func (m *Model) footer() string {
-	help := styleMuted.Render(keyLine(m.keys(), m.width))
+	var help string
+	switch {
+	case m.keyHelp:
+		help = keyLine(keyHelpKeys, m.width)
+	case m.pal.open || m.typing():
+		help = keyLine(m.keys(), m.width)
+	default:
+		// "? keys" always shows: it's the way to the keys that didn't fit.
+		const more = " · ? keys"
+		help = keyLine(m.keys(), m.width-len(more)) + more
+	}
+	help = styleMuted.Render(help)
 
 	note := ""
 	switch {

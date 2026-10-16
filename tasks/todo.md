@@ -14,10 +14,10 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/tui/{area,view}.go, every area file, tests. **Deps:** none. **Size:** M (wide, shallow)
 
 ### Task 2: `?` keymap popup
-- [ ] `?` from the sidebar or an area opens a centered popup over the area: area keys by group, then global keys
-- [ ] `?`, `esc`, `q` close it; it takes every key while open
-- [ ] While a text input has focus (Keybinds/Logs filter, palette), `?` goes to the input
-- [ ] Wallpaper hides its kitty preview while the popup is open
+- [x] `?` from the sidebar or an area opens a centered popup over the area: area keys by group, then global keys
+- [x] `?`, `esc`, `q` close it; it takes every key while open
+- [x] While a text input has focus (Keybinds/Logs filter, palette), `?` goes to the input
+- [x] Wallpaper hides its kitty preview while the popup is open
 **Files:** internal/tui/keyhelp.go (new), app.go, view.go, wallpaper.go, tests. **Deps:** 1. **Size:** M
 
 ### Task 3: Palette: IDs, global actions, recents

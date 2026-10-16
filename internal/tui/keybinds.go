@@ -60,6 +60,8 @@ func (k *keybinds) Update(msg tea.Msg) tea.Cmd {
 
 func (k *keybinds) Actions() []Action { return nil }
 
+func (k *keybinds) Typing() bool { return k.filtering }
+
 func (k *keybinds) Keys() []Key {
 	if k.filtering {
 		return []Key{

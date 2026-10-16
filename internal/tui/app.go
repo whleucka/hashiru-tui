@@ -72,7 +72,8 @@ type Model struct {
 	sel    int  // selected area
 	inArea bool // keys go to the area first rather than the sidebar
 
-	pal palette
+	pal     palette
+	keyHelp bool // the ? popup is open
 
 	note    string // one-line feedback in the footer
 	noteErr bool
@@ -190,13 +191,18 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 	switch msg.String() {
 	case "ctrl+c":
 		return tea.Quit
-	case "ctrl+p":
-		if !m.pal.open {
-			return m.openPalette()
-		}
+	}
+	if m.keyHelp {
+		return m.handleKeyHelpKey(msg)
+	}
+	if msg.String() == "ctrl+p" && !m.pal.open {
+		return m.openPalette()
 	}
 	if m.pal.open {
 		return m.handlePaletteKey(msg)
+	}
+	if msg.String() == "?" && !m.typing() {
+		return m.setKeyHelp(true)
 	}
 
 	if m.inArea {

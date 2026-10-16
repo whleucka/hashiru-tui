@@ -89,6 +89,8 @@ func (s *snapshots) startNaming() tea.Cmd {
 	return s.input.Focus()
 }
 
+func (s *snapshots) Typing() bool { return s.naming }
+
 func (s *snapshots) Keys() []Key {
 	switch {
 	case s.naming:

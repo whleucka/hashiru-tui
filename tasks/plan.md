@@ -34,7 +34,7 @@ and the two new areas.
 
 ### Phase 1: Keys and palette
 - [x] Task 1: Keys as data; the footer renders from them
-- [ ] Task 2: `?` keymap popup
+- [x] Task 2: `?` keymap popup
 - [ ] Task 3: Action IDs, global actions and recents in the palette
 
 ### Checkpoint A

@@ -45,6 +45,7 @@ type wallpaper struct {
 	iw, ih       int
 	cols, rows   int
 	previewOf    string
+	covered      bool // an overlay is open; leave the preview out
 	previewError string
 }
 
@@ -93,6 +94,8 @@ func (w *wallpaper) Update(msg tea.Msg) tea.Cmd {
 		return w.preview()
 	case wallUploadMsg:
 		return w.uploaded(msg)
+	case overlayMsg:
+		w.covered = msg.open
 	}
 	return nil
 }
@@ -282,7 +285,7 @@ func (w *wallpaper) View(width, height int) string {
 	switch {
 	case w.previewError != "":
 		right = []string{styleMuted.Render(w.previewError)}
-	case w.shown != 0 && w.cols > 0:
+	case w.shown != 0 && w.cols > 0 && !w.covered:
 		pw, _ := w.previewBox()
 		right = kitty.Placeholders(w.shown, w.cols, w.rows, pw)
 	}
