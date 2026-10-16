@@ -91,6 +91,6 @@ Done in Hashiru as bc37a5d (local, not pushed), checked against a fake awww: no 
 ### Task 14: Keybind and install
 - [x] Decided: a stage runs `go install github.com/whleucka/hashiru-tui/cmd/hashiru-tui@<tag>` (2026-10-15)
 - [x] SUPER+ALT+Space opens it floating; stage 99 installs it (Go comes from dev.txt there); `hashiru tui` runs it. Hashiru 0b135a0, local. hashiru-tui has `--version` for the stage's check.
-- [ ] Rewrite history to drop the SSID, MAC and the other tool's name; force-push main; tag and push v0.1.0 (blocked here as a destructive git operation; left to William)
-- [ ] Verify `go install ...@v0.1.0` and `hashiru install 99`
+- [x] Rewrite history to drop the SSID, MAC and the other tool's name; force-push main; tag and push v0.1.0 (run by William; verified: 23 signed commits, strings gone, tag signed)
+- [x] Verify `go install ...@v0.1.0` (reports v0.1.0) and `hashiru install 99` (installed to ~/.local/bin; `hashiru tui` reaches it)
 **Deps:** 13 + decision.
