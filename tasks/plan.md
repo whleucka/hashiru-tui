@@ -54,7 +54,7 @@ installing the binary).
 - [x] Task 9: Snapshots area
 - [x] Task 10: Logs sources: journal errors and failed units
 - [x] Task 11: Config area
-- [ ] Task 12: Wallpaper area
+- [x] Task 12: Wallpaper area
 
 ### Checkpoint C
 - [ ] Tests and build pass; full manual pass of every area

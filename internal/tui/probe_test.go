@@ -54,3 +54,6 @@ func init() {
 func init() {
 	defaultHome = func() (string, error) { return "/nonexistent/hashiru-tui-test-home", nil }
 }
+
+// Nor kitty graphics, unless a test asks.
+func init() { defaultGraphics = func() bool { return false } }

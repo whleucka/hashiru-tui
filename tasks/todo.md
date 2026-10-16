@@ -72,9 +72,9 @@ Tabs become a sidebar; the Dashboard, Doctor and Log views move into Overview, U
 **Files:** internal/tui/config.go + test. **Deps:** 2. **Size:** S
 
 ### Task 12: Wallpaper area
-- [ ] Lists images in ~/.config/hypr/wallpapers and ~/Pictures/Wallpapers; shows the current one (`awww query`)
-- [ ] `enter` applies with `awww img` and records it as the fixed choice in ~/.config/hashiru/wallpaper; `c` returns to the time-of-day cycle
-- [ ] Preview of the selected image through kitty graphics when supported, else none
+- [x] Lists images in ~/.config/hypr/wallpapers and ~/Pictures/Wallpapers; shows the current one (`awww query`)
+- [x] `enter` applies with `awww img` and records it as the fixed choice in ~/.config/hashiru/wallpaper; `c` returns to the time-of-day cycle
+- [x] Preview of the selected image through kitty graphics when supported, else none
 **Files:** internal/system/wallpaper.go + test, internal/tui/wallpaper.go. **Deps:** 2. **Size:** M
 
 ### Checkpoint C

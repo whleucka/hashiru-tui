@@ -11,6 +11,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
+	"github.com/whleucka/hashiru-tui/internal/kitty"
 	"github.com/whleucka/hashiru-tui/internal/system"
 )
 
@@ -44,6 +45,8 @@ type Options struct {
 	Statfs  system.Statfs
 	// Home is the user's home directory, for the Config area.
 	Home string
+	// Graphics is whether to draw image previews; auto asks the environment.
+	Graphics graphicsMode
 }
 
 // defaultProbe is a variable so tests can keep every model off the machine.
@@ -51,7 +54,8 @@ var (
 	defaultProbe system.Run = system.Command
 	defaultGet   system.Get = system.HTTPGet
 
-	defaultHome = os.UserHomeDir
+	defaultHome     = os.UserHomeDir
+	defaultGraphics = func() bool { return kitty.Supported(os.Getenv) }
 
 	defaultSysRoot               = "/"
 	defaultStatfs  system.Statfs = system.RootStatfs
@@ -105,7 +109,8 @@ func New(opts Options) *Model {
 		launch:  m.launch,
 		refresh: m.refresh,
 	}
-	m.areas = newAreas(m.env, opts)
+	m.areas = newAreas(m.env, opts, opts.Graphics == graphicsOn ||
+		opts.Graphics == graphicsAuto && defaultGraphics())
 	return m
 }
 

@@ -44,12 +44,13 @@ type env struct {
 // areaSizeMsg tells areas how much room the shell gives them.
 type areaSizeMsg struct{ width, height int }
 
-func newAreas(e *env, opts Options) []Area {
+func newAreas(e *env, opts Options, graphics bool) []Area {
 	return []Area{
 		newOverview(e),
 		newUpdates(e),
 		newKeybinds(e),
 		newConnectivity(e),
+		newWallpaper(e, opts.Home, graphics),
 		newSnapshots(e),
 		newConfig(e, opts.Home),
 		newLogs(e),

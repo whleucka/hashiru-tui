@@ -1,0 +1,1 @@
+: DP-9: 2560x1440, scale: 1, currently displaying: image: /opt/hashiru/stow/hyprland/.config/hypr/wallpapers/26-Tahoe-Beach-Night.jpg
