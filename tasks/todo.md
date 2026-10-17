@@ -94,8 +94,8 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/system/power.go (new), power_test.go, testdata. **Deps:** none (fixtures can predate Task 7, 8). **Size:** M
 
 ### Task 11: Power tab, read-only
-- [ ] Battery, profile, idle (AC and battery, override or stowed, labelled), thresholds sections
-- [ ] No battery: says so, rest works; old Hashiru: notes beside the controls it can't offer
+- [x] Battery, profile, idle (AC and battery, override or stowed, labelled), thresholds sections
+- [x] No battery: says so, rest works; old Hashiru: notes beside the controls it can't offer
 **Files:** internal/tui/hardware_power.go (new), hardware.go, tests. **Deps:** 3, 10. **Size:** M
 
 ### Task 12: Power actions

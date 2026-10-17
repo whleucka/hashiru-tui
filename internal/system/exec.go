@@ -41,3 +41,6 @@ func exitCode(err error) (int, bool) {
 func missing(err error) bool {
 	return errors.Is(err, exec.ErrNotFound)
 }
+
+// Missing reports whether err means the command isn't installed.
+func Missing(err error) bool { return missing(err) }

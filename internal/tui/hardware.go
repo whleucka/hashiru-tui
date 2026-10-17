@@ -27,7 +27,11 @@ type hardware struct {
 }
 
 func newHardware(e *env, opts Options) *hardware {
-	return &hardware{e: e, tabs: []hwTab{newMonitors(e, opts.Home, opts.Tick), newFirmware(e)}}
+	return &hardware{e: e, tabs: []hwTab{
+		newMonitors(e, opts.Home, opts.Tick),
+		newPower(e, opts.SysRoot, opts.Home),
+		newFirmware(e),
+	}}
 }
 
 // beforeQuit lets a tab undo what it hasn't been told to keep.
