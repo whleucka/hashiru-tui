@@ -7,9 +7,10 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 ## Phase 1: Probes
 
 ### Task 1: Drives
-- [ ] `system.Drives` from lsblk JSON: disks with `rm` or `hotplug`, their partitions; path, label, size, fstype, mount points, transport, model; LUKS (`crypto_LUKS`) flagged with its unlocked child
-- [ ] Never the system disk (not rm, not hotplug); zram and loop skipped
-- [ ] Fixtures: this machine with a USB stick in, and with none
+- [x] `system.ParseDrives` from lsblk JSON: disks with `rm` or `hotplug`, their partitions; path, label, size, fstype, mount points, transport, model; LUKS (`crypto_LUKS`) flagged with its unlocked child
+- [x] Never the system disk (not rm, not hotplug); zram and loop skipped
+- [x] Fixtures: this machine with none; three sticks hand-made in lsblk's shape (plain, unlocked LUKS, no partition table)
+- [ ] A real stick's lsblk output, after the reboot into 7.2.10 (the running kernel's modules are gone, so usb_storage can't load)
 **Files:** internal/system/devices.go (new), devices_test.go, testdata. **Size:** S
 
 ### Task 2: USB and Thunderbolt

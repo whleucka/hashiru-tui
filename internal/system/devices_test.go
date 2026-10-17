@@ -80,3 +80,59 @@ func TestBoltSecurity(t *testing.T) {
 		t.Errorf("none = %q", got)
 	}
 }
+
+func TestParseDrives(t *testing.T) {
+	drives, err := ParseDrives(fixture(t, "lsblk-sticks.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(drives) != 3 {
+		t.Fatalf("drives = %+v", drives)
+	}
+	stick := drives[0]
+	if stick.Path != "/dev/sda" || stick.Model != "DataTraveler 3.0" || stick.Tran != "usb" || stick.Size != "28.9G" || len(stick.Parts) != 1 {
+		t.Errorf("stick = %+v", stick)
+	}
+	if p := stick.Parts[0]; p.Path != "/dev/sda1" || p.Label != "KINGSTON" || p.FSType != "vfat" ||
+		p.Mount() != "/run/media/whleucka/KINGSTON" || p.Locked() || p.Encrypted() {
+		t.Errorf("stick part = %+v", p)
+	}
+	if !stick.Mounted() {
+		t.Error("sda has a mounted partition")
+	}
+
+	// LUKS: the partition is encrypted; unlocked, its filesystem is the
+	// mapper device, which is what gets mounted.
+	enc := drives[1].Parts[0]
+	if !enc.Encrypted() || enc.Locked() || enc.Inner == nil || enc.Inner.Path != "/dev/mapper/luks-1c2d" ||
+		enc.Inner.Label != "secret" || enc.Mount() != "" {
+		t.Errorf("luks = %+v (inner %+v)", enc, enc.Inner)
+	}
+	if drives[1].Mounted() {
+		t.Error("sdb has nothing mounted (null mountpoints)")
+	}
+
+	// No partition table: the disk is its own filesystem.
+	whole := drives[2]
+	if len(whole.Parts) != 1 || whole.Parts[0].Path != "/dev/sdc" || whole.Parts[0].FSType != "exfat" || whole.Parts[0].Label != "WHOLE" {
+		t.Errorf("whole-disk = %+v", whole)
+	}
+}
+
+func TestParseDrivesSkipsTheSystemDisk(t *testing.T) {
+	drives, err := ParseDrives(fixture(t, "lsblk-undocked-nostick.json"))
+	if err != nil || len(drives) != 0 {
+		t.Errorf("this machine with no stick: %+v, %v", drives, err)
+	}
+	if _, err := ParseDrives([]byte("lsblk: bad")); err == nil {
+		t.Error("bad JSON: no error")
+	}
+}
+
+func TestLockedLUKS(t *testing.T) {
+	drives, _ := ParseDrives([]byte(`{"blockdevices":[{"name":"sdb","path":"/dev/sdb","size":"7.5G","rm":true,"hotplug":true,"tran":"usb","type":"disk",
+		"children":[{"name":"sdb1","path":"/dev/sdb1","size":"7.5G","fstype":"crypto_LUKS","mountpoints":[null],"type":"part"}]}]}`))
+	if p := drives[0].Parts[0]; !p.Encrypted() || !p.Locked() || p.Inner != nil {
+		t.Errorf("locked = %+v", p)
+	}
+}

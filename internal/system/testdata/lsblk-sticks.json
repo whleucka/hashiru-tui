@@ -1,0 +1,35 @@
+{
+   "blockdevices": [
+      {
+         "name": "zram0", "path": "/dev/zram0", "label": "zram0", "size": "30.5G", "fstype": "swap",
+         "mountpoints": ["[SWAP]"], "rm": false, "hotplug": false, "tran": null, "model": null, "type": "disk"
+      },{
+         "name": "sda", "path": "/dev/sda", "label": null, "size": "28.9G", "fstype": null,
+         "mountpoints": [null], "rm": true, "hotplug": true, "tran": "usb", "model": "DataTraveler 3.0", "type": "disk",
+         "children": [
+            {
+               "name": "sda1", "path": "/dev/sda1", "label": "KINGSTON", "size": "28.9G", "fstype": "vfat",
+               "mountpoints": ["/run/media/whleucka/KINGSTON"], "rm": true, "hotplug": true, "tran": null, "model": null, "type": "part"
+            }
+         ]
+      },{
+         "name": "sdb", "path": "/dev/sdb", "label": null, "size": "7.5G", "fstype": null,
+         "mountpoints": [null], "rm": true, "hotplug": true, "tran": "usb", "model": "DT 101 G2", "type": "disk",
+         "children": [
+            {
+               "name": "sdb1", "path": "/dev/sdb1", "label": null, "size": "7.5G", "fstype": "crypto_LUKS",
+               "mountpoints": [null], "rm": true, "hotplug": true, "tran": null, "model": null, "type": "part",
+               "children": [
+                  {
+                     "name": "luks-1c2d", "path": "/dev/mapper/luks-1c2d", "label": "secret", "size": "7.5G", "fstype": "ext4",
+                     "mountpoints": [null], "rm": false, "hotplug": false, "tran": null, "model": null, "type": "crypt"
+                  }
+               ]
+            }
+         ]
+      },{
+         "name": "sdc", "path": "/dev/sdc", "label": "WHOLE", "size": "1.9G", "fstype": "exfat",
+         "mountpoints": [], "rm": true, "hotplug": true, "tran": "usb", "model": "Card Reader", "type": "disk"
+      }
+   ]
+}

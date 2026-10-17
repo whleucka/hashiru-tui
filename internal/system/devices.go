@@ -3,6 +3,7 @@ package system
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"regexp"
@@ -153,3 +154,116 @@ var (
 	BoltListArgs    = []string{"list"}
 	BoltDomainsArgs = []string{"domains"}
 )
+
+// Drive is a removable or hot-plugged disk: a USB stick, an SD card, a
+// drive in a dock. Never the disk the system runs from.
+type Drive struct {
+	Path, Name  string // /dev/sda, sda
+	Model, Size string
+	Tran        string // usb, thunderbolt, mmc...
+	Parts       []Partition
+}
+
+// Partition is one filesystem on a drive: a partition, or the whole disk
+// when it has no partition table.
+type Partition struct {
+	Path, Name, Label string
+	Size, FSType      string
+	Mounts            []string
+	// Inner is the unlocked filesystem of a LUKS partition (the
+	// /dev/mapper device), nil while it's locked.
+	Inner *Partition
+}
+
+// Encrypted reports whether it's a LUKS container.
+func (p Partition) Encrypted() bool { return p.FSType == "crypto_LUKS" }
+
+// Locked reports whether it's encrypted and not unlocked.
+func (p Partition) Locked() bool { return p.Encrypted() && p.Inner == nil }
+
+// Mount is where it's mounted (an unlocked container's filesystem counts),
+// or "".
+func (p Partition) Mount() string {
+	if p.Inner != nil {
+		return p.Inner.Mount()
+	}
+	if len(p.Mounts) > 0 {
+		return p.Mounts[0]
+	}
+	return ""
+}
+
+// Mounted reports whether any of its filesystems is mounted, which is what
+// stands between it and being pulled out.
+func (d Drive) Mounted() bool {
+	for _, p := range d.Parts {
+		if p.Mount() != "" {
+			return true
+		}
+	}
+	return false
+}
+
+// DrivesArgs are the lsblk columns ParseDrives reads.
+var DrivesArgs = []string{"-J", "-o", "NAME,PATH,LABEL,SIZE,FSTYPE,MOUNTPOINTS,RM,HOTPLUG,TRAN,MODEL,TYPE"}
+
+type lsblkDev struct {
+	Name, Path, Size, Type string
+	Label, FSType          *string
+	Mountpoints            []*string
+	RM, Hotplug            bool
+	Tran, Model            *string
+	Children               []lsblkDev
+}
+
+func str(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return strings.TrimSpace(*s)
+}
+
+func (b lsblkDev) part() Partition {
+	p := Partition{Path: b.Path, Name: b.Name, Label: str(b.Label), Size: b.Size, FSType: str(b.FSType)}
+	for _, m := range b.Mountpoints {
+		if m != nil && *m != "" {
+			p.Mounts = append(p.Mounts, *m)
+		}
+	}
+	if p.Encrypted() {
+		for _, c := range b.Children {
+			if c.Type == "crypt" {
+				inner := c.part()
+				p.Inner = &inner
+			}
+		}
+	}
+	return p
+}
+
+// ParseDrives reads `lsblk -J` (DrivesArgs): the disks that are removable or
+// hot-plugged, with their filesystems. A fixed disk (the system's) is never
+// one, and neither is zram or a loop device.
+func ParseDrives(out []byte) ([]Drive, error) {
+	var doc struct{ Blockdevices []lsblkDev }
+	if err := json.Unmarshal(out, &doc); err != nil {
+		return nil, fmt.Errorf("lsblk: %w", err)
+	}
+	var drives []Drive
+	for _, b := range doc.Blockdevices {
+		if b.Type != "disk" || !(b.RM || b.Hotplug) || strings.HasPrefix(b.Name, "zram") {
+			continue
+		}
+		d := Drive{Path: b.Path, Name: b.Name, Model: str(b.Model), Size: b.Size, Tran: str(b.Tran)}
+		for _, c := range b.Children {
+			if c.Type == "part" {
+				d.Parts = append(d.Parts, c.part())
+			}
+		}
+		if len(d.Parts) == 0 && str(b.FSType) != "" {
+			d.Parts = []Partition{b.part()}
+		}
+		drives = append(drives, d)
+	}
+	return drives, nil
+}
