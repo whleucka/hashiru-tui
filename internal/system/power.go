@@ -91,6 +91,36 @@ func OnAC(root string) (on, known bool) {
 	return false, known
 }
 
+// Charger is the USB-C supply charging the machine.
+type Charger struct {
+	Watts int    // what it offers: the negotiated voltage × its current limit
+	Now   int    // what it's drawing, when the supply says
+	Kind  string // the USB type in use: C, PD, PD_PPS
+}
+
+// ReadCharger finds the online USB-C power supply (ucsi's, type USB), or
+// ok is false: unplugged, or a barrel charger, which only shows as AC.
+func ReadCharger(root string) (c Charger, ok bool) {
+	dirs, _ := filepath.Glob(filepath.Join(root, "sys/class/power_supply/ucsi-source-psy-*"))
+	for _, d := range dirs {
+		if readLine(filepath.Join(d, "type")) != "USB" || readLine(filepath.Join(d, "online")) != "1" {
+			continue
+		}
+		volts := float64(readInt(filepath.Join(d, "voltage_max"))) / 1e6
+		c.Watts = int(volts*float64(readInt(filepath.Join(d, "current_max")))/1e6 + 0.5)
+		c.Now = int(float64(readInt(filepath.Join(d, "voltage_now")))*float64(readInt(filepath.Join(d, "current_now")))/1e12 + 0.5)
+		// usb_type lists every type with the one in use bracketed: "C [PD] PD_PPS".
+		for _, f := range strings.Fields(readLine(filepath.Join(d, "usb_type"))) {
+			if strings.HasPrefix(f, "[") {
+				c.Kind = strings.Trim(f, "[]")
+			}
+		}
+		c.Watts, c.Now = max(c.Watts, 0), max(c.Now, 0) // a value the supply leaves unset reads -1
+		return c, true
+	}
+	return Charger{}, false
+}
+
 // PlatformProfile is the ACPI platform profile and the ones the firmware
 // offers, or "" and nil without one.
 func PlatformProfile(root string) (string, []string) {

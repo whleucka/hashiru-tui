@@ -121,3 +121,17 @@ func TestRewriteIdle(t *testing.T) {
 		t.Error("no listeners to rewrite: want an error")
 	}
 }
+
+func TestReadCharger(t *testing.T) {
+	c, ok := ReadCharger("testdata/sysroot")
+	if !ok {
+		t.Fatal("the dock's USB-C supply is online in the fixture")
+	}
+	// 20 V at up to 4.6 A, drawing 3.25 A.
+	if c.Watts != 92 || c.Now != 65 || c.Kind != "PD" {
+		t.Errorf("charger = %+v", c)
+	}
+	if _, ok := ReadCharger(t.TempDir()); ok {
+		t.Error("no USB-C supply: none")
+	}
+}

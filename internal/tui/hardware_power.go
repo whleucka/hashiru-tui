@@ -32,6 +32,8 @@ type power struct {
 type powerState struct {
 	bats        []system.BatteryState
 	ac, acKnown bool
+	charger     system.Charger
+	charging    bool // a USB-C supply is online
 	platform    string
 	tlp         system.TLPStatus
 	tlpErr      error
@@ -93,6 +95,7 @@ func (p *power) probe() tea.Cmd {
 			idle: map[string]idleConf{},
 		}
 		st.ac, st.acKnown = system.OnAC(p.root)
+		st.charger, st.charging = system.ReadCharger(p.root)
 		st.platform, _ = system.PlatformProfile(p.root)
 
 		out, err := probe(ctx, "tlp-stat", system.TLPStatusArgs...)
@@ -370,7 +373,19 @@ func (p *power) view(width, height int) string {
 			field("thresholds", th)
 		}
 	}
-	if st.acKnown {
+	switch c := st.charger; {
+	case st.charging && c.Watts > 0:
+		line := fmt.Sprintf("%dW USB-C", c.Watts)
+		if c.Kind != "" && c.Kind != "C" {
+			line += " " + strings.ReplaceAll(c.Kind, "_", " ")
+		}
+		if c.Now > 0 {
+			line += styleMuted.Render(fmt.Sprintf("  drawing %dW", c.Now))
+		}
+		field("charger", line)
+	case st.charging:
+		field("charger", "USB-C")
+	case st.acKnown:
 		field("AC", map[bool]string{true: "plugged in", false: "unplugged"}[st.ac])
 	}
 

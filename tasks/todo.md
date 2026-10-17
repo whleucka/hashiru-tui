@@ -18,9 +18,9 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/system/devices.go, devices_test.go, testdata (a sysfs tree under sysroot). **Size:** M
 
 ### Task 3: USB-C charger in Power
-- [ ] `system.Charger(root)`: the online `type=USB` supply's watts (voltage_max × current_max) and PD/PPS
-- [ ] Power's AC line: "charger 65W (USB-C PD)", or "plugged in" without one
-- [ ] Fixture captured with the charger in
+- [x] `system.Charger(root)`: the online `type=USB` supply's watts (voltage_max × current_max) and PD/PPS
+- [x] Power's AC line: "charger 92W USB-C PD  drawing 65W", or "plugged in" without one
+- [x] Fixture captured with the charger in
 **Files:** internal/system/power.go, power_test.go, internal/tui/hardware_power.go, tests. **Size:** S
 
 ### Checkpoint A

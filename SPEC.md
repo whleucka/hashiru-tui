@@ -397,7 +397,8 @@ Devices has no enable). `R` is reset/restart as in Services.
 Beside AC in Battery: what's charging it, from the online USB-C supply
 (`/sys/class/power_supply/ucsi-source-psy-*`, `type=USB`): negotiated power
 as `voltage_max × current_max` (µV × µA → W), and PD/PPS from `usb_type`.
-"charger 65W (USB-C PD)". A barrel/AC-only supply shows "plugged in" as now.
+"charger 92W USB-C PD  drawing 65W"
+(the dock: 20 V at up to 4.6 A, drawing 3.25 A). A barrel/AC-only supply shows "plugged in" as now.
 Fixture captured with the charger in.
 
 ### Done when

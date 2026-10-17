@@ -87,6 +87,7 @@ func TestPowerTab(t *testing.T) {
 	for _, want := range []string{
 		"Monitors (3)", "Power", "Firmware (2)",
 		"BAT0", "32%", "discharging", "health 88%", "57 cycles",
+		"charger", "92W USB-C PD", "drawing 65W",
 		"thresholds", "0/100",
 		"balanced", "on battery", "TLP 1.10.2",
 		"AC", "15 min", "battery", "5 min", "+30s", "Hashiru's",
