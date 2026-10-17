@@ -15,8 +15,12 @@ import (
 // SysInfo is the machine at a glance, read straight from /proc and /sys.
 type SysInfo struct {
 	Host, Kernel        string
+	Model               string // "ThinkPad T14s Gen 6", from DMI
+	CPU                 string // "AMD Ryzen AI 7 PRO 350"
+	Threads             int
 	Uptime              time.Duration
 	MemTotal, MemAvail  uint64 // bytes
+	SwapTotal, SwapFree uint64
 	DiskTotal, DiskFree uint64 // bytes, of /
 	Battery             *Battery
 }
@@ -24,7 +28,8 @@ type SysInfo struct {
 // Battery is the first battery, if the machine has one.
 type Battery struct {
 	Percent int
-	Status  string // Charging, Discharging, Full, Not charging
+	Status  string  // Charging, Discharging, Full, Not charging
+	Health  float64 // full charge over design, 0 when it doesn't say
 }
 
 // Statfs reports a filesystem's size and the space available to users.
@@ -50,12 +55,14 @@ func ReadSysInfo(root string, statfs Statfs) SysInfo {
 	si := SysInfo{
 		Host:   read("proc/sys/kernel/hostname"),
 		Kernel: read("proc/sys/kernel/osrelease"),
+		Model:  model(read("sys/class/dmi/id/sys_vendor"), read("sys/class/dmi/id/product_name"), read("sys/class/dmi/id/product_version")),
 	}
+	si.CPU, si.Threads = cpuinfo([]byte(read("proc/cpuinfo")))
 	if f := strings.Fields(read("proc/uptime")); len(f) > 0 {
 		secs, _ := strconv.ParseFloat(f[0], 64)
 		si.Uptime = time.Duration(secs) * time.Second
 	}
-	si.MemTotal, si.MemAvail = meminfo([]byte(read("proc/meminfo")))
+	si.MemTotal, si.MemAvail, si.SwapTotal, si.SwapFree = meminfo([]byte(read("proc/meminfo")))
 	si.DiskTotal, si.DiskFree, _ = statfs("/")
 
 	supplies, _ := filepath.Glob(filepath.Join(root, "sys/class/power_supply/*"))
@@ -69,13 +76,65 @@ func ReadSysInfo(root string, statfs Statfs) SysInfo {
 			continue
 		}
 		si.Battery = &Battery{Percent: pct, Status: read(filepath.Join(rel, "status"))}
+		for _, b := range ReadBatteries(root) {
+			if b.Name == filepath.Base(dir) {
+				si.Battery.Health = b.Health
+			}
+		}
 		break
 	}
 	return si
 }
 
-// meminfo returns MemTotal and MemAvailable in bytes.
-func meminfo(b []byte) (total, avail uint64) {
+// model is the machine's name as it's sold. Lenovo puts that in
+// product_version ("ThinkPad T14s Gen 6") and a part number in
+// product_name; everyone else uses product_name. Board makers' placeholders
+// mean there isn't one.
+func model(vendor, name, version string) string {
+	m := name
+	if strings.EqualFold(vendor, "LENOVO") && version != "" {
+		m = version
+	}
+	switch strings.ToLower(m) {
+	case "", "none", "default string", "to be filled by o.e.m.", "system product name":
+		return ""
+	}
+	return m
+}
+
+// cpuinfo is the CPU's name, without the trademarks, clock and built-in
+// graphics people don't say, and how many threads it runs.
+func cpuinfo(b []byte) (name string, threads int) {
+	sc := bufio.NewScanner(bytes.NewReader(b))
+	for sc.Scan() {
+		k, v, ok := strings.Cut(sc.Text(), ":")
+		if !ok {
+			continue
+		}
+		switch strings.TrimSpace(k) {
+		case "processor":
+			threads++
+		case "model name":
+			if name == "" {
+				name = cpuName(strings.TrimSpace(v))
+			}
+		}
+	}
+	return name, threads
+}
+
+func cpuName(s string) string {
+	for _, cut := range []string{" w/ ", " @ ", " with "} {
+		s, _, _ = strings.Cut(s, cut)
+	}
+	for _, junk := range []string{"(R)", "(TM)", "(tm)", " CPU", " Processor", " processor"} {
+		s = strings.ReplaceAll(s, junk, "")
+	}
+	return strings.Join(strings.Fields(s), " ")
+}
+
+// meminfo returns MemTotal, MemAvailable, SwapTotal and SwapFree in bytes.
+func meminfo(b []byte) (total, avail, swapTotal, swapFree uint64) {
 	sc := bufio.NewScanner(bytes.NewReader(b))
 	for sc.Scan() {
 		f := strings.Fields(sc.Text())
@@ -88,9 +147,13 @@ func meminfo(b []byte) (total, avail uint64) {
 			total = kb * 1024
 		case "MemAvailable:":
 			avail = kb * 1024
+		case "SwapTotal:":
+			swapTotal = kb * 1024
+		case "SwapFree:":
+			swapFree = kb * 1024
 		}
 	}
-	return total, avail
+	return total, avail, swapTotal, swapFree
 }
 
 // HumanBytes formats bytes in binary units: "30.5 GiB".

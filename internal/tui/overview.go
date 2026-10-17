@@ -27,10 +27,37 @@ func (o *overview) View(width, height int) string {
 	row := func(k, v string) { b.WriteString(styleKey.Render(k) + v + "\n") }
 
 	if si := st.Sys; si != nil {
-		b.WriteString(styleTitle.Render(orUnknown(si.Host)) + styleMuted.Render("  "+si.Kernel+"  up "+uptime(si.Uptime)) + "\n")
+		head := styleTitle.Render(orUnknown(si.Host))
+		if si.Model != "" {
+			head += "  " + si.Model
+		}
+		b.WriteString(head + styleMuted.Render("  up "+uptime(si.Uptime)) + "\n")
+		row("kernel", orUnknown(si.Kernel))
+		if si.CPU != "" {
+			row("cpu", fmt.Sprintf("%s · %d threads", si.CPU, si.Threads))
+		}
+		if m := st.Machine; m != nil {
+			if len(m.GPUs) > 0 {
+				row("gpu", strings.Join(m.GPUs, " · "))
+			}
+			if m.Hyprland != "" {
+				row("hyprland", m.Hyprland)
+			}
+			if len(m.Displays) > 0 {
+				var ds []string
+				for _, d := range m.Displays {
+					ds = append(ds, d.Display())
+				}
+				row("displays", strings.Join(ds, " · "))
+			}
+		}
 		if si.MemTotal > 0 {
 			used := si.MemTotal - si.MemAvail
-			row("memory", fmt.Sprintf("%s used of %s", system.HumanBytes(used), system.HumanBytes(si.MemTotal)))
+			mem := fmt.Sprintf("%s used of %s", system.HumanBytes(used), system.HumanBytes(si.MemTotal))
+			if si.SwapTotal > 0 {
+				mem += styleMuted.Render(fmt.Sprintf(" · swap %s of %s", system.HumanBytes(si.SwapTotal-si.SwapFree), system.HumanBytes(si.SwapTotal)))
+			}
+			row("memory", mem)
 		}
 		if si.DiskTotal > 0 {
 			disk := fmt.Sprintf("%s free of %s", system.HumanBytes(si.DiskFree), system.HumanBytes(si.DiskTotal))
@@ -44,7 +71,13 @@ func (o *overview) View(width, height int) string {
 			if bat.Percent <= 15 && bat.Status == "Discharging" {
 				line = styleWarn.Render(line)
 			}
+			if bat.Health > 0 {
+				line += styleMuted.Render(fmt.Sprintf(" · %.0f%% health", bat.Health*100))
+			}
 			row("battery", line)
+		}
+		if m := st.Machine; m != nil && m.Packages > 0 {
+			row("installed", fmt.Sprintf("%d packages", m.Packages))
 		}
 		b.WriteString("\n")
 	}

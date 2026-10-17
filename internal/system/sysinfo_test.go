@@ -53,3 +53,42 @@ func TestHumanBytes(t *testing.T) {
 		}
 	}
 }
+
+func TestReadSysInfoMachine(t *testing.T) {
+	si := ReadSysInfo("testdata/sysroot", func(string) (uint64, uint64, error) { return 0, 0, nil })
+	if si.Model != "ThinkPad T14s Gen 6" {
+		t.Errorf("model = %q", si.Model)
+	}
+	if si.CPU != "AMD Ryzen AI 7 PRO 350" || si.Threads != 16 {
+		t.Errorf("cpu = %q, %d threads", si.CPU, si.Threads)
+	}
+	if si.SwapTotal != 31967228*1024 || si.SwapFree != si.SwapTotal {
+		t.Errorf("swap %d / %d", si.SwapFree, si.SwapTotal)
+	}
+	if si.Battery == nil || si.Battery.Health < 0.8 || si.Battery.Health > 1 {
+		t.Errorf("battery = %+v", si.Battery)
+	}
+}
+
+func TestModelAndCPUNames(t *testing.T) {
+	for _, c := range []struct{ vendor, name, version, want string }{
+		{"LENOVO", "21TB000AUS", "ThinkPad T14s Gen 6", "ThinkPad T14s Gen 6"},
+		{"Dell Inc.", "XPS 13 9340", "", "XPS 13 9340"},
+		{"ASUS", "System Product Name", "System Version", ""},
+		{"", "", "", ""},
+	} {
+		if got := model(c.vendor, c.name, c.version); got != c.want {
+			t.Errorf("model(%q, %q, %q) = %q, want %q", c.vendor, c.name, c.version, got, c.want)
+		}
+	}
+	for in, want := range map[string]string{
+		"AMD Ryzen AI 7 PRO 350 w/ Radeon 860M":    "AMD Ryzen AI 7 PRO 350",
+		"Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz": "Intel Core i7-8565U",
+		"AMD Ryzen 7 5800X 8-Core Processor":       "AMD Ryzen 7 5800X 8-Core",
+		"13th Gen Intel(R) Core(TM) i7-1365U":      "13th Gen Intel Core i7-1365U",
+	} {
+		if got := cpuName(in); got != want {
+			t.Errorf("cpuName(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
