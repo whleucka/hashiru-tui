@@ -78,11 +78,11 @@ twice (`./install.sh N`), `./doctor.sh`.
 
 ### Task 9: Hashiru release and site docs
 - [x] Site: configuration (override files, idle section, knobs), cli (`charge`), Unreleased changelog, search index. Release notes file waits for the release itself: these join the Unreleased batch since v1.13.0
-- [ ] **Ask before** tagging, pushing the repo and pushing the wiki
+- [x] **Asked before** tagging, pushing the repo and pushing the wiki: released as v1.14.0
 **Files:** docs/releases/, ~/projects/hashiru-wiki/public/docs/*. **Deps:** 7, 8. **Size:** S
 
 ### Checkpoint C
-- [ ] Both specs' "Done when"; `./doctor.sh` clean; `hashiru update` leaves the checkout clean
+- [x] Both specs' "Done when"; `./doctor.sh` clean; `hashiru update` leaves the checkout clean
 
 ## Phase 4: Power
 
@@ -106,4 +106,4 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/tui/hardware_power.go, tests. **Deps:** 7, 8, 11. **Size:** M
 
 ### Checkpoint D
-- [ ] Tests, vet, build; README (Areas, Keys, deep links to tabs); SPEC v3 "Done when"; full manual pass of every area
+- [x] Tests, vet, build; README (Areas, Keys, deep links to tabs); SPEC v3 "Done when"; full manual pass of every area

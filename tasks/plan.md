@@ -56,10 +56,10 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 ### Phase 3: Hashiru (in /opt/hashiru)
 - [x] Task 7: idle-override
 - [x] Task 8: charge-thresholds
-- [ ] Task 9: Hashiru release and site docs
+- [x] Task 9: Hashiru release and site docs
 
 ### Checkpoint C
-- [ ] Each spec's "Done when" by hand; `./doctor.sh` clean; `git status` clean after `hashiru update` on this machine
+- [x] Each spec's "Done when" by hand; `./doctor.sh` clean; `git status` clean after `hashiru update` on this machine
 
 ### Phase 4: Power
 - [x] Task 10: Power probes and the hypridle rewriter
@@ -67,7 +67,7 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 - [x] Task 12: Power actions
 
 ### Checkpoint D
-- [ ] Tests, vet, build; README updated for v3; SPEC's v3 "Done when" all hold; full manual pass of every area
+- [x] Tests, vet, build; README updated for v3; SPEC's v3 "Done when" all hold; full manual pass of every area
 
 ## Risks and mitigations
 
