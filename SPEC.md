@@ -218,8 +218,9 @@ Build order: `firmware` (creates the Hardware area) → `monitors` →
 `idle-override`, `charge-thresholds` → `power`. The two Hashiru modules'
 contracts are specced in Hashiru (`/opt/hashiru/SPEC-idle-override.md`,
 `SPEC-charge-thresholds.md`); this file only says how the TUI uses them.
-Each Hashiru module ships in a Hashiru release before `power` relies on it,
-and `power` degrades (read-only, with a note) on a Hashiru that predates it.
+Each Hashiru module ships in a Hashiru release before `power` relies on it.
+No fallback for an older Hashiru (decided 2026-10-16): the two ship together,
+so the TUI assumes the current one.
 
 ### Hardware area
 
@@ -298,8 +299,7 @@ real modes while changing them.
 - **Charge thresholds:** `c` (`hardware.charge`) asks start and stop
   (0–100, start < stop) and runs `hashiru charge START STOP` Interactive;
   `C` (`hardware.charge-off`) runs `hashiru charge off`. Hidden when the
-  battery has no `charge_control_*` files; read-only with a note when
-  `hashiru` has no `charge` subcommand.
+  battery has no `charge_control_*` files.
 
 ### Firmware (delegated)
 

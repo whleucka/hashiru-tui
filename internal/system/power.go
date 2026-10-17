@@ -228,15 +228,3 @@ func RewriteIdle(conf []byte, t Idle) ([]byte, error) {
 	}
 	return []byte(strings.Join(lines, "\n")), nil
 }
-
-// HasChargeCommand reports whether `hashiru help` lists `charge`, which
-// Hashiru releases before the hardware round don't have.
-func HasChargeCommand(help []byte) bool {
-	return regexp.MustCompile(`(?m)^\s+charge\b`).Match(help)
-}
-
-// IdleReloadable reports whether hypridle-battery takes `reload`, and so
-// reads machine-local idle overrides.
-func IdleReloadable(script []byte) bool {
-	return bytes.Contains(script, []byte(`"reload"`))
-}

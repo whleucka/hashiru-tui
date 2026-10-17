@@ -90,12 +90,12 @@ twice (`./install.sh N`), `./doctor.sh`.
 - [x] Batteries from `<root>/sys/class/power_supply/BAT*`: capacity, status, health, cycles, thresholds (absent → unsupported); AC online
 - [x] `platform_profile` and choices; `tlp-stat -s` profile and power source, parsed loosely
 - [x] hypridle conf: read lock/screen-off timeouts; `RewriteTimeouts(conf, lock, off)` changes only `timeout =` lines (golden test against the stowed files)
-- [x] Capability probes: `hashiru help` lists `charge`; `hypridle-battery` supports `reload`
+- [x] ~~Capability probes~~ dropped: no backwards compat with an older Hashiru
 **Files:** internal/system/power.go (new), power_test.go, testdata. **Deps:** none (fixtures can predate Task 7, 8). **Size:** M
 
 ### Task 11: Power tab, read-only
 - [x] Battery, profile, idle (AC and battery, override or stowed, labelled), thresholds sections
-- [x] No battery: says so, rest works; old Hashiru: notes beside the controls it can't offer
+- [x] No battery: says so, rest works
 **Files:** internal/tui/hardware_power.go (new), hardware.go, tests. **Deps:** 3, 10. **Size:** M
 
 ### Task 12: Power actions

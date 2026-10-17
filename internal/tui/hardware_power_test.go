@@ -19,9 +19,9 @@ func readFixture(t *testing.T, name string) string {
 	return string(b)
 }
 
-// powerHome is a home with Hashiru's hypridle confs and script stowed, and
+// powerHome is a home with Hashiru's hypridle confs stowed, and
 // an override for battery when override is set.
-func powerHome(t *testing.T, script string, override bool) string {
+func powerHome(t *testing.T, override bool) string {
 	t.Helper()
 	t.Setenv("XDG_CONFIG_HOME", "")
 	home := t.TempDir()
@@ -36,7 +36,6 @@ func powerHome(t *testing.T, script string, override bool) string {
 	}
 	put(".config/hypr/hypridle-ac.conf", readFixture(t, "hypridle-ac.conf"))
 	put(".config/hypr/hypridle-battery.conf", readFixture(t, "hypridle-battery.conf"))
-	put(".config/hypr/scripts/hypridle-battery", script)
 	if override {
 		put(".config/hashiru/hypr/hypridle-battery.conf",
 			strings.Replace(readFixture(t, "hypridle-battery.conf"), "timeout = 300", "timeout = 600", 1))
@@ -51,13 +50,10 @@ type powerRig struct {
 	quiet    *[]string
 }
 
-func newPowerRig(t *testing.T, help string, home, sysroot string) powerRig {
+func newPowerRig(t *testing.T, home, sysroot string) powerRig {
 	t.Helper()
 	p := monProbe(t)
 	p["tlp-stat -s"] = readFixture(t, "tlp-stat-s.txt")
-	if help != "" {
-		p["hashiru help"] = help
-	}
 	var launched, quiet []string
 	m := New(Options{
 		Source:  fakeSource{},
@@ -85,8 +81,8 @@ func newPowerRig(t *testing.T, help string, home, sysroot string) powerRig {
 }
 
 func TestPowerTab(t *testing.T) {
-	home := powerHome(t, readFixture(t, "hypridle-battery.sh"), false)
-	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), home, "")
+	home := powerHome(t, false)
+	r := newPowerRig(t, home, "")
 	out := view(r.m)
 	for _, want := range []string{
 		"Monitors (3)", "Power", "Firmware (2)",
@@ -99,32 +95,20 @@ func TestPowerTab(t *testing.T) {
 			t.Errorf("missing %q in\n%s", want, out)
 		}
 	}
-	if strings.Contains(out, "needs Hashiru") {
-		t.Errorf("this Hashiru has everything:\n%s", out)
-	}
 }
 
 func TestPowerTabOverride(t *testing.T) {
-	home := powerHome(t, readFixture(t, "hypridle-battery.sh"), true)
-	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), home, "")
+	home := powerHome(t, true)
+	r := newPowerRig(t, home, "")
 	out := view(r.m)
 	if !strings.Contains(out, "10 min") || !strings.Contains(out, "yours") {
 		t.Errorf("battery override not shown:\n%s", out)
 	}
 }
 
-func TestPowerTabOldHashiru(t *testing.T) {
-	home := powerHome(t, "#!/bin/bash\nupower --monitor\n", false)
-	r := newPowerRig(t, "Commands:\n  fingerprint [on|off]\n", home, "")
-	out := view(r.m)
-	if strings.Count(out, "needs Hashiru v1.14.0") != 2 {
-		t.Errorf("thresholds and idle should each say what they need:\n%s", out)
-	}
-}
-
 func TestPowerTabNoBattery(t *testing.T) {
-	home := powerHome(t, readFixture(t, "hypridle-battery.sh"), false)
-	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), home, t.TempDir())
+	home := powerHome(t, false)
+	r := newPowerRig(t, home, t.TempDir())
 	out := view(r.m)
 	if !strings.Contains(out, "no battery") || !strings.Contains(out, "balanced") || strings.Contains(out, "0/100") {
 		t.Errorf("no battery:\n%s", out)
@@ -139,7 +123,7 @@ func backspaces(m *Model, n int) {
 }
 
 func TestPowerProfile(t *testing.T) {
-	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), powerHome(t, readFixture(t, "hypridle-battery.sh"), false), "")
+	r := newPowerRig(t, powerHome(t, false), "")
 	press(r.m, "p")
 	if out := view(r.m); !strings.Contains(out, "power-saver") {
 		t.Fatalf("profile picker:\n%s", out)
@@ -151,7 +135,7 @@ func TestPowerProfile(t *testing.T) {
 }
 
 func TestPowerIdleEditAndReset(t *testing.T) {
-	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), powerHome(t, readFixture(t, "hypridle-battery.sh"), false), "")
+	r := newPowerRig(t, powerHome(t, false), "")
 	_, acOverride := (&power{home: r.home}).idlePaths("ac")
 	_, batOverride := (&power{home: r.home}).idlePaths("battery")
 
@@ -189,7 +173,7 @@ func TestPowerIdleEditAndReset(t *testing.T) {
 }
 
 func TestPowerIdleRejectsNonsense(t *testing.T) {
-	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), powerHome(t, readFixture(t, "hypridle-battery.sh"), false), "")
+	r := newPowerRig(t, powerHome(t, false), "")
 	press(r.m, "i")
 	backspaces(r.m, 2)
 	press(r.m, "x", "enter")
@@ -203,7 +187,7 @@ func TestPowerIdleRejectsNonsense(t *testing.T) {
 }
 
 func TestPowerCharge(t *testing.T) {
-	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), powerHome(t, readFixture(t, "hypridle-battery.sh"), false), "")
+	r := newPowerRig(t, powerHome(t, false), "")
 	press(r.m, "c")
 	backspaces(r.m, 3)
 	press(r.m, "7", "5", "enter")
@@ -221,18 +205,6 @@ func TestPowerCharge(t *testing.T) {
 	press(r.m, "7", "5", "enter")
 	if len(*r.launched) != 2 || !strings.Contains(view(r.m), "start < stop") {
 		t.Errorf("80/75 should be refused: %v\n%s", *r.launched, view(r.m))
-	}
-}
-
-func TestPowerChargeOldHashiru(t *testing.T) {
-	r := newPowerRig(t, "Commands:\n", powerHome(t, "#!/bin/bash\n", false), "")
-	press(r.m, "c")
-	press(r.m, "i")
-	if len(*r.launched) != 0 || strings.Contains(view(r.m), "on AC") {
-		t.Errorf("an old Hashiru gets notes, not prompts: %v", *r.launched)
-	}
-	if !strings.Contains(r.m.note, "v1.14.0") {
-		t.Errorf("note = %q", r.m.note)
 	}
 }
 

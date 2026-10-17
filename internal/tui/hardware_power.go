@@ -30,14 +30,13 @@ type power struct {
 
 // powerState is one reading of everything the tab shows.
 type powerState struct {
-	bats               []system.BatteryState
-	ac, acKnown        bool
-	platform           string
-	tlp                system.TLPStatus
-	tlpErr             error
-	tlpMissing         bool
-	idle               map[string]idleConf // "ac", "battery"
-	canCharge, canIdle bool
+	bats        []system.BatteryState
+	ac, acKnown bool
+	platform    string
+	tlp         system.TLPStatus
+	tlpErr      error
+	tlpMissing  bool
+	idle        map[string]idleConf // "ac", "battery"
 }
 
 // idleConf is one power source's hypridle timeouts and where they're from.
@@ -85,7 +84,7 @@ func (p *power) update(msg tea.Msg) tea.Cmd {
 }
 
 func (p *power) probe() tea.Cmd {
-	probe, src := p.e.probe, p.e.src
+	probe := p.e.probe
 	return func() tea.Msg {
 		ctx, cancel := context.WithTimeout(context.Background(), powerTimeout)
 		defer cancel()
@@ -106,18 +105,11 @@ func (p *power) probe() tea.Cmd {
 			st.tlp = system.ParseTLPStatus(out)
 		}
 
-		help := src.Argv("help")
-		if out, err := probe(ctx, help[0], help[1:]...); err == nil {
-			st.canCharge = system.HasChargeCommand(out)
-		}
-		if script, err := os.ReadFile(p.idleScript()); err == nil {
-			st.canIdle = system.IdleReloadable(script)
-		}
 		for _, s := range idleSources {
 			stowed, override := p.idlePaths(s)
 			ic := idleConf{}
 			b, err := os.ReadFile(override)
-			if err == nil && st.canIdle {
+			if err == nil {
 				ic.override = true
 			} else {
 				b, err = os.ReadFile(stowed)
@@ -206,9 +198,6 @@ func (p *power) pickProfile() tea.Cmd {
 // The screen-off gap after locking stays what it was. Only a source whose
 // timeout changed gets an override.
 func (p *power) editIdle() tea.Cmd {
-	if !p.st.canIdle {
-		return note("changing idle timeouts " + needs)
-	}
 	var steps []askStep
 	for _, s := range idleSources {
 		name := map[string]string{"ac": "on AC", "battery": "on battery"}[s]
@@ -301,9 +290,6 @@ type powerDoneMsg struct{ text string }
 // editCharge asks for start and stop and runs hashiru charge, which needs
 // sudo, in the terminal.
 func (p *power) editCharge() tea.Cmd {
-	if !p.st.canCharge {
-		return note("charge thresholds " + needs)
-	}
 	var bat *system.BatteryState
 	for i := range p.st.bats {
 		if p.st.bats[i].Thresholds {
@@ -338,9 +324,6 @@ func (p *power) editCharge() tea.Cmd {
 }
 
 func (p *power) chargeOff() tea.Cmd {
-	if !p.st.canCharge {
-		return note("charge thresholds " + needs)
-	}
 	return p.e.launch(Launch{Argv: p.e.src.Argv("charge", "off"), Label: "hashiru charge off", Kind: Interactive, Refresh: true})
 }
 
@@ -351,9 +334,6 @@ func minutes(secs int) string {
 	}
 	return fmt.Sprintf("%ds", secs)
 }
-
-// needs is the note beside a control this Hashiru is too old for.
-const needs = "needs Hashiru v1.14.0 (hashiru update)"
 
 func (p *power) view(width, height int) string {
 	switch {
@@ -386,9 +366,6 @@ func (p *power) view(width, height int) string {
 			th := fmt.Sprintf("%d/%d", bat.Start, bat.Stop)
 			if bat.Start <= 0 && bat.Stop >= 100 {
 				th += styleMuted.Render(" (charges to full)")
-			}
-			if !st.canCharge {
-				th += "  " + styleMuted.Render(needs+" to set them")
 			}
 			field("thresholds", th)
 		}
@@ -439,9 +416,6 @@ func (p *power) view(width, height int) string {
 			off = "  +" + minutes(ic.t.Off-ic.t.Lock)
 		}
 		field(name, cell(minutes(ic.t.Lock), 7)+cell(off, 8)+"  "+from)
-	}
-	if !st.canIdle {
-		b.WriteString(styleMuted.Render(needs+" to change them") + "\n")
 	}
 	return b.String()
 }

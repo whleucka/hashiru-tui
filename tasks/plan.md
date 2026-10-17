@@ -28,9 +28,8 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
   revert. Paths come from `Options`, so tests use a temp dir.
 - **Sysfs and conf reads take a root path** (`/` in production, a temp tree
   in tests), like the existing probes take `Exec`.
-- **Hashiru capability checks are probes, not version compares:** "does
-  `hashiru help` list `charge`", "does `hypridle-battery` accept `reload`"
-  (grep the script). Missing → that control is read-only with a note.
+- ~~Hashiru capability probes~~ Dropped 2026-10-16: no backwards compat
+  with an older Hashiru; the TUI assumes the one it ships with.
 - **Root goes through the launcher as Interactive**: `fwupdmgr refresh|update`,
   `sudo tlp <profile>`, `hashiru charge`. Writing the idle override and
   running `hypridle-battery reload` are the user's own files and process, so
@@ -79,7 +78,7 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 | Hyprland rounds a scale it can't use | Low | Re-probe after reload, show the scale it used beside the one asked for |
 | `fwupdmgr get-updates` exits non-zero for "no updates" | Med | Capture exit codes on this machine in Task 2; treat the "nothing to do" code as an empty list, fixture-tested |
 | `tlp-stat -s` wording changes between TLP versions | Low | Parse `key = value` lines loosely; a missing field shows "unknown", never an error |
-| Hashiru's two changes ship after the TUI's Power tab | Med | Power reads first, writes only when the capability probe finds them (read-only with a note otherwise); Phase 3 lands before Phase 4 anyway |
+| Hashiru's two changes ship after the TUI's Power tab | Med | Phase 3 lands (and released, v1.14.0) before Phase 4; no fallback for an older Hashiru |
 | Eleven areas, number keys reach ten | Low | Decided: Hardware has no number key |
 
 ## Open questions

@@ -121,12 +121,3 @@ func TestRewriteIdle(t *testing.T) {
 		t.Error("no listeners to rewrite: want an error")
 	}
 }
-
-func TestHashiruCapabilities(t *testing.T) {
-	if !HasChargeCommand(fixture(t, "hashiru-help.txt")) || HasChargeCommand([]byte("Commands:\n  fingerprint [on|off]\n")) {
-		t.Error("HasChargeCommand")
-	}
-	if !IdleReloadable(fixture(t, "hypridle-battery.sh")) || IdleReloadable([]byte("#!/bin/bash\nupower --monitor\n")) {
-		t.Error("IdleReloadable")
-	}
-}
