@@ -1,0 +1,77 @@
+{
+   "blockdevices": [
+      {
+         "name": "zram0",
+         "path": "/dev/zram0",
+         "label": "zram0",
+         "size": "30.5G",
+         "fstype": "swap",
+         "mountpoints": [
+             "[SWAP]"
+         ],
+         "rm": false,
+         "hotplug": false,
+         "tran": null,
+         "model": null,
+         "type": "disk"
+      },{
+         "name": "nvme0n1",
+         "path": "/dev/nvme0n1",
+         "label": null,
+         "size": "953.9G",
+         "fstype": null,
+         "mountpoints": [],
+         "rm": false,
+         "hotplug": false,
+         "tran": "nvme",
+         "model": "KBG6AZNV1T02 LA KIOXIA",
+         "type": "disk",
+         "children": [
+            {
+               "name": "nvme0n1p1",
+               "path": "/dev/nvme0n1p1",
+               "label": null,
+               "size": "1G",
+               "fstype": "vfat",
+               "mountpoints": [
+                   "/boot"
+               ],
+               "rm": false,
+               "hotplug": false,
+               "tran": "nvme",
+               "model": null,
+               "type": "part"
+            },{
+               "name": "nvme0n1p2",
+               "path": "/dev/nvme0n1p2",
+               "label": null,
+               "size": "952.9G",
+               "fstype": "crypto_LUKS",
+               "mountpoints": [],
+               "rm": false,
+               "hotplug": false,
+               "tran": "nvme",
+               "model": null,
+               "type": "part",
+               "children": [
+                  {
+                     "name": "root",
+                     "path": "/dev/mapper/root",
+                     "label": null,
+                     "size": "952.9G",
+                     "fstype": "btrfs",
+                     "mountpoints": [
+                         "/var/log", "/var/cache/pacman/pkg", "/home", "/"
+                     ],
+                     "rm": false,
+                     "hotplug": false,
+                     "tran": null,
+                     "model": null,
+                     "type": "crypt"
+                  }
+               ]
+            }
+         ]
+      }
+   ]
+}

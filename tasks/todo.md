@@ -13,8 +13,8 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/system/devices.go (new), devices_test.go, testdata. **Size:** S
 
 ### Task 2: USB and Thunderbolt
-- [ ] `system.USBDevices(root)`: bus-port, vendor:product, manufacturer, product, speed, parent hub; sorted as a tree
-- [ ] `ParseBolt(list, domains)`: devices (name, vendor, uuid, generation, status, authorized, stored) and the security level; fixtures from this machine (the stored dock)
+- [x] `system.USBDevices(root)`: bus-port, vendor:product, manufacturer, product, speed, parent hub; sorted as a tree
+- [x] `ParseBolt(list, domains)`: devices (name, vendor, uuid, generation, status, authorized, stored) and the security level; fixtures from this machine (the stored dock)
 **Files:** internal/system/devices.go, devices_test.go, testdata (a sysfs tree under sysroot). **Size:** M
 
 ### Task 3: USB-C charger in Power

@@ -1,0 +1,8 @@
+ * domain0 b5e43804-0030-eb7a-ffff-ffffffffffff
+   |- bootacl:  0/0
+   `- security: iommu+user
+
+ * domain1 b5e43804-0130-eb7a-ffff-ffffffffffff
+   |- bootacl:  0/0
+   `- security: iommu+user
+

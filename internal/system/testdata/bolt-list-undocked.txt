@@ -1,0 +1,10 @@
+ o Lenovo ThinkPad Thunderbolt 4 Dock
+   |- type:          peripheral
+   |- name:          ThinkPad Thunderbolt 4 Dock
+   |- vendor:        Lenovo
+   |- uuid:          36a78780-0022-688d-ffff-ffffffffffff
+   |- generation:    USB4
+   |- status:        disconnected
+   |- authorized:    Thu 15 Oct 2026 09:54:51 PM UTC
+   |- connected:     Thu 15 Oct 2026 09:54:49 PM UTC
+   `- stored:        Sat 26 Sep 2026 03:56:56 PM UTC

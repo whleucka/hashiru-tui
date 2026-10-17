@@ -28,7 +28,7 @@ uses, `usb --reset`, already ships.
 
 ### Phase 1: Probes
 - [ ] Task 1: Drives: lsblk JSON → removable disks and partitions
-- [ ] Task 2: USB from sysfs; Thunderbolt from boltctl
+- [x] Task 2: USB from sysfs; Thunderbolt from boltctl
 - [ ] Task 3: USB-C charger in Power
 
 ### Checkpoint A

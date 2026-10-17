@@ -1,0 +1,17 @@
+ * Lenovo ThinkPad Thunderbolt 4 Dock
+   |- type:          peripheral
+   |- name:          ThinkPad Thunderbolt 4 Dock
+   |- vendor:        Lenovo
+   |- uuid:          36a78780-0022-688d-ffff-ffffffffffff
+   |- generation:    USB4
+   |- status:        authorized
+   |  |- domain:     b5e43804-0030-eb7a-ffff-ffffffffffff
+   |  |- rx speed:   40 Gb/s = 2 lanes * 20 Gb/s
+   |  |- tx speed:   40 Gb/s = 2 lanes * 20 Gb/s
+   |  `- authflags:  none
+   |- authorized:    Sat 17 Oct 2026 03:59:10 AM UTC
+   |- connected:     Sat 17 Oct 2026 03:59:08 AM UTC
+   `- stored:        Sat 26 Sep 2026 03:56:56 PM UTC
+      |- policy:     iommu
+      `- key:        no
+
