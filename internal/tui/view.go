@@ -177,7 +177,7 @@ func areaDigit(i int) string {
 var tabKey = Key{Keys: "[/]", Desc: "switch tab"}
 
 // tabBar draws an area's tabs, the current one lit and any that warn in
-// the warning colour, then the hint for switching.
+// the warning colour. How to switch is the footer's to say ([/]).
 func tabBar(labels []string, cur int, warn func(int) bool) string {
 	parts := make([]string, len(labels))
 	for i, l := range labels {
@@ -191,7 +191,7 @@ func tabBar(labels []string, cur int, warn func(int) bool) string {
 			parts[i] = styleMuted.Render(l)
 		}
 	}
-	return strings.Join(parts, " ") + styleMuted.Render("  [ ]")
+	return strings.Join(parts, " ")
 }
 
 // nextTab is i moved by "[" or "]" among n tabs, wrapping; ok is false for

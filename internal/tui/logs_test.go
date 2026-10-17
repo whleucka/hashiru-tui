@@ -92,7 +92,8 @@ func TestLogsTabsSwitchWithBrackets(t *testing.T) {
 	if l.src != srcHashiru {
 		t.Errorf("s → %d, want Hashiru", l.src)
 	}
-	if out := ansi.Strip(m.View().Content); !strings.Contains(out, "[ ]") {
-		t.Errorf("tab bar has no [ ] hint:\n%s", out)
+	// The footer says how to switch; the tab bar is just the tabs.
+	if out := ansi.Strip(m.View().Content); strings.Contains(out, "[ ]") || !strings.Contains(out, "[/] switch tab") {
+		t.Errorf("want the [/] hint in the footer only:\n%s", out)
 	}
 }
