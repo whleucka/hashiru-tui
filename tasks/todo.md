@@ -31,16 +31,17 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/tui/hardware.go, hardware_firmware.go (new), app.go, tests. **Deps:** 1, 2. **Size:** M
 
 ### Checkpoint A
-- [ ] Tests, vet, build; manual: `hashiru-tui packages.orphans`, `hashiru-tui hardware.firmware`, `F` and `u` in herdr and outside it
+- [x] Tests, vet, build; manual: `hashiru-tui packages.orphans`, `hashiru-tui hardware.firmware`, `F` and `u` in herdr and outside it
 
 ## Phase 2: Monitors
 
 ### Task 4: Monitor probe, layout model, Lua writer
-- [ ] `system.Monitors` from `hyprctl monitors all -j` (fixture from this machine, plus a hand-made two-display fixture)
-- [ ] Layout model: output, desc, mode (or preferred), position, scale, transform, disabled; logical size for placement
-- [ ] `Place(layout, out, rel, of)` for left/right/above/below
-- [ ] `MonitorsLua(layout)`: header marker, externals by `desc:`, `eDP-*` by name, no `disabled` for `eDP-*`, catch-all last; golden tests
-- [ ] `HasHeader(file)` tells a generated override from a hand-written one
+- [x] `system.Monitors` from `hyprctl monitors all -j` (fixture from this machine, plus a hand-made two-display fixture)
+- [x] Layout model: output, desc, mode (or preferred), position, scale, transform, disabled; logical size for placement
+- [x] `Place(layout, out, rel, of)` for left/right/above/below
+- [x] `MonitorsLua(layout)`: header marker, externals by `desc:`, `eDP-*` by name, no `disabled` for `eDP-*`, catch-all last; golden tests
+- [x] `HasHeader(file)` tells a generated override from a hand-written one
+- [x] `ParseRules` + `Matches`: rules for displays not connected are copied through (this machine's override names an unplugged LG)
 **Files:** internal/system/monitors.go (new), monitors_test.go, testdata. **Deps:** none. **Size:** M
 
 ### Task 5: Monitors tab: list, details, staged edits

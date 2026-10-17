@@ -1,0 +1,200 @@
+[
+    {
+        "id": 0,
+        "name": "eDP-1",
+        "description": "Lenovo Group Limited 0x41C6",
+        "make": "Lenovo Group Limited",
+        "model": "0x41C6",
+        "serial": "",
+        "width": 1920,
+        "height": 1200,
+        "physicalWidth": 300,
+        "physicalHeight": 190,
+        "refreshRate": 60.001,
+        "x": 320,
+        "y": 1440,
+        "activeWorkspace": {
+            "id": 1,
+            "name": "1"
+        },
+        "specialWorkspace": {
+            "id": 0,
+            "name": ""
+        },
+        "reserved": [
+            0,
+            28,
+            0,
+            0
+        ],
+        "scale": 1,
+        "transform": 0,
+        "focused": true,
+        "dpmsStatus": true,
+        "vrr": false,
+        "solitary": "0",
+        "solitaryBlockedBy": [
+            "WINDOWED",
+            "CANDIDATE"
+        ],
+        "activelyTearing": false,
+        "tearingBlockedBy": [
+            "NOT_TORN",
+            "CANDIDATE"
+        ],
+        "directScanoutTo": "0",
+        "directScanoutBlockedBy": [
+            "USER",
+            "SW",
+            "CANDIDATE"
+        ],
+        "disabled": false,
+        "currentFormat": "XRGB8888",
+        "mirrorOf": "none",
+        "availableModes": [
+            "1920x1200@60.00Hz",
+            "1920x1080@60.00Hz",
+            "1600x1200@60.00Hz",
+            "1680x1050@60.00Hz",
+            "1280x1024@60.00Hz",
+            "1440x900@60.00Hz",
+            "1280x800@60.00Hz",
+            "1280x720@60.00Hz",
+            "1024x768@60.00Hz",
+            "800x600@60.00Hz",
+            "640x480@60.00Hz"
+        ],
+        "colorManagementPreset": "srgb",
+        "sdrBrightness": 1,
+        "sdrSaturation": 1,
+        "sdrMinLuminance": 0.2,
+        "sdrMaxLuminance": 80,
+        "hardwareCursorsInUse": false
+    },
+    {
+        "id": 1,
+        "name": "DP-2",
+        "description": "LG Electronics LG ULTRAGEAR 605BNHC03417",
+        "make": "LG Electronics",
+        "model": "LG ULTRAGEAR",
+        "serial": "605BNHC03417",
+        "width": 2560,
+        "height": 1440,
+        "physicalWidth": 300,
+        "physicalHeight": 190,
+        "refreshRate": 143.99,
+        "x": 0,
+        "y": 0,
+        "activeWorkspace": {
+            "id": 1,
+            "name": "1"
+        },
+        "specialWorkspace": {
+            "id": 0,
+            "name": ""
+        },
+        "reserved": [
+            0,
+            28,
+            0,
+            0
+        ],
+        "scale": 1.25,
+        "transform": 0,
+        "focused": false,
+        "dpmsStatus": true,
+        "vrr": false,
+        "solitary": "0",
+        "solitaryBlockedBy": [
+            "WINDOWED",
+            "CANDIDATE"
+        ],
+        "activelyTearing": false,
+        "tearingBlockedBy": [
+            "NOT_TORN",
+            "CANDIDATE"
+        ],
+        "directScanoutTo": "0",
+        "directScanoutBlockedBy": [
+            "USER",
+            "SW",
+            "CANDIDATE"
+        ],
+        "disabled": false,
+        "currentFormat": "XRGB8888",
+        "mirrorOf": "none",
+        "availableModes": [
+            "2560x1440@143.99Hz",
+            "2560x1440@59.95Hz",
+            "1920x1080@60.00Hz"
+        ],
+        "colorManagementPreset": "srgb",
+        "sdrBrightness": 1,
+        "sdrSaturation": 1,
+        "sdrMinLuminance": 0.2,
+        "sdrMaxLuminance": 80,
+        "hardwareCursorsInUse": false
+    },
+    {
+        "id": 2,
+        "name": "HDMI-A-1",
+        "description": "Dell Inc. DELL P2419H 7XYZ",
+        "make": "Dell Inc.",
+        "model": "DELL P2419H",
+        "serial": "",
+        "width": 1920,
+        "height": 1080,
+        "physicalWidth": 300,
+        "physicalHeight": 190,
+        "refreshRate": 60.0,
+        "x": 0,
+        "y": 0,
+        "activeWorkspace": {
+            "id": 1,
+            "name": "1"
+        },
+        "specialWorkspace": {
+            "id": 0,
+            "name": ""
+        },
+        "reserved": [
+            0,
+            28,
+            0,
+            0
+        ],
+        "scale": 1,
+        "transform": 1,
+        "focused": false,
+        "dpmsStatus": true,
+        "vrr": false,
+        "solitary": "0",
+        "solitaryBlockedBy": [
+            "WINDOWED",
+            "CANDIDATE"
+        ],
+        "activelyTearing": false,
+        "tearingBlockedBy": [
+            "NOT_TORN",
+            "CANDIDATE"
+        ],
+        "directScanoutTo": "0",
+        "directScanoutBlockedBy": [
+            "USER",
+            "SW",
+            "CANDIDATE"
+        ],
+        "disabled": true,
+        "currentFormat": "XRGB8888",
+        "mirrorOf": "none",
+        "availableModes": [
+            "1920x1080@60.00Hz"
+        ],
+        "colorManagementPreset": "srgb",
+        "sdrBrightness": 1,
+        "sdrSaturation": 1,
+        "sdrMinLuminance": 0.2,
+        "sdrMaxLuminance": 80,
+        "hardwareCursorsInUse": false
+    }
+]

@@ -44,10 +44,10 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 - [x] Task 3: Hardware area with its Firmware tab
 
 ### Checkpoint A
-- [ ] Tests, vet, build; manual: `hashiru-tui packages.orphans`, `hashiru-tui hardware.firmware`, `F` and `u` open fwupdmgr in a herdr pane and outside herdr
+- [x] Tests, vet, build; manual: `hashiru-tui packages.orphans`, `hashiru-tui hardware.firmware`, `F` and `u` open fwupdmgr in a herdr pane and outside herdr
 
 ### Phase 2: Monitors
-- [ ] Task 4: Monitor probe, layout model, Lua writer
+- [x] Task 4: Monitor probe, layout model, Lua writer
 - [ ] Task 5: Monitors tab: list, details, staged edits
 - [ ] Task 6: Apply with keep-or-revert
 

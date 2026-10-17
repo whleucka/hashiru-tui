@@ -267,6 +267,11 @@ real modes while changing them.
   `desc:` (follows the display between ports, as `monitors.lua` recommends);
   the internal panel (`eDP-*`) by name. Disabled outputs are written with
   `disabled = true` except `eDP-*`, which is left to `clamshell.lua`.
+- **Rules for displays that aren't connected are kept**, copied through
+  as they were (found 2026-10-16: this machine's override names a dock
+  display that's unplugged; writing only the live outputs would drop it).
+  A rule belongs to a connected output when its `output` is the name, or
+  `desc:` and a prefix of the description.
 - **A hand-written override is never silently replaced.** If the file exists
   without the hashiru-tui header, apply asks first and copies it to
   `monitors.lua.bak` before writing.
