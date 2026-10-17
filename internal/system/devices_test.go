@@ -119,6 +119,26 @@ func TestParseDrives(t *testing.T) {
 	}
 }
 
+// A real stick with an Arch ISO written to it: the disk carries the ISO's
+// filesystem as well as its partitions, and the partitions win. Unmounted
+// shows as [] here, not [null].
+func TestParseDrivesRealStick(t *testing.T) {
+	drives, err := ParseDrives(fixture(t, "lsblk-undocked-stick.json"))
+	if err != nil || len(drives) != 1 {
+		t.Fatalf("drives = %+v, %v", drives, err)
+	}
+	d := drives[0]
+	if d.Path != "/dev/sda" || d.Model != "DataTraveler 3.0" || d.Tran != "usb" || len(d.Parts) != 2 || d.Mounted() {
+		t.Errorf("stick = %+v", d)
+	}
+	if p := d.Parts[0]; p.Path != "/dev/sda1" || p.Label != "ARCH_202609" || p.FSType != "iso9660" || p.Mount() != "" {
+		t.Errorf("sda1 = %+v", p)
+	}
+	if p := d.Parts[1]; p.Path != "/dev/sda2" || p.Label != "ARCHISO_EFI" || p.FSType != "vfat" || p.Encrypted() {
+		t.Errorf("sda2 = %+v", p)
+	}
+}
+
 func TestParseDrivesSkipsTheSystemDisk(t *testing.T) {
 	drives, err := ParseDrives(fixture(t, "lsblk-undocked-nostick.json"))
 	if err != nil || len(drives) != 0 {
