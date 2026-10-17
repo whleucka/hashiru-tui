@@ -124,7 +124,7 @@ func TestHardwareDeepLinkAndSidebar(t *testing.T) {
 	if m.area().Name() != "Hardware" {
 		t.Fatalf("opened on %s", m.area().Name())
 	}
-	// The eleventh area has no number key, and no junk in its place.
+	// The sidebar is names only: no digit, and no junk in its place.
 	for _, line := range strings.Split(ansi.Strip(m.sidebar()), "\n") {
 		if strings.Contains(line, "Hardware") && strings.TrimSpace(line) != "Hardware" {
 			t.Errorf("sidebar row %q", line)

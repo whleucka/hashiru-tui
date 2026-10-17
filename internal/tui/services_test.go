@@ -137,7 +137,8 @@ func TestZeroSelectsTheTenthArea(t *testing.T) {
 	if m.area().Name() != "Services" {
 		t.Errorf("0 → %s", m.area().Name())
 	}
-	if out := ansi.Strip(m.View().Content); !strings.Contains(out, "0 Services") {
+	// The key works; the sidebar draws names only.
+	if out := ansi.Strip(m.View().Content); strings.Contains(out, "0 Services") || !strings.Contains(out, " Services") {
 		t.Errorf("sidebar:\n%s", out)
 	}
 }

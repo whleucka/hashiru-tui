@@ -70,7 +70,9 @@ func (m *Model) View() tea.View {
 func (m *Model) sidebar() string {
 	lines := []string{styleTitle.Render("走 hashiru"), ""}
 	for i, a := range m.areas {
-		label := areaDigit(i) + " " + a.Name()
+		// No digits drawn: the number keys still jump (? lists them), but the
+		// sidebar is names, and areas past the tenth have no key to show.
+		label := " " + a.Name()
 		label = fmt.Sprintf("%-*s", sidebarWidth, label)
 		switch {
 		case i == m.sel && !m.inArea:

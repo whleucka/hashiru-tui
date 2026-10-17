@@ -25,7 +25,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 
 | Key | |
 |---|---|
-| `j` `k` / number keys | pick an area (`0` is the tenth) |
+| `j` `k` | pick an area (`1`–`9`, `0` jump to the first ten) |
 | `enter` / `esc` | into the area / back to the sidebar |
 | `ctrl+p` (or `:` in the sidebar) | command palette: every area and action |
 | `r` | refresh |
