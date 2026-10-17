@@ -61,12 +61,28 @@ func (m *Model) openPalette() tea.Cmd {
 			},
 		})
 	}
-	for _, act := range m.allActions() {
+	add := func(act Action) {
 		hint := act.ID
 		if act.Key != "" {
 			hint = act.Key + " · " + hint
 		}
 		acts = append(acts, paletteItem{title: act.Title, hint: hint, id: act.ID, run: m.recordRun(act)})
+	}
+	// An area's action shows its area, as a deep link does; a package search
+	// started from Snapshots would be typing into a screen you can't see.
+	for i, a := range m.areas {
+		for _, act := range a.Actions() {
+			run := act.Run
+			act.Run = func() tea.Cmd {
+				m.selectArea(i)
+				m.inArea = true
+				return run()
+			}
+			add(act)
+		}
+	}
+	for _, act := range m.shellActions() {
+		add(act)
 	}
 
 	var recent []paletteItem

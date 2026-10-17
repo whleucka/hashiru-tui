@@ -69,6 +69,32 @@ func TestPaletteGoesToArea(t *testing.T) {
 	}
 }
 
+// An area's action shows its area: run from Snapshots, a package search
+// is no use searching in a Packages you can't see.
+func TestPaletteActionGoesToItsArea(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	goTo(t, m, "Snapshots")
+	m.Update(ctrlP())
+	typeText(m, "search the repos")
+	press(m, "enter")
+	if m.area().Name() != "Packages" || !m.inArea {
+		t.Fatalf("area = %s, inArea %v", m.area().Name(), m.inArea)
+	}
+	if !m.typing() {
+		t.Error("the search box should have the keyboard")
+	}
+
+	// A shell action stays where it is.
+	goTo(t, m, "Snapshots")
+	m.Update(ctrlP())
+	typeText(m, "show keys")
+	press(m, "enter")
+	if m.area().Name() != "Snapshots" {
+		t.Errorf("shell.keys moved to %s", m.area().Name())
+	}
+}
+
 func TestPaletteEscCloses(t *testing.T) {
 	m := New(Options{Source: fakeSource{}})
 	load(t, m)
