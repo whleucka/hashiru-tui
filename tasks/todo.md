@@ -45,9 +45,10 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/system/monitors.go (new), monitors_test.go, testdata. **Deps:** none. **Size:** M
 
 ### Task 5: Monitors tab: list, details, staged edits
-- [ ] Rows per output; `enter` details with every mode
-- [ ] `m` mode picker, `s` scale picker, `t` rotate, `p` place; staged changes shown as `old → new`; `esc` drops them
-- [ ] Refuses a layout with no enabled output
+- [x] Rows per output; `enter` details with every mode
+- [x] `m` mode picker, `s` scale picker, `t` rotate, `p` place; staged changes shown as `old → new`; `esc` drops them
+- [x] `e`/`d` turn an external display on/off (Services' keys); the panel is refused, it's clamshell.lua's
+- [x] Refuses a layout with no enabled output; a display plugged in or out drops staged changes
 **Files:** internal/tui/hardware_monitors.go (new), hardware.go, tests. **Deps:** 3, 4. **Size:** M
 
 ### Task 6: Apply with keep-or-revert

@@ -48,7 +48,7 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 
 ### Phase 2: Monitors
 - [x] Task 4: Monitor probe, layout model, Lua writer
-- [ ] Task 5: Monitors tab: list, details, staged edits
+- [x] Task 5: Monitors tab: list, details, staged edits
 - [ ] Task 6: Apply with keep-or-revert
 
 ### Checkpoint B

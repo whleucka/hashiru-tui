@@ -249,7 +249,9 @@ real modes while changing them.
   `s` scale (picker of common scales; after applying, show the scale Hyprland
   actually used if it differs), `t` rotate (0/90/180/270), `p` place (left of,
   right of, above, below another output; position computed from its logical
-  size). Staged changes show as a diff on the row (`2560x1440@60 → preferred`).
+  size). `e`/`d` turn an external display on or off (Services'
+  keys for enable/disable); the internal panel is refused, it's
+  `clamshell.lua`'s. Staged changes show as a diff on the row (`2560x1440@60 → preferred`).
   `esc` drops them.
 - **Apply (`a`, `hardware.monitors-apply`)** writes
   `~/.config/hashiru/hypr/monitors.lua` from the staged layout and runs

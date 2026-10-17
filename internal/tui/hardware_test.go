@@ -40,8 +40,18 @@ func hardwareModel(t *testing.T, p probe) (*Model, *[]string) {
 	return m, &launched
 }
 
+// firmwareModel is hardwareModel on the Firmware tab.
+func firmwareModel(t *testing.T, p probe) (*Model, *[]string) {
+	t.Helper()
+	m, launched := hardwareModel(t, p)
+	if err := m.openTab(m.area(), "firmware"); err != nil {
+		t.Fatal(err)
+	}
+	return m, launched
+}
+
 func TestHardwareFirmware(t *testing.T) {
-	m, _ := hardwareModel(t, fwProbe(t))
+	m, _ := firmwareModel(t, fwProbe(t))
 	out := ansi.Strip(m.View().Content)
 	for _, want := range []string{
 		"Firmware (2)", "2 updates", "System Firmware", "65549 → 0.1.15",
@@ -62,7 +72,7 @@ func TestHardwareFirmware(t *testing.T) {
 }
 
 func TestHardwareFirmwareDetails(t *testing.T) {
-	m, _ := hardwareModel(t, fwProbe(t))
+	m, _ := firmwareModel(t, fwProbe(t))
 	press(m, "enter")
 	out := ansi.Strip(m.View().Content)
 	for _, want := range []string{"System Firmware", "LENOVO", "65549 → 0.1.15", "needs a reboot", "on AC", "• Fixed an issue where the system might hang on resume.", "0.1.14"} {
@@ -77,7 +87,7 @@ func TestHardwareFirmwareDetails(t *testing.T) {
 }
 
 func TestHardwareFirmwareActions(t *testing.T) {
-	m, launched := hardwareModel(t, fwProbe(t))
+	m, launched := firmwareModel(t, fwProbe(t))
 	press(m, "F")
 	press(m, "u")
 	if want := []string{"fwupdmgr refresh", "fwupdmgr update"}; strings.Join(*launched, "|") != strings.Join(want, "|") {
@@ -95,11 +105,11 @@ func TestHardwareFirmwareActions(t *testing.T) {
 }
 
 func TestHardwareFirmwareMissingAndDown(t *testing.T) {
-	m, _ := hardwareModel(t, probe{})
+	m, _ := firmwareModel(t, probe{})
 	if out := ansi.Strip(m.View().Content); !strings.Contains(out, "fwupdmgr isn't installed") {
 		t.Errorf("missing fwupd:\n%s", out)
 	}
-	m, _ = hardwareModel(t, probe{"fwupdmgr get-devices --json": "not json"})
+	m, _ = firmwareModel(t, probe{"fwupdmgr get-devices --json": "not json"})
 	if out := ansi.Strip(m.View().Content); !strings.Contains(out, "fwupdmgr") || !strings.Contains(out, "get-devices") {
 		t.Errorf("fwupd failing should name the command:\n%s", out)
 	}

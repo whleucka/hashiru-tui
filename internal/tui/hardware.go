@@ -27,7 +27,7 @@ type hardware struct {
 }
 
 func newHardware(e *env) *hardware {
-	return &hardware{e: e, tabs: []hwTab{newFirmware(e)}}
+	return &hardware{e: e, tabs: []hwTab{newMonitors(e), newFirmware(e)}}
 }
 
 func (h *hardware) Name() string { return "Hardware" }
