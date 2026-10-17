@@ -44,4 +44,7 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/tui/hardware_devices.go, tests. **Size:** M
 
 ### Checkpoint B
-- [ ] SPEC v4 "Done when" by hand; README and site's tui.html; release when you say
+- [x] By hand: mount and eject on a real stick
+- [x] README
+- [ ] Site's tui.html: on hold (2026-10-16)
+- [ ] Release when you say
