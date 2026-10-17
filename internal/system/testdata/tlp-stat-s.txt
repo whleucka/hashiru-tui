@@ -1,0 +1,20 @@
+--- TLP 1.10.2 --------------------------------------------
+
++++ System Info
+System         = LENOVO ThinkPad T14s Gen 6 21TB000AUS
+BIOS           = LENOVO R33ET30W (1.13 )
+EC firmware    = 1.7
+OS release     = Arch Linux
+Kernel         = 7.2.9-arch1-1 #1 SMP PREEMPT_DYNAMIC Sat, 03 Oct 2026 11:43:28 +0000 x86_64
+/proc/cmdline  = BOOT_IMAGE=/vmlinuz-linux rw quiet
+Init system    = systemd 262
+Boot mode      = UEFI
+Suspend mode   = [s2idle]
+
++++ TLP Status
+tlp            = enabled, last run: 08:49:12 PM, 1784 sec(s) ago
+tlp-rdw        = enabled
+tlp-pd         = not installed
+TLP profile    = balanced/BAT
+Power source   = battery
+

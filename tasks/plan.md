@@ -63,7 +63,7 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 - [ ] Each spec's "Done when" by hand; `./doctor.sh` clean; `git status` clean after `hashiru update` on this machine
 
 ### Phase 4: Power
-- [ ] Task 10: Power probes and the hypridle rewriter
+- [x] Task 10: Power probes and the hypridle rewriter
 - [ ] Task 11: Power tab, read-only
 - [ ] Task 12: Power actions
 

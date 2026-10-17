@@ -1,0 +1,65 @@
+Usage: hashiru <command> [args]
+
+Commands:
+  update [stage ...]   Pull the latest Hashiru, then run install.sh.
+                       Stage selectors are passed straight through, so
+                       'hashiru update 45' re-applies only config and
+                       'hashiru update 45+' runs stage 45 onward.
+  install [stage ...]  Run install.sh WITHOUT pulling. For iterating on local
+                       changes — 'update' refuses on a dirty checkout.
+  doctor [--json]      Read-only health check (never modifies the system).
+                       --json prints one JSON document for scripts.
+  config               Edit this machine's hashiru.conf in $EDITOR, seeding it
+                       from hashiru.conf.example the first time. Aliased as
+                       'edit'. Machine-local *config* — monitors, kitty, waybar
+                       — lives beside it in ~/.config/hashiru/.
+  fingerprint [on|off [--forget]]
+                       Fingerprint for sudo and polkit prompts. 'on' checks
+                       for a reader, enrolls a finger if none is, and turns it
+                       on; 'off' turns it off and keeps the prints for
+                       hyprlock, unless --forget. Bare, shows where it stands.
+                       A failed scan always falls back to the password.
+  charge [START STOP|off]
+                       Battery charge thresholds: start charging below START
+                       percent, stop at STOP (e.g. 'hashiru charge 75 80'), kept
+                       across updates. 'off' goes back to the factory 0/100.
+                       Bare, shows what's set and what the battery reports.
+  status [--porcelain] Show install provenance, checkout state, and whether a
+                       pull is available. --porcelain prints stable key=value
+                       lines for scripts.
+  tui                  The system menu, hashiru-tui (also SUPER+ALT+Space).
+  version              One line: the version this machine is running.
+  log [-f|--last]      Page the install log; -f follows it live, --last shows
+                       only the most recent run.
+  report               Warnings from the last install, if there were any.
+  changelog [tag]      Release notes, newest first, or just one tag's.
+  help                 This message.
+
+Stage selectors match install.sh: N, N+, --from N, or several at once.
+'hashiru install --list' names every stage; anything else install.sh accepts
+works through 'install' too, since that is a straight passthrough.
+
+Flags (accepted by both 'update' and 'install', passed to install.sh):
+  --no-confirm         Answer every prompt with yes. The only prompt a run has
+                       left is the reboot at the end, so on a full run this
+                       does reboot — pair it with --no-reboot if you'd rather
+                       it didn't. Package transactions were already
+                       non-interactive (pacman and yay run --noconfirm).
+  --no-reboot          Never reboot and never ask. Wins over --no-confirm.
+  --no-reflector       Skip stage 10's mirror ranking, worth about a minute.
+                       reflector.timer has been re-ranking weekly since this
+                       machine was built, so on an update the ranking buys
+                       nothing; the timer stays enabled either way.
+
+All three are per-machine settings too — HASHIRU_ASSUME_YES, HASHIRU_NO_REBOOT
+and HASHIRU_NO_REFLECTOR in hashiru.conf ('hashiru config'). A flag raises its
+knob for one run; leaving the flag off does not lower a configured one. To drop
+one for a single run, set it in the environment: HASHIRU_NO_REBOOT=0 hashiru
+update.
+
+No flag touches the dirty-checkout refusal or the sudo password prompt:
+the first is a hard error rather than a question, and the second can't be
+answered with a "y". For a genuinely unattended update, warm the sudo
+timestamp first ('sudo -v') or give the user NOPASSWD.
+
+Repo: /opt/hashiru

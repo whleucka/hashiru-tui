@@ -87,10 +87,10 @@ twice (`./install.sh N`), `./doctor.sh`.
 ## Phase 4: Power
 
 ### Task 10: Power probes and the hypridle rewriter
-- [ ] Batteries from `<root>/sys/class/power_supply/BAT*`: capacity, status, health, cycles, thresholds (absent → unsupported); AC online
-- [ ] `platform_profile` and choices; `tlp-stat -s` profile and power source, parsed loosely
-- [ ] hypridle conf: read lock/screen-off timeouts; `RewriteTimeouts(conf, lock, off)` changes only `timeout =` lines (golden test against the stowed files)
-- [ ] Capability probes: `hashiru help` lists `charge`; `hypridle-battery` supports `reload`
+- [x] Batteries from `<root>/sys/class/power_supply/BAT*`: capacity, status, health, cycles, thresholds (absent → unsupported); AC online
+- [x] `platform_profile` and choices; `tlp-stat -s` profile and power source, parsed loosely
+- [x] hypridle conf: read lock/screen-off timeouts; `RewriteTimeouts(conf, lock, off)` changes only `timeout =` lines (golden test against the stowed files)
+- [x] Capability probes: `hashiru help` lists `charge`; `hypridle-battery` supports `reload`
 **Files:** internal/system/power.go (new), power_test.go, testdata. **Deps:** none (fixtures can predate Task 7, 8). **Size:** M
 
 ### Task 11: Power tab, read-only
