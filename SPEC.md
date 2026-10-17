@@ -344,3 +344,68 @@ real modes while changing them.
   (`ps -o args= -C hypridle` names the override file), and sets 75/80
   thresholds that read back from sysfs and survive `hashiru update`.
 - Every new action is in the palette and `--list-actions`.
+
+## v4: devices
+
+Decided 2026-10-17. A Devices tab in Hardware, and the charger in Power. One
+capability, all in hashiru-tui (it calls Hashiru's existing `usb` script), so
+no capability map. No compat paths for older Hashiru.
+
+### Devices tab (Hardware: Monitors, Power, Devices, Firmware)
+
+Deep link `hardware.devices`. Three sections, one list; `j`/`k` move across
+them, keys act on the selected row.
+
+**Drives**: removable and hot-plugged disks and their partitions, from
+`lsblk -J -o NAME,PATH,LABEL,SIZE,FSTYPE,MOUNTPOINTS,RM,HOTPLUG,TRAN,MODEL,TYPE`
+(`rm` or `hotplug`; never the system disk). Label, size, filesystem, mount
+point, `usb`/`thunderbolt`.
+- `m` mount (`udisksctl mount -b`), `u` unmount (`udisksctl unmount -b`),
+  `e` eject: unmount every mounted partition, then `udisksctl power-off -b`
+  the disk, so it's safe to pull.
+- A LUKS partition: `m` runs `udisksctl unlock -b` Interactive (it asks for
+  the passphrase), then mounts the unlocked device.
+- No sudo: udisks asks polkit, which allows the active session. Mount,
+  unmount and power-off run in the background with the result in the
+  footer; unlock is Interactive.
+- `enter` on a mounted partition opens its mount point in Thunar (GUI,
+  detached).
+
+**USB**: devices from `/sys/bus/usb/devices/*-*` (root path for tests):
+bus-port id, vendor:product, manufacturer, product, link speed (`speed`:
+1.5/12/480 = USB 1-2, 5000+ = USB 3), and the hub it hangs off (indented).
+- `R` resets a device: Hashiru's `usb --reset <id>`, Interactive (sudo).
+
+**Thunderbolt**: devices from `boltctl list` (its tree output, parsed
+loosely: `key: value` under each `o`/`*` header), and the domains' security
+level from `boltctl domains`.
+- Each device: name, vendor, generation, status (connected, authorized,
+  disconnected, ...), stored or not.
+- `a` authorizes once (`boltctl authorize <uuid>`), `s` stores it so it's
+  trusted from now on (`boltctl enroll <uuid>`), `f` forgets it
+  (`boltctl forget <uuid>`). Interactive: bolt asks polkit.
+- A connected device that isn't authorized marks the tab as a warning: the
+  dock that's plugged in and doing nothing.
+- No bolt, or no Thunderbolt controller: the section says so; the rest of
+  the tab works.
+
+Same key, same job: `e` here is eject, not enable (it's a drive action, and
+Devices has no enable). `R` is reset/restart as in Services.
+
+### Power: the charger
+
+Beside AC in Battery: what's charging it, from the online USB-C supply
+(`/sys/class/power_supply/ucsi-source-psy-*`, `type=USB`): negotiated power
+as `voltage_max × current_max` (µV × µA → W), and PD/PPS from `usb_type`.
+"charger 65W (USB-C PD)". A barrel/AC-only supply shows "plugged in" as now.
+Fixture captured with the charger in.
+
+### Done when
+
+- `hashiru-tui hardware.devices` lists this machine's USB devices with their
+  speeds and the stored ThinkPad Thunderbolt 4 Dock.
+- A USB stick: listed under Drives; `m` mounts it, `u` unmounts, `e` powers
+  it off and it leaves the list; an encrypted one asks its passphrase.
+- Docked: the dock shows connected and authorized; Power shows the
+  charger's wattage over USB-C.
+- `R` on a device runs `usb --reset` with sudo in the terminal.
