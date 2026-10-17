@@ -60,24 +60,24 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/tui/hardware_monitors.go, a small overlay (reuse the quit-confirm pattern), tests. **Deps:** 5. **Size:** M
 
 ### Checkpoint B
-- [ ] Tests, vet, build; manual: scale change reverts on timeout; kept change survives a Hyprland restart; `.bak` made; docked/lid-shut if a display is at hand
+- [x] Tests, vet, build; manual: scale change reverts on timeout; kept change survives a Hyprland restart; `.bak` made; docked/lid-shut if a display is at hand
 
 ## Phase 3: Hashiru (in /opt/hashiru; per SPEC-idle-override.md, SPEC-charge-thresholds.md)
 
 ### Task 7: idle-override
-- [ ] `hypridle-battery`: override-or-stowed resolution per mode; `reload` argument
-- [ ] Stowed confs' headers point at the override paths; `doctor.sh` checks hypridle runs on an existing override
-- [ ] Spec's "Done when" by hand
+- [x] `hypridle-battery`: override-or-stowed resolution per mode; `reload` argument
+- [x] Stowed confs' headers point at the override paths; `doctor.sh` checks hypridle runs on an existing override
+- [x] Spec's "Done when" by hand
 **Files:** stow/hyprland/.config/hypr/scripts/hypridle-battery, hypridle-{ac,battery}.conf, doctor.sh. **Deps:** none. **Size:** S
 
 ### Task 8: charge-thresholds
-- [ ] `hashiru charge [START STOP | off]` with validation that changes nothing on refusal
-- [ ] Stage 10 `apply_charge_thresholds`: idempotent, does nothing when the knobs are unset
-- [ ] `hashiru.conf.example` knobs; `doctor.sh` checks sysfs matches; `hashiru help` lists it
+- [x] `hashiru charge [START STOP | off]` with validation that changes nothing on refusal
+- [x] Stage 10 `apply_charge_thresholds`: idempotent, does nothing when the knobs are unset
+- [x] `hashiru.conf.example` knobs; `doctor.sh` checks sysfs matches; `hashiru help` lists it
 **Files:** bin/hashiru, scripts/10-base.sh, hashiru.conf.example, doctor.sh. **Deps:** none. **Size:** M
 
 ### Task 9: Hashiru release and site docs
-- [ ] Release notes in `docs/releases/`; site: configuration (override files, knobs), cli (`charge`), changelog row
+- [x] Site: configuration (override files, idle section, knobs), cli (`charge`), Unreleased changelog, search index. Release notes file waits for the release itself: these join the Unreleased batch since v1.13.0
 - [ ] **Ask before** tagging, pushing the repo and pushing the wiki
 **Files:** docs/releases/, ~/projects/hashiru-wiki/public/docs/*. **Deps:** 7, 8. **Size:** S
 

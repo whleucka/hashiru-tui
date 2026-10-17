@@ -52,11 +52,11 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 - [x] Task 6: Apply with keep-or-revert
 
 ### Checkpoint B
-- [ ] Tests, vet, build; manual: change eDP-1's scale, let it revert; change again and keep; restart Hyprland and it holds; a hand-written override gets a `.bak`; docked with an external display if one is at hand
+- [x] Tests, vet, build; manual: change eDP-1's scale, let it revert; change again and keep; restart Hyprland and it holds; a hand-written override gets a `.bak`; docked with an external display if one is at hand
 
 ### Phase 3: Hashiru (in /opt/hashiru)
-- [ ] Task 7: idle-override
-- [ ] Task 8: charge-thresholds
+- [x] Task 7: idle-override
+- [x] Task 8: charge-thresholds
 - [ ] Task 9: Hashiru release and site docs
 
 ### Checkpoint C
