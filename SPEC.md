@@ -108,9 +108,15 @@ docs. Grouped by tier.
 
 Monitors (`hyprctl monitors`, written to `~/.config/hashiru/`), power (tlp,
 profiles, battery health, hypridle timeouts), packages (search, orphans, cache),
-firmware (`fwupdmgr`), services, theme/fonts, notifications (mako history,
-do-not-disturb), clipboard, default apps, fingerprint (wraps
-`hashiru fingerprint`), USB/Thunderbolt, SSH keys, docs search.
+firmware (`fwupdmgr`), services, USB/Thunderbolt: all shipped (v2 to v4).
+
+Pruned 2026-10-16, to keep the TUI from becoming the kitchen sink:
+- Notifications / do-not-disturb: a Hyprland keybind, not a screen.
+- Fingerprint: `hashiru fingerprint` is enough.
+- SSH keys, clipboard (SUPER+SHIFT+V's picker), keybinds jump-to-line: not needed.
+- Theme/font selector: no; too much like Omarchy.
+- Docs search: nice, not yet.
+- Default apps: never asked for.
 
 ## What changes in the current code
 
