@@ -1,11 +1,15 @@
 package tui
 
 import (
+	"context"
 	"os"
 	"strings"
 	"testing"
 
+	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/x/ansi"
+
+	"github.com/whleucka/hashiru-tui/internal/system"
 )
 
 // monProbe answers hyprctl with the docked fixture: the panel, an LG at
@@ -124,5 +128,181 @@ func TestMonitorsActionsAndDeepLink(t *testing.T) {
 	load(t, m)
 	if out := view(m); !strings.Contains(out, "DP-2") {
 		t.Errorf("not on Monitors:\n%s", out)
+	}
+}
+
+// applyRig is the Monitors tab with a temp home, a recorded hyprctl reload
+// and no real timer: tests send the ticks.
+type applyRig struct {
+	m       *Model
+	mon     *monitors
+	file    string
+	reloads *int
+}
+
+func newApplyRig(t *testing.T, existing string) applyRig {
+	t.Helper()
+	t.Setenv("XDG_CONFIG_HOME", "")
+	home := t.TempDir()
+	file := home + "/.config/hashiru/hypr/monitors.lua"
+	if existing != "" {
+		if err := os.MkdirAll(home+"/.config/hashiru/hypr", 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(file, []byte(existing), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	p := monProbe(t)
+	reloads := new(int)
+	m := New(Options{
+		Source: fakeSource{},
+		Home:   home,
+		Probe: func(ctx context.Context, name string, args ...string) ([]byte, error) {
+			if name == "hyprctl" && len(args) == 1 && args[0] == "reload" {
+				*reloads++
+				return []byte("ok"), nil
+			}
+			return p.run(ctx, name, args...)
+		},
+	})
+	load(t, m)
+	goTo(t, m, "Hardware")
+	return applyRig{m, m.area().(*hardware).tabs[0].(*monitors), file, reloads}
+}
+
+func (r applyRig) read(t *testing.T) (string, bool) {
+	t.Helper()
+	b, err := os.ReadFile(r.file)
+	if os.IsNotExist(err) {
+		return "", false
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b), true
+}
+
+func (r applyRig) ticks(n int) {
+	for range n {
+		_, cmd := r.m.Update(monTickMsg{seq: r.mon.seq})
+		drain(r.m, cmd)
+	}
+}
+
+// stageScale stages DP-2 at 1.5.
+func (r applyRig) stageScale() { press(r.m, "j", "s", "j", "j", "enter") }
+
+func TestMonitorsApplyKeep(t *testing.T) {
+	r := newApplyRig(t, "")
+	press(r.m, "a")
+	if _, ok := r.read(t); ok || *r.reloads != 0 {
+		t.Fatal("a with nothing staged wrote or reloaded")
+	}
+	r.stageScale()
+	press(r.m, "a")
+	got, ok := r.read(t)
+	if !ok || !strings.HasPrefix(got, "-- Written by hashiru-tui") || !strings.Contains(got, `scale = 1.5`) {
+		t.Fatalf("written:\n%s", got)
+	}
+	if *r.reloads != 1 {
+		t.Errorf("%d reloads, want 1", *r.reloads)
+	}
+	// The fixture doesn't change, so Hyprland "used" 1.25: say so.
+	if !strings.Contains(r.m.note, "DP-2 at 1.25, not 1.5") {
+		t.Errorf("note = %q", r.m.note)
+	}
+	if out := view(r.m); !strings.Contains(out, "Keep this layout?") || !strings.Contains(out, "15s") {
+		t.Errorf("no countdown:\n%s", out)
+	}
+	r.ticks(3)
+	if out := view(r.m); !strings.Contains(out, "12s") {
+		t.Errorf("countdown didn't count:\n%s", out)
+	}
+	press(r.m, "y")
+	if got2, _ := r.read(t); got2 != got || *r.reloads != 1 {
+		t.Errorf("y should keep the file and not reload again (%d reloads)", *r.reloads)
+	}
+	if r.mon.pending != nil || r.mon.staged != nil {
+		t.Error("still pending or staged after keeping")
+	}
+	// A tick left over from the countdown does nothing.
+	r.ticks(20)
+	if _, ok := r.read(t); !ok {
+		t.Error("a stale tick reverted a kept layout")
+	}
+}
+
+func TestMonitorsApplyTimesOut(t *testing.T) {
+	r := newApplyRig(t, "")
+	r.stageScale()
+	press(r.m, "a")
+	r.ticks(14)
+	if _, ok := r.read(t); !ok {
+		t.Fatal("reverted early")
+	}
+	r.ticks(1)
+	if _, ok := r.read(t); ok {
+		t.Error("timeout should remove a file that wasn't there before")
+	}
+	if *r.reloads != 2 {
+		t.Errorf("%d reloads, want 2 (apply, revert)", *r.reloads)
+	}
+	// The changes are still staged, to adjust and try again.
+	if r.mon.staged == nil || r.mon.pending != nil {
+		t.Error("revert should leave the changes staged")
+	}
+}
+
+func TestMonitorsApplyAnyOtherKeyReverts(t *testing.T) {
+	ours := system.MonitorsHeader + "\nhl.monitor({ output = \"eDP-1\", mode = \"preferred\", position = \"0x0\", scale = 1 })\n"
+	r := newApplyRig(t, ours)
+	r.stageScale()
+	press(r.m, "a")
+	if out := view(r.m); strings.Contains(out, "by hand") {
+		t.Fatalf("our own file shouldn't ask:\n%s", out)
+	}
+	press(r.m, "q")
+	if got, _ := r.read(t); got != ours {
+		t.Errorf("not restored:\n%s", got)
+	}
+	if r.m.quitting {
+		t.Error("q during the countdown reverts; it doesn't ask to quit")
+	}
+}
+
+func TestMonitorsApplyHandWritten(t *testing.T) {
+	hand := "hl.monitor({ output = \"eDP-1\", mode = \"preferred\", position = \"0x0\", scale = 1 })\n"
+	r := newApplyRig(t, hand)
+	r.stageScale()
+	press(r.m, "a")
+	if out := view(r.m); !strings.Contains(out, "by hand") || !strings.Contains(out, "monitors.lua.bak") {
+		t.Fatalf("should ask first:\n%s", out)
+	}
+	press(r.m, "n")
+	if got, _ := r.read(t); got != hand || *r.reloads != 0 {
+		t.Fatal("n should change nothing")
+	}
+	press(r.m, "a", "y")
+	bak, err := os.ReadFile(r.file + ".bak")
+	if err != nil || string(bak) != hand {
+		t.Errorf("bak = %q, %v", bak, err)
+	}
+	if got, _ := r.read(t); !system.HasHeader([]byte(got)) {
+		t.Errorf("not written:\n%s", got)
+	}
+	r.ticks(15)
+	if got, _ := r.read(t); got != hand {
+		t.Errorf("revert should put the hand-written file back:\n%s", got)
+	}
+}
+
+func TestMonitorsQuitMidCountdownReverts(t *testing.T) {
+	r := newApplyRig(t, "")
+	r.stageScale()
+	press(r.m, "a")
+	r.m.Update(tea.KeyPressMsg{Code: 'c', Mod: tea.ModCtrl})
+	if _, ok := r.read(t); ok || *r.reloads != 2 {
+		t.Errorf("ctrl+c mid-countdown should put the old layout back (%d reloads)", *r.reloads)
 	}
 }

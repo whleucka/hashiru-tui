@@ -242,12 +242,12 @@ func (m *Model) setNote(text string, err error) {
 func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 	switch msg.String() {
 	case "ctrl+c":
-		return tea.Quit
+		return m.quit()
 	}
 	if m.quitting {
 		m.quitting = false
 		if msg.String() == "y" {
-			return tea.Quit
+			return m.quit()
 		}
 		return nil // the key only answers the question
 	}
@@ -296,6 +296,17 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 	// The selected area's own action keys work from the sidebar too.
 	cmd, _ := m.area().HandleKey(msg)
 	return cmd
+}
+
+// quit gives areas a last word first: one with a change nobody said to
+// keep (Monitors' countdown) puts it back.
+func (m *Model) quit() tea.Cmd {
+	for _, a := range m.areas {
+		if q, ok := a.(interface{ beforeQuit() }); ok {
+			q.beforeQuit()
+		}
+	}
+	return tea.Quit
 }
 
 // shellKey handles the keys that mean the same everywhere, reporting whether

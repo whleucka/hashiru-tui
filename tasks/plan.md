@@ -49,7 +49,7 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 ### Phase 2: Monitors
 - [x] Task 4: Monitor probe, layout model, Lua writer
 - [x] Task 5: Monitors tab: list, details, staged edits
-- [ ] Task 6: Apply with keep-or-revert
+- [x] Task 6: Apply with keep-or-revert
 
 ### Checkpoint B
 - [ ] Tests, vet, build; manual: change eDP-1's scale, let it revert; change again and keep; restart Hyprland and it holds; a hand-written override gets a `.bak`; docked with an external display if one is at hand

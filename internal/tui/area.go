@@ -80,6 +80,6 @@ func newAreas(e *env, opts Options, graphics bool) []Area {
 		newConfig(e, opts.Home),
 		newLogs(e),
 		newServices(e),
-		newHardware(e),
+		newHardware(e, opts),
 	}
 }

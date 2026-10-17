@@ -52,10 +52,11 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/tui/hardware_monitors.go (new), hardware.go, tests. **Deps:** 3, 4. **Size:** M
 
 ### Task 6: Apply with keep-or-revert
-- [ ] `a` `hardware.monitors-apply`: hand-written override → confirm, copy to `monitors.lua.bak`
-- [ ] Atomic write, `hyprctl reload`, re-probe; show the scale Hyprland used if different
-- [ ] 15 s countdown overlay: `y` keeps; anything else or timeout restores the previous file (or removes it) and reloads
-- [ ] Paths from Options; tests drive the countdown with a fake clock and fake reload
+- [x] `a` `hardware.monitors-apply`: hand-written override → confirm, copy to `monitors.lua.bak`
+- [x] Atomic write, `hyprctl reload`, re-probe; show the scale Hyprland used if different
+- [x] 15 s countdown overlay: `y` keeps; anything else or timeout restores the previous file (or removes it) and reloads
+- [x] Paths from Options; tests drive the countdown with ticks and a fake reload
+- [x] Quitting mid-countdown (q·y, ctrl+c, palette) puts the old layout back first; a failed reload reverts at once
 **Files:** internal/tui/hardware_monitors.go, a small overlay (reuse the quit-confirm pattern), tests. **Deps:** 5. **Size:** M
 
 ### Checkpoint B

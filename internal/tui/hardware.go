@@ -26,8 +26,17 @@ type hardware struct {
 	tab  int
 }
 
-func newHardware(e *env) *hardware {
-	return &hardware{e: e, tabs: []hwTab{newMonitors(e), newFirmware(e)}}
+func newHardware(e *env, opts Options) *hardware {
+	return &hardware{e: e, tabs: []hwTab{newMonitors(e, opts.Home, opts.Tick), newFirmware(e)}}
+}
+
+// beforeQuit lets a tab undo what it hasn't been told to keep.
+func (h *hardware) beforeQuit() {
+	for _, t := range h.tabs {
+		if q, ok := t.(interface{ beforeQuit() }); ok {
+			q.beforeQuit()
+		}
+	}
 }
 
 func (h *hardware) Name() string { return "Hardware" }

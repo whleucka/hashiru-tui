@@ -257,7 +257,8 @@ real modes while changing them.
   `~/.config/hashiru/hypr/monitors.lua` from the staged layout and runs
   `hyprctl reload`. Then a **keep-or-revert prompt with a 15 s countdown**:
   `y` keeps, anything else or the timeout puts the previous file back (or
-  removes it, if there wasn't one) and reloads again. That guards the
+  removes it, if there wasn't one) and reloads again. Quitting the TUI mid-countdown
+  reverts too, and a reload Hyprland refuses reverts at once. That guards the
   black-screen case `monitors.lua` warns about (a dock offering fewer modes).
 - **Why write-and-reload, not `hyprctl eval 'hl.monitor(...)'` per change:**
   `clamshell.lua` documents that `hl.monitor` accumulates rules and desyncs

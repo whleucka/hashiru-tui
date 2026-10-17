@@ -32,7 +32,7 @@ func (m *Model) shellActions() []Action {
 	return []Action{
 		{ID: "shell.refresh", Title: "Refresh everything", Key: "r", Run: m.refresh},
 		{ID: "shell.keys", Title: "Show keys for this area", Key: "?", Run: func() tea.Cmd { return m.setKeyHelp(true) }},
-		{ID: "shell.quit", Title: "Quit", Key: "q", Run: func() tea.Cmd { return tea.Quit }},
+		{ID: "shell.quit", Title: "Quit", Key: "q", Run: m.quit},
 	}
 }
 
