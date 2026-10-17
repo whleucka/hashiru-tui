@@ -65,7 +65,7 @@ map: firmware → monitors → idle-override, charge-thresholds → power.
 ### Phase 4: Power
 - [x] Task 10: Power probes and the hypridle rewriter
 - [x] Task 11: Power tab, read-only
-- [ ] Task 12: Power actions
+- [x] Task 12: Power actions
 
 ### Checkpoint D
 - [ ] Tests, vet, build; README updated for v3; SPEC's v3 "Done when" all hold; full manual pass of every area

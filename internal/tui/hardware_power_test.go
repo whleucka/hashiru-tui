@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	tea "charm.land/bubbletea/v2"
 )
 
 func readFixture(t *testing.T, name string) string {
@@ -124,7 +126,125 @@ func TestPowerTabNoBattery(t *testing.T) {
 	home := powerHome(t, readFixture(t, "hypridle-battery.sh"), false)
 	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), home, t.TempDir())
 	out := view(r.m)
-	if !strings.Contains(out, "no battery") || !strings.Contains(out, "balanced") || strings.Contains(out, "thresholds") {
+	if !strings.Contains(out, "no battery") || !strings.Contains(out, "balanced") || strings.Contains(out, "0/100") {
 		t.Errorf("no battery:\n%s", out)
+	}
+}
+
+func backspaces(m *Model, n int) {
+	for range n {
+		_, cmd := m.Update(tea.KeyPressMsg{Code: tea.KeyBackspace})
+		drain(m, cmd)
+	}
+}
+
+func TestPowerProfile(t *testing.T) {
+	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), powerHome(t, readFixture(t, "hypridle-battery.sh"), false), "")
+	press(r.m, "p")
+	if out := view(r.m); !strings.Contains(out, "power-saver") {
+		t.Fatalf("profile picker:\n%s", out)
+	}
+	press(r.m, "k", "enter") // opens on balanced; up is performance
+	if strings.Join(*r.launched, "|") != "sudo tlp performance" {
+		t.Errorf("launched %v", *r.launched)
+	}
+}
+
+func TestPowerIdleEditAndReset(t *testing.T) {
+	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), powerHome(t, readFixture(t, "hypridle-battery.sh"), false), "")
+	_, acOverride := (&power{home: r.home}).idlePaths("ac")
+	_, batOverride := (&power{home: r.home}).idlePaths("battery")
+
+	press(r.m, "i")
+	if out := view(r.m); !strings.Contains(out, "on AC") {
+		t.Fatalf("no prompt:\n%s", out)
+	}
+	press(r.m, "enter") // AC stays 15
+	backspaces(r.m, 2)
+	press(r.m, "1", "0", "enter") // battery 5 → 10
+	if _, err := os.Stat(acOverride); err == nil {
+		t.Error("AC didn't change; it shouldn't get an override")
+	}
+	b, err := os.ReadFile(batOverride)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(b), "timeout = 600") || !strings.Contains(string(b), "timeout = 630") {
+		t.Errorf("override:\n%s", b)
+	}
+	if strings.Join(*r.quiet, "|") != "hypridle-battery reload" {
+		t.Errorf("reloads = %v", *r.quiet)
+	}
+	if out := view(r.m); !strings.Contains(out, "10 min") || !strings.Contains(out, "yours") {
+		t.Errorf("not re-read:\n%s", out)
+	}
+
+	press(r.m, "I")
+	if _, err := os.Stat(batOverride); err == nil {
+		t.Error("I should remove the override")
+	}
+	if len(*r.quiet) != 2 {
+		t.Errorf("reloads = %v", *r.quiet)
+	}
+}
+
+func TestPowerIdleRejectsNonsense(t *testing.T) {
+	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), powerHome(t, readFixture(t, "hypridle-battery.sh"), false), "")
+	press(r.m, "i")
+	backspaces(r.m, 2)
+	press(r.m, "x", "enter")
+	if out := view(r.m); !strings.Contains(out, "minutes") || !strings.Contains(out, "on AC") {
+		t.Errorf("should stay on the AC prompt and say why:\n%s", out)
+	}
+	press(r.m, "esc")
+	if len(*r.quiet) != 0 {
+		t.Errorf("esc wrote something: %v", *r.quiet)
+	}
+}
+
+func TestPowerCharge(t *testing.T) {
+	r := newPowerRig(t, readFixture(t, "hashiru-help.txt"), powerHome(t, readFixture(t, "hypridle-battery.sh"), false), "")
+	press(r.m, "c")
+	backspaces(r.m, 3)
+	press(r.m, "7", "5", "enter")
+	backspaces(r.m, 3)
+	press(r.m, "8", "0", "enter")
+	press(r.m, "C")
+	if want := "hashiru charge 75 80|hashiru charge off"; strings.Join(*r.launched, "|") != want {
+		t.Errorf("launched %v, want %s", *r.launched, want)
+	}
+
+	press(r.m, "c")
+	backspaces(r.m, 3)
+	press(r.m, "8", "0", "enter")
+	backspaces(r.m, 3)
+	press(r.m, "7", "5", "enter")
+	if len(*r.launched) != 2 || !strings.Contains(view(r.m), "start < stop") {
+		t.Errorf("80/75 should be refused: %v\n%s", *r.launched, view(r.m))
+	}
+}
+
+func TestPowerChargeOldHashiru(t *testing.T) {
+	r := newPowerRig(t, "Commands:\n", powerHome(t, "#!/bin/bash\n", false), "")
+	press(r.m, "c")
+	press(r.m, "i")
+	if len(*r.launched) != 0 || strings.Contains(view(r.m), "on AC") {
+		t.Errorf("an old Hashiru gets notes, not prompts: %v", *r.launched)
+	}
+	if !strings.Contains(r.m.note, "v1.14.0") {
+		t.Errorf("note = %q", r.m.note)
+	}
+}
+
+func TestPowerActions(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	ids := map[string]bool{}
+	for _, a := range m.Actions() {
+		ids[a.ID] = true
+	}
+	for _, id := range []string{"hardware.power-profile", "hardware.idle", "hardware.idle-reset", "hardware.charge", "hardware.charge-off"} {
+		if !ids[id] {
+			t.Errorf("no action %s", id)
+		}
 	}
 }

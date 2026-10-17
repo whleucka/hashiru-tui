@@ -99,10 +99,10 @@ twice (`./install.sh N`), `./doctor.sh`.
 **Files:** internal/tui/hardware_power.go (new), hardware.go, tests. **Deps:** 3, 10. **Size:** M
 
 ### Task 12: Power actions
-- [ ] `p` `hardware.power-profile`: picker → `sudo tlp <profile>` Interactive
-- [ ] `i` `hardware.idle`: minutes for lock (and screen-off) per source → write override atomically → `hypridle-battery reload`; `I` `hardware.idle-reset` removes overrides and reloads
-- [ ] `c` `hardware.charge`: start/stop input, validated → `hashiru charge S E` Interactive; `C` `hardware.charge-off`
-- [ ] Re-probe after each; keys in `Keys()`, actions in the palette
+- [x] `p` `hardware.power-profile`: picker → `sudo tlp <profile>` Interactive
+- [x] `i` `hardware.idle`: minutes for lock (and screen-off) per source → write override atomically → `hypridle-battery reload`; `I` `hardware.idle-reset` removes overrides and reloads
+- [x] `c` `hardware.charge`: start/stop input, validated → `hashiru charge S E` Interactive; `C` `hardware.charge-off`
+- [x] Re-probe after each; keys in `Keys()`, actions in the palette
 **Files:** internal/tui/hardware_power.go, tests. **Deps:** 7, 8, 11. **Size:** M
 
 ### Checkpoint D
