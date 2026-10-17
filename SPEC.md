@@ -361,15 +361,19 @@ them, keys act on the selected row.
 (`rm` or `hotplug`; never the system disk). Label, size, filesystem, mount
 point, `usb`/`thunderbolt`.
 - `m` mount (`udisksctl mount -b`), `u` unmount (`udisksctl unmount -b`),
-  `e` eject: unmount every mounted partition, then `udisksctl power-off -b`
-  the disk, so it's safe to pull.
+  `e` eject: unmount every mounted partition, lock every unlocked LUKS one,
+  then `udisksctl power-off -b` the disk, so it's safe to pull. It stops at
+  the first step that fails and names it ("unmount sda1: busy").
+- `--no-user-interaction` on every background udisksctl call: a polkit
+  refusal is an error in the footer, not a prompt nobody sees.
 - A LUKS partition: `m` runs `udisksctl unlock -b` Interactive (it asks for
   the passphrase), then mounts the unlocked device.
 - No sudo: udisks asks polkit, which allows the active session. Mount,
   unmount and power-off run in the background with the result in the
   footer; unlock is Interactive.
-- `enter` on a mounted partition opens its mount point in Thunar (GUI,
-  detached).
+- `o` on a mounted partition opens its mount point in Thunar (GUI,
+  detached). `enter` is details on every row, a mounted partition's too
+  (decided 2026-10-16, over `enter` opening Thunar).
 
 **USB**: devices from `/sys/bus/usb/devices/*-*` (root path for tests):
 bus-port id, vendor:product, manufacturer, product, link speed (`speed`:
@@ -388,6 +392,12 @@ level from `boltctl domains`.
   dock that's plugged in and doing nothing.
 - No bolt, or no Thunderbolt controller: the section says so; the rest of
   the tab works.
+
+The tab reloads every 5 seconds while it's on screen (not under the
+details), as Overview does, so a stick plugged in shows up without `r`. The
+cursor stays on its device when rows come and go above it. Only the keys
+for the selected row's kind show in the footer; another kind's key says
+what it's for ("m mount is for an unmounted partition").
 
 Same key, same job: `e` here is eject, not enable (it's a drive action, and
 Devices has no enable). `R` is reset/restart as in Services.

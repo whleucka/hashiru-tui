@@ -160,7 +160,8 @@ type (
 	refreshMsg struct{}
 )
 
-// sysInterval is how often Overview's local stats reload while it's shown.
+// sysInterval is how often Overview's local stats, and Devices, reload
+// while they're shown.
 const sysInterval = 5 * time.Second
 
 type sysTickMsg struct{}
@@ -210,9 +211,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case sysTickMsg:
-		// Only while Overview is on screen; nothing else re-runs.
-		if _, ok := m.area().(*overview); ok && !m.pal.open {
+		// Only while Overview or Devices is on screen; nothing else re-runs.
+		if m.pal.open {
+			return m, m.sysTick()
+		}
+		switch a := m.area().(type) {
+		case *overview:
 			return m, tea.Batch(readSys(m.opts), m.sysTick())
+		case *hardware:
+			if d, ok := a.tabs[a.tab].(*devices); ok && d.detail == nil {
+				return m, tea.Batch(d.probe(), m.sysTick())
+			}
 		}
 		return m, m.sysTick()
 

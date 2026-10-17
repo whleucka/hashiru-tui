@@ -37,10 +37,10 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 **Files:** internal/tui/hardware_devices.go (new), hardware.go, tests. **Size:** M
 
 ### Task 5: Actions
-- [ ] Drives: `m` mount, `u` unmount, `e` eject (unmount all, power off), LUKS unlock Interactive then mount, `enter` on a mounted partition opens Thunar
-- [ ] USB: `R` → `usb --reset <id>` Interactive
-- [ ] Thunderbolt: `a` authorize, `s` store (enroll), `f` forget, Interactive
-- [ ] Keys shown only for the selected row's kind; actions in the palette with IDs (`hardware.drive-mount`, ...)
+- [x] Drives: `m` mount, `u` unmount, `e` eject (unmount all, power off), LUKS unlock Interactive then mount, `o` on a mounted partition opens Thunar (enter stays details)
+- [x] USB: `R` → `usb --reset <id>` Interactive
+- [x] Thunderbolt: `a` authorize, `s` store (enroll), `f` forget, Interactive
+- [x] Keys shown only for the selected row's kind; actions in the palette with IDs (`hardware.drive-mount`, ...)
 **Files:** internal/tui/hardware_devices.go, tests. **Size:** M
 
 ### Checkpoint B

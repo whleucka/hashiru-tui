@@ -36,7 +36,7 @@ uses, `usb --reset`, already ships.
 
 ### Phase 2: Devices tab
 - [x] Task 4: Devices tab: three sections, selection, details
-- [ ] Task 5: Actions: mount, unmount, eject, unlock, open; reset; authorize, store, forget
+- [x] Task 5: Actions: mount, unmount, eject, unlock, open; reset; authorize, store, forget
 
 ### Checkpoint B
 - [ ] Tests, vet, build; SPEC v4 "Done when" by hand (stick, encrypted stick if at hand, dock, charger); README and site

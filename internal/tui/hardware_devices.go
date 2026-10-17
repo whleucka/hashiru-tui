@@ -22,6 +22,9 @@ type devices struct {
 	offset int
 	height int
 	detail *devRow // the row whose details are showing
+	// unlockThen is the LUKS partition being unlocked, to mount once the
+	// list shows it unlocked.
+	unlockThen string
 }
 
 // devState is one reading of everything the tab shows.
@@ -81,10 +84,52 @@ func (d *devices) update(msg tea.Msg) tea.Cmd {
 	case refreshMsg:
 		return d.probe()
 	case devicesMsg:
+		key := ""
+		if r, ok := d.selected(); ok {
+			key = r.key()
+		}
 		d.st, d.loaded = msg.st, true
-		d.sel = min(d.sel, max(len(d.rows())-1, 0))
+		d.reselect(key)
+		return d.mountUnlocked()
+	case devDoneMsg:
+		return tea.Batch(func() tea.Msg { return noteMsg{text: msg.text, err: msg.err} }, d.probe())
 	}
 	return nil
+}
+
+// key names the device a row is, so the cursor stays on it when a reload
+// adds or takes away rows above it.
+func (r devRow) key() string {
+	switch r.kind {
+	case kindDrive:
+		return "drive " + r.drive.Path
+	case kindPart:
+		return "part " + r.part.Path
+	case kindUSB:
+		return "usb " + r.usb.ID
+	}
+	return "bolt " + r.bolt.UUID
+}
+
+func (d *devices) selected() (devRow, bool) {
+	rows := d.rows()
+	if d.sel < len(rows) {
+		return rows[d.sel], true
+	}
+	return devRow{}, false
+}
+
+// reselect puts the cursor back on the device with key, or keeps its place
+// when that's gone.
+func (d *devices) reselect(key string) {
+	rows := d.rows()
+	for i, r := range rows {
+		if r.key() == key {
+			d.sel = i
+			return
+		}
+	}
+	d.sel = min(d.sel, max(len(rows)-1, 0))
 }
 
 func (d *devices) probe() tea.Cmd {
@@ -135,16 +180,27 @@ func (d *devices) rows() []devRow {
 	return rows
 }
 
-func (d *devices) actions() []Action { return nil }
-
+// keys are the ones for the selected row: a partition's aren't a USB
+// device's.
 func (d *devices) keys() []Key {
 	if d.detail != nil {
 		return []Key{{Keys: "esc", Desc: "back to the list"}}
 	}
-	return []Key{
-		{Keys: "j/k", Desc: "move"},
-		{Keys: "enter", Desc: "details"},
+	keys := []Key{{Keys: "j/k", Desc: "move"}, {Keys: "enter", Desc: "details"}}
+	r, ok := d.selected()
+	if !ok {
+		return keys
 	}
+	for _, a := range d.acts() {
+		if a.applies(r) {
+			desc := a.desc
+			if a.key == "m" && r.part.Locked() {
+				desc = "unlock, mount"
+			}
+			keys = append(keys, Key{Keys: a.key, Desc: desc})
+		}
+	}
+	return keys
 }
 
 func (d *devices) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
@@ -168,6 +224,11 @@ func (d *devices) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 			d.detail = &r
 		}
 		return nil, true
+	}
+	for _, a := range d.acts() {
+		if k == a.key {
+			return d.do(a), true
+		}
 	}
 	return nil, false
 }
