@@ -19,7 +19,7 @@ type hwTab interface {
 }
 
 // hardware is the machine's hardware, a tab each: monitors, power,
-// firmware.
+// devices, firmware.
 type hardware struct {
 	e    *env
 	tabs []hwTab
@@ -30,6 +30,7 @@ func newHardware(e *env, opts Options) *hardware {
 	return &hardware{e: e, tabs: []hwTab{
 		newMonitors(e, opts.Home, opts.Tick),
 		newPower(e, opts.SysRoot, opts.Home),
+		newDevices(e, opts.SysRoot),
 		newFirmware(e),
 	}}
 }

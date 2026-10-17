@@ -30,10 +30,10 @@ Verification for every task: `go test ./...`, `go vet ./...`, `make build`.
 ## Phase 2: Devices tab
 
 ### Task 4: Devices tab
-- [ ] Tab `devices` between Power and Firmware; Drives, USB, Thunderbolt sections in one list
-- [ ] Rows: drive/partition with mount point; USB indented under hubs with speed; Thunderbolt with status and stored
-- [ ] Warns on a connected, unauthorized Thunderbolt device; missing bolt or controller says so
-- [ ] `enter` on a row shows its details (lsblk fields, sysfs ids, boltctl fields)
+- [x] Tab `devices` between Power and Firmware; Drives, USB, Thunderbolt sections in one list
+- [x] Rows: drive/partition with mount point; USB indented under hubs with speed; Thunderbolt with status and stored
+- [x] Warns on a connected, unauthorized Thunderbolt device; missing bolt or controller says so
+- [x] `enter` on a row shows its details (lsblk fields, sysfs ids, boltctl fields)
 **Files:** internal/tui/hardware_devices.go (new), hardware.go, tests. **Size:** M
 
 ### Task 5: Actions

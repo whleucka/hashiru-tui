@@ -35,7 +35,7 @@ uses, `usb --reset`, already ships.
 - [x] Tests, vet, build; fixtures from this machine (a USB stick plugged in for Task 1, the charger in for Task 3)
 
 ### Phase 2: Devices tab
-- [ ] Task 4: Devices tab: three sections, selection, details
+- [x] Task 4: Devices tab: three sections, selection, details
 - [ ] Task 5: Actions: mount, unmount, eject, unlock, open; reset; authorize, store, forget
 
 ### Checkpoint B
