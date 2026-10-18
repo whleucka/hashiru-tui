@@ -3,13 +3,14 @@ package tui
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	tea "charm.land/bubbletea/v2"
 )
 
 // Start sets where the TUI opens: focused on an area (by name, any case),
 // or one of its tabs ("logs.journal"), and/or running an action by ID once
-// the window has a size, for deep links like `hashiru-tui --run
+// the window has a size and the terminal has settled, for deep links like `hashiru-tui --run
 // snapshots.new`. Call it before the program runs; an unknown name is an
 // error saying what there is.
 func (m *Model) Start(area, run string) error {
@@ -39,6 +40,24 @@ func (m *Model) Start(area, run string) error {
 		m.startRun = &act
 	}
 	return nil
+}
+
+// startReplyWait is how long a deep-linked action waits for the terminal to
+// answer Bubble Tea's mode queries before it runs anyway.
+const startReplyWait = 250 * time.Millisecond
+
+// startReadyMsg ends that wait.
+type startReadyMsg struct{}
+
+// runStart runs the deep-linked action once the window is sized and the
+// terminal has answered (or startReplyWait has passed).
+func (m *Model) runStart() tea.Cmd {
+	act := m.startRun
+	if act == nil || !m.startSized || !m.startReady {
+		return nil
+	}
+	m.startRun = nil
+	return act.Run()
 }
 
 // openTab switches a to the tab named tab (any case).

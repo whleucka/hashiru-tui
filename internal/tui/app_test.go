@@ -41,12 +41,18 @@ func sampleReport() hashiru.Report {
 	return r
 }
 
-// load sizes the model and runs Init's commands synchronously.
+// load sizes the model, answers the terminal's startup mode query, and runs
+// Init's commands synchronously.
 func load(t *testing.T, m *Model) {
 	t.Helper()
 	m.Update(tea.WindowSizeMsg{Width: 120, Height: 40})
+	m.Update(unicodeCoreReport)
 	drain(m, m.Init())
 }
+
+// unicodeCoreReport is the terminal's answer to the last of Bubble Tea's
+// startup mode queries.
+var unicodeCoreReport = tea.ModeReportMsg{Mode: ansi.ModeUnicodeCore, Value: ansi.ModeReset}
 
 // drain runs cmd and any batch it holds, feeding each message to Update.
 func drain(m *Model, cmd tea.Cmd) {

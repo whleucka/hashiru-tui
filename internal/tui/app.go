@@ -10,6 +10,7 @@ import (
 	"time"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
 	"github.com/whleucka/hashiru-tui/internal/kitty"
@@ -91,9 +92,14 @@ type Model struct {
 	// quitting: q was pressed and the footer asks to confirm. Only y quits;
 	// any other key stays, so a stray q doesn't close the window.
 	quitting bool
-	// startRun is the action a deep link asked for; it runs on the first
-	// window size, so what it launches has a laid-out screen to return to.
-	startRun *Action
+	// startRun is the action a deep link asked for. It runs once the window
+	// has a size, so what it launches has a laid-out screen to return to, and
+	// once the terminal has answered Bubble Tea's startup mode queries: a
+	// reply that lands after the action takes the terminal is echoed into it
+	// as ^[[?2026;2$y.
+	startRun   *Action
+	startSized bool
+	startReady bool
 
 	note    string // one-line feedback in the footer
 	noteErr bool
@@ -197,11 +203,25 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width, m.height = msg.Width, msg.Height
 		w, h := m.areaSize()
 		cmd := m.broadcast(areaSizeMsg{w, h})
-		if act := m.startRun; act != nil {
-			m.startRun = nil
-			cmd = tea.Batch(cmd, act.Run())
+		if m.startRun != nil && !m.startSized {
+			m.startSized = true
+			// Not every terminal answers; don't wait on one that won't.
+			wait := tea.Tick(startReplyWait, func(time.Time) tea.Msg { return startReadyMsg{} })
+			cmd = tea.Batch(cmd, wait, m.runStart())
 		}
 		return m, cmd
+
+	case tea.ModeReportMsg:
+		// Mode 2027 is the last of Bubble Tea's startup queries.
+		if msg.Mode == ansi.ModeUnicodeCore {
+			m.startReady = true
+			return m, m.runStart()
+		}
+		return m, nil
+
+	case startReadyMsg:
+		m.startReady = true
+		return m, m.runStart()
 
 	case tea.KeyPressMsg:
 		return m, m.handleKey(msg)

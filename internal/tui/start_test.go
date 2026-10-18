@@ -35,7 +35,11 @@ func TestStartRunsAnActionOnceSized(t *testing.T) {
 	if len(ran) != 0 {
 		t.Fatalf("ran before the window had a size: %v", ran)
 	}
-	_, cmd := m.Update(tea.WindowSizeMsg{Width: 120, Height: 40})
+	m.Update(tea.WindowSizeMsg{Width: 120, Height: 40})
+	if len(ran) != 0 {
+		t.Fatalf("ran before the terminal answered its mode queries: %v", ran)
+	}
+	_, cmd := m.Update(unicodeCoreReport)
 	drain(m, cmd)
 	if len(ran) != 1 || ran[0] != "hashiru update --no-reboot --no-reflector" {
 		t.Errorf("ran %v, want hashiru update once", ran)
@@ -43,11 +47,32 @@ func TestStartRunsAnActionOnceSized(t *testing.T) {
 	if m.area().Name() != "Updates" || !m.inArea {
 		t.Errorf("opened on %s, want the action's area", m.area().Name())
 	}
-	// A later resize doesn't run it again.
+	// A later resize, or the wait running out, doesn't run it again.
 	_, cmd = m.Update(tea.WindowSizeMsg{Width: 100, Height: 30})
 	drain(m, cmd)
+	_, cmd = m.Update(startReadyMsg{})
+	drain(m, cmd)
 	if len(ran) != 1 {
-		t.Errorf("resize ran it again: %v", ran)
+		t.Errorf("ran it again: %v", ran)
+	}
+}
+
+func TestStartRunsAnActionWhenTheTerminalNeverAnswers(t *testing.T) {
+	var ran []string
+	m := New(Options{
+		Source: fakeSource{},
+		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+			ran = append(ran, strings.Join(argv, " "))
+			return nil
+		},
+	})
+	if err := m.Start("", "updates.update"); err != nil {
+		t.Fatal(err)
+	}
+	_, cmd := m.Update(tea.WindowSizeMsg{Width: 120, Height: 40})
+	drain(m, cmd) // includes the startReplyWait tick
+	if len(ran) != 1 {
+		t.Errorf("ran %v, want it once after the wait", ran)
 	}
 }
 
