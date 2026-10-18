@@ -37,7 +37,7 @@ func TestStartRunsAnActionOnceSized(t *testing.T) {
 	}
 	_, cmd := m.Update(tea.WindowSizeMsg{Width: 120, Height: 40})
 	drain(m, cmd)
-	if len(ran) != 1 || ran[0] != "hashiru update" {
+	if len(ran) != 1 || ran[0] != "hashiru update --no-reboot --no-reflector" {
 		t.Errorf("ran %v, want hashiru update once", ran)
 	}
 	if m.area().Name() != "Updates" || !m.inArea {

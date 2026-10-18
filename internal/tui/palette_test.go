@@ -50,7 +50,7 @@ func TestPaletteRunsAnAction(t *testing.T) {
 	if m.pal.open {
 		t.Error("enter should close the palette")
 	}
-	if len(ran) != 1 || ran[0] != "hashiru update" {
+	if len(ran) != 1 || ran[0] != "hashiru update --no-reboot --no-reflector" {
 		t.Errorf("ran %v", ran)
 	}
 }

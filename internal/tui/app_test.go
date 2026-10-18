@@ -223,7 +223,7 @@ func TestAreaKeysWorkFromSidebar(t *testing.T) {
 	load(t, m)
 	press(m, "j") // Updates, still in the sidebar
 	press(m, "u")
-	if len(got) != 1 || got[0] != "hashiru update" {
+	if len(got) != 1 || got[0] != "hashiru update --no-reboot --no-reflector" {
 		t.Errorf("u from the sidebar ran %v", got)
 	}
 }

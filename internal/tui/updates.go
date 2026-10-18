@@ -104,7 +104,8 @@ func (u *updates) upgradeAUR() tea.Cmd {
 }
 
 func (u *updates) update() tea.Cmd {
-	return u.e.launch(Launch{Argv: u.e.src.Argv("update"), Label: "hashiru update", Kind: Interactive, Refresh: true})
+	argv := u.e.src.Argv("update", "--no-reboot", "--no-reflector")
+	return u.e.launch(Launch{Argv: argv, Label: "hashiru update", Kind: Interactive, Refresh: true})
 }
 
 func (u *updates) HandleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
