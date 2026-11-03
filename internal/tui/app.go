@@ -323,8 +323,13 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 	if cmd, ok := m.shellKey(msg); ok {
 		return cmd
 	}
-	// The selected area's own action keys work from the sidebar too.
+	// The selected area's own action keys work from the sidebar too. One
+	// that opens an input (S, /) moves focus there, or the typing would
+	// reach the sidebar's keys and q would ask to quit.
 	cmd, _ := m.area().HandleKey(msg)
+	if t, ok := m.area().(typer); ok && t.Typing() {
+		m.inArea = true
+	}
 	return cmd
 }
 

@@ -3,6 +3,7 @@ package tui
 import (
 	"context"
 	"errors"
+	"slices"
 	"strings"
 	"testing"
 
@@ -342,5 +343,25 @@ func TestAreaKeysHideTheShellsForTheSameKey(t *testing.T) {
 	}
 	if n != 1 || keys[0].Desc != "back to the list" {
 		t.Errorf("esc listed %d times: %+v", n, keys)
+	}
+}
+
+// A search started from the sidebar takes the typing: q goes into the
+// query, not to the quit question.
+func TestSidebarActionThatTypesFocusesTheArea(t *testing.T) {
+	m := New(Options{Source: fakeSource{}})
+	load(t, m)
+	m.selectArea(slices.IndexFunc(m.areas, func(a Area) bool { return a.Name() == "Packages" }))
+
+	press(m, "S", "q")
+	if m.quitting {
+		t.Fatal("q in the search box asked to quit")
+	}
+	if !m.inArea {
+		t.Error("S from the sidebar should focus Packages")
+	}
+	p := m.area().(*packages)
+	if got := p.query.Value(); got != "q" {
+		t.Errorf("query = %q, want q", got)
 	}
 }
