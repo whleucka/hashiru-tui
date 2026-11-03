@@ -141,6 +141,7 @@ func New(opts Options) *Model {
 	m.env = &env{
 		src:     opts.Source,
 		probe:   opts.Probe,
+		get:     opts.Get,
 		state:   m.state,
 		launch:  m.launch,
 		refresh: m.refresh,

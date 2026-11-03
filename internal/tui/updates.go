@@ -91,10 +91,9 @@ func (u *updates) readNotes() {
 	u.notes.wanted = !u.notes.loaded
 }
 
-// openNews opens the newest unread announcement in the browser, or the
-// news page when there is none.
+// openNews goes to News's Arch tab, where each item can be opened.
 func (u *updates) openNews() tea.Cmd {
-	return u.e.launch(Launch{Argv: []string{"xdg-open", newsTarget(u.e.state)}, Label: "Arch news", Kind: GUI})
+	return u.e.jump("News", newsFocusMsg{tab: newsArch})
 }
 
 // upgradeAUR is separate because hashiru update runs pacman -Syu but never
@@ -214,7 +213,7 @@ func (u *updates) View(width, height int) string {
 		b.WriteString(r + "\n")
 	}
 
-	b.WriteString("\n" + styleTitle.Render("Arch news") + "\n")
+	b.WriteString("\n" + styleTitle.Render("Arch news") + styleMuted.Render("  n read") + "\n")
 	for _, r := range newsRows(st) {
 		b.WriteString(r + "\n")
 	}

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -44,37 +43,68 @@ func HTTPGet(ctx context.Context, url string) ([]byte, error) {
 	return io.ReadAll(io.LimitReader(resp.Body, 1<<20))
 }
 
-// FetchNews gets and parses the feed.
+// FetchNews gets and parses Arch's feed.
 func FetchNews(ctx context.Context, get Get) ([]NewsItem, error) {
-	body, err := get(ctx, NewsURL)
+	return FetchFeed(ctx, get, NewsURL, "arch news")
+}
+
+// FetchFeed gets and parses an RSS 2.0 feed; name labels its errors.
+func FetchFeed(ctx context.Context, get Get, url, name string) ([]NewsItem, error) {
+	body, err := get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
-	return ParseNews(bytes.NewReader(body))
+	return ParseFeed(bytes.NewReader(body), name)
 }
 
-// ParseNews reads the RSS feed, newest first.
-func ParseNews(r io.Reader) ([]NewsItem, error) {
+// ParseNews reads Arch's RSS feed, newest first.
+func ParseNews(r io.Reader) ([]NewsItem, error) { return ParseFeed(r, "arch news") }
+
+// rssItem is the part of an RSS 2.0 item every feed here uses.
+type rssItem struct {
+	Title       string `xml:"title"`
+	Link        string `xml:"link"`
+	PubDate     string `xml:"pubDate"`
+	Description string `xml:"description"`
+}
+
+func readRSS(r io.Reader, name string) ([]rssItem, error) {
 	var feed struct {
-		Items []struct {
-			Title   string `xml:"title"`
-			Link    string `xml:"link"`
-			PubDate string `xml:"pubDate"`
-		} `xml:"channel>item"`
+		Items []rssItem `xml:"channel>item"`
 	}
 	if err := xml.NewDecoder(r).Decode(&feed); err != nil {
-		return nil, fmt.Errorf("arch news: %w", err)
+		return nil, fmt.Errorf("%s: %w", name, err)
 	}
 	if len(feed.Items) == 0 {
-		return nil, errors.New("arch news: no items (not the feed?)")
+		return nil, fmt.Errorf("%s: no items (not the feed?)", name)
 	}
-	items := make([]NewsItem, 0, len(feed.Items))
-	for _, it := range feed.Items {
-		date, _ := time.Parse(time.RFC1123Z, strings.TrimSpace(it.PubDate))
+	return feed.Items, nil
+}
+
+// pubDate reads RSS's date. Feeds differ on "+0000" or "-0000" and the
+// weekday's spelling, so a couple of layouts.
+func pubDate(s string) time.Time {
+	s = strings.TrimSpace(s)
+	for _, layout := range []string{time.RFC1123Z, time.RFC1123, "Mon, 2 Jan 2006 15:04:05 -0700"} {
+		if t, err := time.Parse(layout, s); err == nil {
+			return t
+		}
+	}
+	return time.Time{}
+}
+
+// ParseFeed reads an RSS 2.0 feed, newest first.
+func ParseFeed(r io.Reader, name string) ([]NewsItem, error) {
+	raw, err := readRSS(r, name)
+	if err != nil {
+		return nil, err
+	}
+	items := make([]NewsItem, 0, len(raw))
+	for _, it := range raw {
 		items = append(items, NewsItem{
 			Title: strings.TrimSpace(it.Title),
 			Link:  strings.TrimSpace(it.Link),
-			Date:  date,
+			Date:  pubDate(it.PubDate),
 		})
 	}
 	sort.SliceStable(items, func(i, j int) bool { return items[i].Date.After(items[j].Date) })

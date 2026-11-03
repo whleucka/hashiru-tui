@@ -10,6 +10,7 @@ It delegates where a good tool exists (nmtui, bluetoothctl, journalctl, pavucont
 |---|---|
 | **Overview** | Host, kernel, uptime, memory, disk, battery (live, every 5s); connections; Hashiru version, pending updates, Arch news, health |
 | **Updates** | Hashiru status, release notes (what an update brings, or this version's), pending pacman and AUR packages, Arch news (flagged when newer than your last update), doctor's health checks |
+| **News** | Tabs: Arch news (flagged when newer than your last update); Security: Arch's security tracker matched against your installed packages, worst first, groups whose fix you already have dropped; Kernel: kernel.org's releases, your series marked; LWN headlines. `enter` opens one in the browser, `y` copies its link |
 | **Packages** | What Hashiru's manifests install vs what you added: yours, missing (drift), orphans, foreign, Hashiru's; cache size; `pacman -Qi` for any. Search the repos and the AUR and install; remove, remove orphans, clean the cache |
 | **Keybinds** | Hyprland's binds from `hyprctl binds`, filterable |
 | **Connectivity** | Network devices and wifi, bluetooth, default audio; launches nmtui, bluetoothctl, blueman, pavucontrol |
@@ -35,7 +36,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `?` | this area's keys |
 | `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |
 
-Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news (Updates), `S` search, `i` install, `d` remove, `O` remove orphans, `C` clean the cache (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log in a pane and `enter` on a failed unit goes to it in Services (Logs), `s` `S` `R` start/stop/restart, `e` `d` enable/disable, `l` follow its log (Services: system units through sudo in the terminal, user units in the background). In Hardware: `m` `s` `t` `p` mode, scale, rotate, place, `e` `d` a display on/off and `a` apply (Monitors); `p` profile, `i` idle timeouts, `I` Hashiru's again, `c` charge thresholds, `C` off (Power); `m` `u` mount/unmount, `o` open in Thunar, `e` eject, `R` reset a USB device, `a` `s` `f` authorize/store/forget a Thunderbolt one (Devices); `u` update and `F` fetch metadata (Firmware).
+Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news in News (Updates), `enter`/`o` open in the browser and `y` copy the link (News), `S` search, `i` install, `d` remove, `O` remove orphans, `C` clean the cache (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log in a pane and `enter` on a failed unit goes to it in Services (Logs), `s` `S` `R` start/stop/restart, `e` `d` enable/disable, `l` follow its log (Services: system units through sudo in the terminal, user units in the background). In Hardware: `m` `s` `t` `p` mode, scale, rotate, place, `e` `d` a display on/off and `a` apply (Monitors); `p` profile, `i` idle timeouts, `I` Hashiru's again, `c` charge thresholds, `C` off (Power); `m` `u` mount/unmount, `o` open in Thunar, `e` eject, `R` reset a USB device, `a` `s` `f` authorize/store/forget a Thunderbolt one (Devices); `u` update and `F` fetch metadata (Firmware).
 
 ## Deep links
 
@@ -66,7 +67,7 @@ make test
 ## Layout
 
 - `internal/hashiru`: runs the hashiru CLI and parses its output.
-- `internal/system`: everything else it reads: checkupdates, nmcli, hyprctl, snapper, journalctl, /proc. Commands go through one injected `Run`; parsers are pure and tested against output captured from a real machine.
+- `internal/system`: everything else it reads: checkupdates, nmcli, hyprctl, snapper, journalctl, /proc, the news feeds and the security tracker. Commands go through one injected `Run`; parsers are pure and tested against output captured from a real machine.
 - `internal/kitty`: kitty graphics through Unicode placeholders.
 - `internal/herdr`: `herdr pane split/run/rename`.
 - `internal/tui`: the bubbletea app. One `Area` per sidebar entry; tests inject every command, URL and path, so they touch nothing on the machine running them.

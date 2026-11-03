@@ -55,6 +55,7 @@ type Key struct {
 type env struct {
 	src   Source
 	probe system.Run
+	get   system.Get
 	state *State
 	// launch starts another tool; see Model.launch.
 	launch func(Launch) tea.Cmd
@@ -72,6 +73,7 @@ func newAreas(e *env, opts Options, graphics bool) []Area {
 	return []Area{
 		newOverview(e),
 		newUpdates(e),
+		newNews(e),
 		newPackages(e, opts.PacmanCache),
 		newKeybinds(e),
 		newConnectivity(e),

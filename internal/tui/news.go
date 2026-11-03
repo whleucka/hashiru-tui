@@ -2,9 +2,6 @@ package tui
 
 import (
 	"fmt"
-	"strings"
-
-	"github.com/whleucka/hashiru-tui/internal/system"
 )
 
 // newsPreview is how many news items Updates lists.
@@ -45,12 +42,4 @@ func newsRows(st *State) []string {
 		rows = append(rows, mark+styleMuted.Render(it.Date.Format("2006-01-02"))+"  "+it.Title)
 	}
 	return rows
-}
-
-// newsTarget is what n opens: the newest unread item, or the news index.
-func newsTarget(st *State) string {
-	if st.UnreadNews() > 0 {
-		return st.News[0].Link
-	}
-	return strings.TrimSuffix(system.NewsURL, "feeds/news/") + "news/"
 }

@@ -1,0 +1,163 @@
+[
+  {
+    "name": "AVG-2843",
+    "packages": [
+      "vim"
+    ],
+    "status": "Unknown",
+    "severity": "Unknown",
+    "type": "unknown",
+    "affected": "9.0.1224-1",
+    "fixed": "9.0.1225-1",
+    "ticket": null,
+    "issues": [
+      "CVE-2023-0433",
+      "CVE-2023-0288",
+      "CVE-2023-0054",
+      "CVE-2023-0049",
+      "CVE-2022-47024",
+      "CVE-2022-3591",
+      "CVE-2022-3324",
+      "CVE-2022-3256",
+      "CVE-2022-3099",
+      "CVE-2022-2581",
+      "CVE-2022-2345",
+      "CVE-2022-0417",
+      "CVE-2022-0392"
+    ],
+    "advisories": []
+  },
+  {
+    "name": "AVG-2842",
+    "packages": [
+      "libtiff"
+    ],
+    "status": "Unknown",
+    "severity": "Unknown",
+    "type": "unknown",
+    "affected": "4.4.0-1",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2022-48281",
+      "CVE-2022-3970",
+      "CVE-2022-3627",
+      "CVE-2022-3599",
+      "CVE-2022-3597",
+      "CVE-2022-3570",
+      "CVE-2022-34526",
+      "CVE-2022-2953",
+      "CVE-2022-2869",
+      "CVE-2022-2868",
+      "CVE-2022-2867",
+      "CVE-2022-2521",
+      "CVE-2022-2520",
+      "CVE-2022-2519",
+      "CVE-2022-2058",
+      "CVE-2022-2057",
+      "CVE-2022-2056",
+      "CVE-2022-1623",
+      "CVE-2022-1622"
+    ],
+    "advisories": []
+  },
+  {
+    "name": "AVG-2901",
+    "packages": [
+      "pam"
+    ],
+    "status": "Vulnerable",
+    "severity": "High",
+    "type": "arbitrary filesystem access",
+    "affected": "1.7.0-2",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2025-6020"
+    ],
+    "advisories": []
+  },
+  {
+    "name": "AVG-2898",
+    "packages": [
+      "libxml2"
+    ],
+    "status": "Vulnerable",
+    "severity": "High",
+    "type": "denial of service",
+    "affected": "2.14.4-1",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2025-6170",
+      "CVE-2025-49796",
+      "CVE-2025-49795",
+      "CVE-2025-49794"
+    ],
+    "advisories": []
+  },
+  {
+    "name": "AVG-2765",
+    "packages": [
+      "openssl"
+    ],
+    "status": "Vulnerable",
+    "severity": "Medium",
+    "type": "arbitrary command execution",
+    "affected": "1.1.1.o-1",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2022-2068"
+    ],
+    "advisories": []
+  },
+  {
+    "name": "AVG-1420",
+    "packages": [
+      "xdg-utils"
+    ],
+    "status": "Vulnerable",
+    "severity": "Medium",
+    "type": "information disclosure",
+    "affected": "1.1.3+19+g9816ebb-1",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2020-27748"
+    ],
+    "advisories": []
+  },
+  {
+    "name": "AVG-2882",
+    "packages": [
+      "openssl"
+    ],
+    "status": "Vulnerable",
+    "severity": "Low",
+    "type": "certificate verification bypass",
+    "affected": "3.5.0-1",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2025-4575"
+    ],
+    "advisories": []
+  },
+  {
+    "name": "AVG-9999",
+    "packages": [
+      "not-installed"
+    ],
+    "status": "Vulnerable",
+    "severity": "Critical",
+    "type": "arbitrary code execution",
+    "affected": "1.0-1",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2026-0001"
+    ],
+    "advisories": []
+  }
+]

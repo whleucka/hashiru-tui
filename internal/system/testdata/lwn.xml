@@ -1,0 +1,89 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"
+    		xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>LWN.net</title>
+        <link>https://lwn.net</link>
+        <description> LWN.net is a comprehensive source of news and opinions from
+        and about the Linux community.  This is the main LWN.net feed,
+        listing all articles which are posted to the site front page.
+</description>
+        <language>en-us</language>
+        <pubDate>Tue, 03 Nov 2026 14:23:51 +0000</pubDate>
+        <lastBuildDate>Tue, 03 Nov 2026 14:23:51 +0000</lastBuildDate>
+        <docs>https://www.rssboard.org/rss-specification</docs>
+        <webMaster>lwn@lwn.net</webMaster>
+        <atom:link href="https://lwn.net/headlines/rss2"
+    		rel="self" type="application/rss+xml"/>
+    <item>
+        <title>Security updates for Tuesday</title>
+        <link>https://lwn.net/Articles/1105111/</link>
+        <guid>https://lwn.net/Articles/1105111/</guid>
+        <dc:creator>jzb</dc:creator>
+        <description>Security updates have been issued by &lt;b&gt;AlmaLinux&lt;/b&gt; (bind, bind9.16, firefox, freerdp, ghostscript, kernel, kernel-rt, libXi, perl-YAML:1.24, perl:5.32, pipewire, qt5-qtbase, redis:6, tomcat, and wireshark), &lt;b&gt;Debian&lt;/b&gt; (chromium, git-annex, incus, kernel, and strongswan), &lt;b&gt;Fedora&lt;/b&gt; (barman, erlang-hex_core, glib-networking, kernel, knot, liblerc, libsoup3, mingw-cfitsio, openjpeg, perl-libnet, pipx, python-pillow, python-uv-build, radicale, ruff, rust-archive-trait, rust-astral-ini, rust-astral-mail-headers, rust-astral-pubgrub, rust-astral-version-ranges, rust-astral_async_zip, rust-quick-junit, rust-tar-codec, rust-tar-framing, tpm2-tss, ty, uv, and zvbi), &lt;b&gt;Mageia&lt;/b&gt; (unbound), &lt;b&gt;Red Hat&lt;/b&gt; (buildah, compat-openssl10, compat-openssl11, container-tools:rhel8, delve, golang-github-openprinting-ipp-usb, grafana, grafana-pcp, kernel, oci-seccomp-bpf-hook, openssl, opentelemetry-collector, osbuild-composer, podman, rhc, and skopeo), &lt;b&gt;Slackware&lt;/b&gt; (expat), &lt;b&gt;SUSE&lt;/b&gt; (ansible-core, apache-arrow, apache-commons-codec, apache-commons-io, apache-commons- logging, avalon-framework, avalon-logkit, glassfish-jsp, jsch, maven-file- management, opentest4j, aws-nitro-enclaves-cli, bouncycastle, chromedriver, chromium, cifs-utils, expat, firefox, gcc48, ghostscript, GraphicsMagick, guava, j2objc-annotations, gvfs, ImageMagick, in-toto, libsoup, nodejs22, nodejs24, praat, python-Pillow, python-PyJWT, python-soupsieve, python-sqlparse, python313-OpenEXR, python313-vllm, rootlesskit, and rqlite), and &lt;b&gt;Ubuntu&lt;/b&gt; (kernel, linux, linux-aws, linux-aws-5.15, linux-aws-fips, linux-azure, linux-azure-5.15, linux-azure-fde-5.15, linux-azure-fips, linux-fips, linux-gcp, linux-gcp-5.15, linux-gcp-fips, linux-gke, linux-gkeop, linux-hwe-5.15, linux-ibm, linux-ibm-5.15, linux-intel-iot-realtime, linux-intel-iotg, linux-intel-iotg-5.15, linux-kvm, linux-lowlatency, linux-lowlatency-hwe-5.15, linux-nvidia, linux-oracle, linux-oracle-5.15, linux-realtime, linux, linux-aws, linux-aws-fips, linux-azure, linux-azure-5.4, linux-azure-fips, linux-fips, linux-gcp, linux-gcp-5.4, linux-gcp-fips, linux-hwe-5.4, linux-ibm, linux-ibm-5.4, linux-iot, linux-kvm, linux-oracle, linux-oracle-5.4, linux-xilinx-zynqmp, linux, linux-aws, linux-fips, linux-kvm, linux-lts-xenial, linux, linux-aws, linux-gcp, linux-hwe-7.0, linux-ibm, linux-oracle, linux-aws, linux-azure-fde, linux-bluefield, linux-nvidia-tegra, linux-nvidia-tegra-5.15, linux-nvidia-tegra-igx, and linux-oem-7.0).
+</description>
+        <pubDate>Tue, 03 Nov 2026 14:10:12 +0000</pubDate>
+        </item>
+<item>
+        <title>[$] The second part of the 7.4 merge window</title>
+        <link>https://lwn.net/Articles/1102739/</link>
+        <guid>https://lwn.net/Articles/1102739/</guid>
+        <dc:creator>daroc</dc:creator>
+        <description>&lt;p&gt;
+The 7.4 merge window, which
+&lt;a href=&quot;https://lwn.net/Articles/1104653/&quot;&gt;closed&lt;/a&gt; on November 1,
+included a record-breaking 18,591 non-merge changesets.
+That is almost as many as the entire 7.3 development cycle, which had 18,765, itself a record breaker. Of
+those, 11,838 landed after &lt;a href=&quot;https://lwn.net/Articles/1101211/&quot;&gt;the article covering the
+first part of the merge window&lt;/a&gt;. Most of those were bug fixes of
+various forms; it seems as though bug fixes may be crowding out feature
+additions &lt;a href=&quot;https://lwn.net/Articles/1104210/&quot;&gt;across the open-source ecosystem&lt;/a&gt; to
+some extent. Still, a good number of new features were included, and a handful
+removed, in the tail end of the merge window.
+&lt;/p&gt;
+</description>
+        <pubDate>Mon, 02 Nov 2026 17:51:48 +0000</pubDate>
+        </item>
+<item>
+        <title>Shutting the Door on the XCPE Botnet (Threat Intelligence)</title>
+        <link>https://lwn.net/Articles/1104847/</link>
+        <guid>https://lwn.net/Articles/1104847/</guid>
+        <dc:creator>corbet</dc:creator>
+        <description>The Google Threat Intelligence blog &lt;a
+href=&quot;https://cloud.google.com/blog/topics/threat-intelligence/shutting-the-door-on-the-xcpe-botnet/&quot;&gt;describes,
+in great detail&lt;/a&gt;, the XCPE botnet, which has just been taken down.
+&lt;p&gt;
+&lt;blockquote class=&quot;bq&quot;&gt;
+	Last week, Google and industry partners dismantled the XCPE
+	backdoor which enrolled more than 1.3 million set-top boxes into a
+	botnet. We assess with high confidence that the backdoor and botnet
+	were intentionally developed, deployed, and operated for financial
+	gain by Videostrong Technology Co., an Android Original Equipment
+	Manufacturer (OEM) and Original Device Manufacturer (ODM).
+&lt;p&gt;
+	Videostrong monetized the backdoor by selling access to criminal
+	affiliates and loading those affiliates' malware modules onto
+	infected devices. These secondary modules were conducting ad-fraud;
+	silently enrolling infected devices into residential proxy
+	networks; and loading additional malware onto XCPE-compromised
+	devices. 
+&lt;/blockquote&gt;</description>
+        <pubDate>Mon, 02 Nov 2026 14:29:37 +0000</pubDate>
+        </item>
+<item>
+        <title>[$] Managing the kernel CVE flood</title>
+        <link>https://lwn.net/Articles/1100894/</link>
+        <guid>https://lwn.net/Articles/1100894/</guid>
+        <dc:creator>corbet</dc:creator>
+        <description>We recently &lt;a href=&quot;https://lwn.net/Articles/1096908/&quot;&gt;looked&lt;/a&gt; at how the
+kernel community is dealing with the firehose of vulnerability reports, but
+said little about how users of the kernel are responding.  At the  2026 &lt;a
+href=&quot;https://lpc.events/&quot;&gt;Linux Plumbers Conference&lt;/a&gt;, Amazon employees
+Dylan Johnson and Justinien Bouron discussed the problem from the point of
+view of engineers trying to keep AWS running and secure in the face of a
+storm of CVE disclosures.  The kernel community's longstanding advice is to
+run current kernels, and that turns out to work — sort of.
+</description>
+        <pubDate>Mon, 02 Nov 2026 14:28:39 +0000</pubDate>
+        </item>
+</channel>
+</rss>

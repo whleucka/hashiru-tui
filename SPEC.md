@@ -426,3 +426,24 @@ Fixture captured with the charger in.
 - Docked: the dock shows connected and authorized; Power shows the
   charger's wattage over USB-C.
 - `R` on a device runs `usb --reset` with sudo in the terminal.
+
+## v5: news
+
+Decided 2026-11-03. Arch news moves out of Updates' preview into a **News
+area** with `[` `]` tabs, because the preview had no cursor: you could only
+open the newest item. Updates keeps its five-line preview; `n` goes to News.
+
+- **Arch** (`news.arch`): archlinux.org's feed, unread marked as before.
+- **Security** (`news.security`): `security.archlinux.org/issues/vulnerable.json`
+  matched against `pacman -Q`. A group whose `fixed` version is at or below
+  the installed one is dropped (pacman's `vercmp`); the tracker leaves some
+  open long after the fix. Worst first. Arch stopped publishing advisories in
+  May 2025, so the open groups are the signal; urgent fixes also reach Arch news.
+  The tab warns when anything is High or Critical.
+- **Kernel** (`news.kernel`): kernel.org's `kdist.xml` in the feed's order;
+  the release in the running kernel's series is marked; links go to the
+  ChangeLog when there is one.
+- **LWN** (`news.lwn`): LWN's headlines.
+- `enter`/`o` open the item (GUI, detached); `y` copies its link through the
+  terminal (OSC 52). Each feed fails on its own tab only.
+- Not taken: Phoronix (too noisy).

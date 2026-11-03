@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/charmbracelet/x/ansi"
+
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
 )
 
@@ -37,9 +39,20 @@ func TestNewsFlaggedSinceLastUpdate(t *testing.T) {
 		}
 	}
 
+	// n goes to News, where every item can be opened, not just the newest.
 	press(m, "n")
-	if len(opened) != 1 || opened[0] != "xdg-open https://archlinux.org/news/mkinitcpio-42/" {
-		t.Errorf("n opened %v; want the newest unread item", opened)
+	if m.area().Name() != "News" {
+		t.Fatalf("n → %s; want News", m.area().Name())
+	}
+	out = ansi.Strip(m.View().Content)
+	for _, want := range []string{"Arch (1 new)", "▸ ● 2026-10-13  Mkinitcpio", "read it before updating", "https://archlinux.org/news/mkinitcpio-42/"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("News missing %q:\n%s", want, out)
+		}
+	}
+	press(m, "j", "enter")
+	if len(opened) != 1 || opened[0] != "xdg-open https://archlinux.org/news/old/" {
+		t.Errorf("enter opened %v; want the selected item", opened)
 	}
 }
 
