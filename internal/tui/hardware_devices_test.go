@@ -182,10 +182,9 @@ func devActModel(t *testing.T, p probe, fail string) (m *Model, ran, launched, o
 			}
 			return nil, nil
 		},
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			*launched = append(*launched, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 		Detach: func(argv []string) error { *opened = append(*opened, strings.Join(argv, " ")); return nil },
 	})
 	load(t, m)

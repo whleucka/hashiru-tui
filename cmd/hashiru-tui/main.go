@@ -12,7 +12,6 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/whleucka/hashiru-tui/internal/hashiru"
-	"github.com/whleucka/hashiru-tui/internal/herdr"
 	"github.com/whleucka/hashiru-tui/internal/tui"
 )
 
@@ -72,12 +71,6 @@ func main() {
 	}
 
 	opts := tui.Options{Source: hashiru.CLI{Bin: os.Getenv("HASHIRU_BIN")}}
-
-	// Inside herdr, commands open in a split beside the TUI, as in
-	// mantis-tui. Elsewhere they borrow this terminal until they exit.
-	if herdr.Available() {
-		opts.RunInPane = herdr.Open
-	}
 
 	m := tui.New(opts)
 	if a.listActions {

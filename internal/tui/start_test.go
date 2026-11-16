@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"context"
 	"strings"
 	"testing"
 
@@ -23,10 +22,9 @@ func TestStartRunsAnActionOnceSized(t *testing.T) {
 	var ran []string
 	m := New(Options{
 		Source: fakeSource{},
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			ran = append(ran, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 	})
 	if err := m.Start("", "updates.update"); err != nil {
 		t.Fatal(err)
@@ -61,10 +59,9 @@ func TestStartRunsAnActionWhenTheTerminalNeverAnswers(t *testing.T) {
 	var ran []string
 	m := New(Options{
 		Source: fakeSource{},
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			ran = append(ran, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 	})
 	if err := m.Start("", "updates.update"); err != nil {
 		t.Fatal(err)

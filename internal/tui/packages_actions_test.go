@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"context"
 	"os"
 	"strings"
 	"testing"
@@ -24,10 +23,9 @@ func actionsModel(t *testing.T) (*Model, *[]launched) {
 	m := New(Options{
 		Source: fakeSource{status: hashiru.Status{Repo: "../system/testdata/repo"}},
 		Probe:  p.run,
-		RunInPane: func(_ context.Context, argv []string, label string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, label string) {
 			ran = append(ran, launched{strings.Join(argv, " "), label})
-			return nil
-		},
+		}),
 	})
 	load(t, m)
 	goTo(t, m, "Packages")

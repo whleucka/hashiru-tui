@@ -222,10 +222,9 @@ func TestAreaKeysWorkFromSidebar(t *testing.T) {
 	var got []string
 	m := New(Options{
 		Source: fakeSource{},
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			got = append(got, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 	})
 	load(t, m)
 	press(m, "j") // Updates, still in the sidebar

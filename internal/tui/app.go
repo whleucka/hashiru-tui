@@ -29,10 +29,6 @@ type Source interface {
 // Options wires the model to the outside world.
 type Options struct {
 	Source Source
-	// RunInPane runs argv in a new herdr pane named label, to the right or
-	// below, focused or not. Nil outside herdr; commands then take over this
-	// terminal through tea.ExecProcess instead.
-	RunInPane func(ctx context.Context, argv []string, label string, right, focus bool) error
 	// Detach starts a GUI app in the background. Defaults to a setsid'd process.
 	Detach func(argv []string) error
 	// Exec hands the terminal to a command. Defaults to tea.ExecProcess.

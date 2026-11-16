@@ -33,14 +33,15 @@ Both, with the same binary:
 
 One runner, three cases, picked per action:
 
-| Kind | Example | Inside herdr | Otherwise |
-|---|---|---|---|
-| Terminal, interactive | nmtui, bluetoothctl, `hashiru update`, `$EDITOR` | new pane, focused | `tea.ExecProcess` (takes over this window until it exits) |
-| Terminal, to watch | `journalctl -f`, btop | new pane, focused (was unfocused until 2026-10-16: you open a pane to look at it) | `tea.ExecProcess` |
-| GUI | blueman-manager, pavucontrol | detached (`setsid`), the TUI stays | same |
+| Kind | Example | How |
+|---|---|---|
+| Terminal, interactive | nmtui, bluetoothctl, `hashiru update`, `$EDITOR` | `tea.ExecProcess` (takes over this window until it exits) |
+| Terminal, to watch | `journalctl -f`, btop | `tea.ExecProcess` |
+| GUI | blueman-manager, pavucontrol | detached (`setsid`), the TUI stays |
 
-herdr is an extra, never required. A floating window opened by the keybind is
-not in herdr, so the ExecProcess path is the primary one and has to feel good.
+Opening terminal tools in herdr panes was dropped on 2026-11-16: one path,
+the ExecProcess one, which works the same in herdr, a floating window or any
+other terminal.
 
 ## Layout
 
@@ -120,7 +121,7 @@ Pruned 2026-10-16, to keep the TUI from becoming the kitchen sink:
 
 ## What changes in the current code
 
-- **Keep:** `internal/hashiru` (status, doctor, log parser), `internal/herdr`,
+- **Keep:** `internal/hashiru` (status, doctor, log parser),
   the runner, the Dashboard and Doctor views (they become Overview and
   Updates → health).
 - **Change:** tabs become a sidebar; the runner grows the three kinds above.
@@ -341,7 +342,7 @@ real modes while changing them.
   `hashiru-tui hardware.power` and `hashiru-tui packages.orphans` open on that
   tab; `hashiru-tui hardware.nope` exits non-zero listing the tabs.
 - Firmware lists this machine's devices and an empty pending list without
-  error; `u` and `F` open fwupdmgr in a pane (herdr) or take over the terminal.
+  error; `u` and `F` open fwupdmgr, taking over the terminal.
 - Monitors: changing eDP-1's scale and applying writes the override, reloads,
   and reverts on its own after 15 s without `y`; with `y` the file stays and
   survives a Hyprland restart. A hand-written override gets a `.bak`.

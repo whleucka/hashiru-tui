@@ -54,7 +54,7 @@ func (c CLI) Doctor(ctx context.Context) (Report, error) {
 }
 
 // Argv is the command line for a hashiru subcommand, for running it somewhere
-// other than here: a herdr pane, or the terminal via tea.ExecProcess.
+// other than here: the terminal via tea.ExecProcess.
 func (c CLI) Argv(args ...string) []string {
 	return append([]string{c.bin()}, args...)
 }

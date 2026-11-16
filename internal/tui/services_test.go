@@ -54,10 +54,9 @@ func servicesModel(t *testing.T, p probe) (*Model, *svcRec) {
 			}
 			return p.run(ctx, name, args...)
 		},
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			rec.launched = append(rec.launched, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 	})
 	load(t, m)
 	goTo(t, m, "Services")

@@ -67,10 +67,9 @@ func newPowerRig(t *testing.T, home, sysroot string) powerRig {
 			}
 			return p.run(ctx, name, args...)
 		},
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			launched = append(launched, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 	})
 	load(t, m)
 	goTo(t, m, "Hardware")

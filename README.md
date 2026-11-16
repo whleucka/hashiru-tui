@@ -36,7 +36,7 @@ Hashiru's own state comes from its machine-readable output, `hashiru status --po
 | `?` | this area's keys |
 | `q` | quit (asks first: `y` quits, any other key stays); `ctrl+c` quits at once |
 
-Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news in News (Updates), `enter`/`o` open in the browser and `y` copy the link (News), `S` search, `i` install, `d` remove, `O` remove orphans, `C` clean the cache (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log in a pane and `enter` on a failed unit goes to it in Services (Logs), `s` `S` `R` start/stop/restart, `e` `d` enable/disable, `l` follow its log (Services: system units through sudo in the terminal, user units in the background). In Hardware: `m` `s` `t` `p` mode, scale, rotate, place, `e` `d` a display on/off and `a` apply (Monitors); `p` profile, `i` idle timeouts, `I` Hashiru's again, `c` charge thresholds, `C` off (Power); `m` `u` mount/unmount, `o` open in Thunar, `e` eject, `R` reset a USB device, `a` `s` `f` authorize/store/forget a Thunderbolt one (Devices); `u` update and `F` fetch metadata (Firmware).
+Each area lists its own keys in the footer. Some to know: `u` update, `a` AUR upgrade, `c` release notes, `s` re-apply one stage (`hashiru install N`) and `n` Arch news in News (Updates), `enter`/`o` open in the browser and `y` copy the link (News), `S` search, `i` install, `d` remove, `O` remove orphans, `C` clean the cache (Packages), `/` filter (Keybinds, Packages), `w` nmtui and `b` bluetoothctl (Connectivity), `n` new snapshot (Snapshots), `J` `K` `L` follow the journal, kernel or Hashiru log and `enter` on a failed unit goes to it in Services (Logs), `s` `S` `R` start/stop/restart, `e` `d` enable/disable, `l` follow its log (Services: system units through sudo in the terminal, user units in the background). In Hardware: `m` `s` `t` `p` mode, scale, rotate, place, `e` `d` a display on/off and `a` apply (Monitors); `p` profile, `i` idle timeouts, `I` Hashiru's again, `c` charge thresholds, `C` off (Power); `m` `u` mount/unmount, `o` open in Thunar, `e` eject, `R` reset a USB device, `a` `s` `f` authorize/store/forget a Thunderbolt one (Devices); `u` update and `F` fetch metadata (Firmware).
 
 ## Deep links
 
@@ -52,8 +52,7 @@ IDs are `<area>.<verb>` and don't change when titles do, so a Hyprland bind or a
 ## How tools are launched
 
 - **GUI apps** (blueman, pavucontrol, the browser for news) start detached.
-- **Inside herdr**, terminal tools open in a focused pane beside the TUI, whether you type into them (`hashiru update`, nmtui, `$EDITOR`) or watch them (`journalctl -f`).
-- **Otherwise** they take over the terminal until they exit, and the TUI refreshes after anything that may have changed the machine.
+- **Terminal tools**, whether you type into them (`hashiru update`, nmtui, `$EDITOR`) or watch them (`journalctl -f`), take over the terminal until they exit, and the TUI refreshes after anything that may have changed the machine.
 
 ## Build
 
@@ -69,5 +68,4 @@ make test
 - `internal/hashiru`: runs the hashiru CLI and parses its output.
 - `internal/system`: everything else it reads: checkupdates, nmcli, hyprctl, snapper, journalctl, /proc, the news feeds and the security tracker. Commands go through one injected `Run`; parsers are pure and tested against output captured from a real machine.
 - `internal/kitty`: kitty graphics through Unicode placeholders.
-- `internal/herdr`: `herdr pane split/run/rename`.
 - `internal/tui`: the bubbletea app. One `Area` per sidebar entry; tests inject every command, URL and path, so they touch nothing on the machine running them.

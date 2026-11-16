@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"context"
 	"os"
 	"strings"
 	"testing"
@@ -18,10 +17,9 @@ func stagesModel(t *testing.T, ran *[]string) *Model {
 	m := New(Options{
 		Source: fakeSource{},
 		Probe:  probe{"hashiru install --list": string(list)}.run,
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			*ran = append(*ran, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 	})
 	load(t, m)
 	goTo(t, m, "Updates")

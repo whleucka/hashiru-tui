@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"context"
 	"strings"
 	"testing"
 
@@ -22,10 +21,9 @@ func TestPaletteRunsAnAction(t *testing.T) {
 	var ran []string
 	m := New(Options{
 		Source: fakeSource{},
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			ran = append(ran, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 	})
 	load(t, m)
 
@@ -155,7 +153,7 @@ func TestActionIDsAreUniqueAndWellFormed(t *testing.T) {
 
 func TestPaletteListsRecentsFirstAndRemembersThem(t *testing.T) {
 	path := t.TempDir() + "/state/recent"
-	opts := Options{Source: fakeSource{}, RecentPath: path, RunInPane: func(context.Context, []string, string, bool, bool) error { return nil }}
+	opts := Options{Source: fakeSource{}, RecentPath: path, Exec: recordLaunch(func([]string, string) {})}
 	m := New(opts)
 	load(t, m)
 	m.Update(ctrlP())

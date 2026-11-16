@@ -1,8 +1,6 @@
 package tui
 
 import (
-	"context"
-	"errors"
 	"os/exec"
 	"strings"
 	"testing"
@@ -10,66 +8,21 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-type paneCall struct {
-	argv         string
-	right, focus bool
-}
-
-// herdrModel is a model inside herdr, recording the panes it opens.
-func herdrModel(t *testing.T, w, h int) (*Model, *[]paneCall) {
-	t.Helper()
-	var calls []paneCall
-	m := New(Options{
-		Source: fakeSource{},
-		RunInPane: func(_ context.Context, argv []string, _ string, right, focus bool) error {
-			calls = append(calls, paneCall{strings.Join(argv, " "), right, focus})
-			return nil
-		},
-		Detach: func([]string) error { t.Error("no GUI launch expected"); return nil },
-	})
-	m.Update(tea.WindowSizeMsg{Width: w, Height: h})
-	return m, &calls
-}
-
-func TestLaunchInHerdr(t *testing.T) {
-	m, calls := herdrModel(t, 120, 40) // wide: panes go right
-	drain(m, m.launch(Launch{Argv: []string{"nmtui"}, Label: "nmtui", Kind: Interactive}))
-	drain(m, m.launch(Launch{Argv: []string{"journalctl", "-f"}, Label: "journal", Kind: Watch}))
-
-	want := []paneCall{
-		{"nmtui", true, true},
-		{"journalctl -f", true, true}, // watched, but focused too: you opened it to look
-	}
-	if len(*calls) != 2 || (*calls)[0] != want[0] || (*calls)[1] != want[1] {
-		t.Errorf("panes = %+v, want %+v", *calls, want)
-	}
-	if !strings.Contains(m.note, "new pane") {
-		t.Errorf("note = %q", m.note)
+// recordLaunch is recordExec for tests that want the label too: it hands rec
+// each command and its label, and the command exits at once.
+func recordLaunch(rec func(argv []string, label string)) func(*exec.Cmd, tea.ExecCallback) tea.Cmd {
+	return func(c *exec.Cmd, done tea.ExecCallback) tea.Cmd {
+		msg := done(nil)
+		label := ""
+		if d, ok := msg.(execDoneMsg); ok {
+			label = d.label
+		}
+		rec(c.Args, label)
+		return func() tea.Msg { return msg }
 	}
 }
 
-func TestLaunchPaneGoesDownWhenTall(t *testing.T) {
-	m, calls := herdrModel(t, 80, 60)
-	drain(m, m.launch(Launch{Argv: []string{"btop"}, Kind: Watch}))
-	if (*calls)[0].right {
-		t.Error("80x60 is tall: the pane should go below")
-	}
-}
-
-func TestLaunchHerdrError(t *testing.T) {
-	m := New(Options{
-		Source: fakeSource{},
-		RunInPane: func(context.Context, []string, string, bool, bool) error {
-			return errors.New("no such pane")
-		},
-	})
-	drain(m, m.launch(Launch{Argv: []string{"nmtui"}, Label: "nmtui", Kind: Interactive}))
-	if !m.noteErr || !strings.Contains(m.note, "no such pane") {
-		t.Errorf("note = %q (err %v)", m.note, m.noteErr)
-	}
-}
-
-func TestLaunchWithoutHerdrTakesTerminal(t *testing.T) {
+func TestLaunchTakesTerminal(t *testing.T) {
 	var ran []string
 	calls := 0
 	m := New(Options{
@@ -101,10 +54,6 @@ func TestLaunchGUIDetaches(t *testing.T) {
 	var started []string
 	m := New(Options{
 		Source: fakeSource{},
-		RunInPane: func(context.Context, []string, string, bool, bool) error {
-			t.Error("GUI apps don't go in panes")
-			return nil
-		},
 		Detach: func(argv []string) error {
 			started = append(started, strings.Join(argv, " "))
 			return nil

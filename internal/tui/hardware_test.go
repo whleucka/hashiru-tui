@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"context"
 	"os"
 	"strings"
 	"testing"
@@ -30,10 +29,9 @@ func hardwareModel(t *testing.T, p probe) (*Model, *[]string) {
 	m := New(Options{
 		Source: fakeSource{},
 		Probe:  p.run,
-		RunInPane: func(_ context.Context, argv []string, _ string, _, _ bool) error {
+		Exec: recordLaunch(func(argv []string, _ string) {
 			launched = append(launched, strings.Join(argv, " "))
-			return nil
-		},
+		}),
 	})
 	load(t, m)
 	goTo(t, m, "Hardware")

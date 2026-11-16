@@ -68,7 +68,6 @@ const (
 	newsTimeout    = 15 * time.Second
 	connTimeout    = 10 * time.Second
 	machineTimeout = 10 * time.Second
-	paneTimeout    = 5 * time.Second
 )
 
 // load reloads everything in parallel.

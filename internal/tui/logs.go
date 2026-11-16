@@ -211,9 +211,9 @@ func (l *logsArea) Keys() []Key {
 		keys = []Key{{Keys: "j/k", Desc: "scroll"}}
 	}
 	return append(append([]Key{tabKey}, keys...),
-		Key{Keys: "J", Desc: "journal", Group: "Follow (in a pane)"},
-		Key{Keys: "K", Desc: "kernel", Group: "Follow (in a pane)"},
-		Key{Keys: "L", Desc: "hashiru log", Group: "Follow (in a pane)"},
+		Key{Keys: "J", Desc: "journal", Group: "Follow"},
+		Key{Keys: "K", Desc: "kernel", Group: "Follow"},
+		Key{Keys: "L", Desc: "hashiru log", Group: "Follow"},
 	)
 }
 

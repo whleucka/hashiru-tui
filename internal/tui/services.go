@@ -312,7 +312,7 @@ func (s *services) act(verb string) tea.Cmd {
 	}
 }
 
-// follow opens the unit's journal, live, in a pane (or this terminal).
+// follow opens the unit's journal, live, in this terminal.
 func (s *services) follow(u system.Service) tea.Cmd {
 	argv := []string{"journalctl", "-u", u.Name, "-f"}
 	if u.User {

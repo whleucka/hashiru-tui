@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"context"
 	"os/exec"
 	"syscall"
 
@@ -23,20 +22,16 @@ const (
 // Launch is one tool to start.
 type Launch struct {
 	Argv  []string
-	Label string // names the pane and the footer note
+	Label string // names the footer note
 	Kind  Kind
-	// Refresh reloads state when the tool exits. Only possible when it ran in
-	// this terminal; a herdr pane or a GUI window runs on its own.
+	// Refresh reloads state when the tool exits. A GUI window runs on its own,
+	// so it never refreshes.
 	Refresh bool
 }
 
 // launch starts l the best way available:
 //
 //   - GUI: detached, whatever else is true, and the TUI carries on.
-//   - Inside herdr: a new pane, focused, Watch ones too: you open a pane to
-//     look at it, and staying behind in the TUI meant a click to get there.
-//     It goes right when the terminal is wider than it is tall (cells are
-//     about twice as tall as wide) and below otherwise, as in mantis-tui.
 //   - Otherwise: the tool takes over this terminal until it exits.
 func (m *Model) launch(l Launch) tea.Cmd {
 	if l.Label == "" {
@@ -50,22 +45,6 @@ func (m *Model) launch(l Launch) tea.Cmd {
 				return noteMsg{text: "couldn't open " + l.Label, err: err}
 			}
 			return noteMsg{text: "opened " + l.Label}
-		}
-	}
-
-	if run := m.opts.RunInPane; run != nil {
-		right := m.width >= 2*m.height
-		return func() tea.Msg {
-			ctx, cancel := context.WithTimeout(context.Background(), paneTimeout)
-			defer cancel()
-			if err := run(ctx, l.Argv, l.Label, right, true); err != nil {
-				return noteMsg{text: l.Label, err: err}
-			}
-			msg := l.Label + " opened in a new pane"
-			if l.Refresh {
-				msg += " (r to refresh after)"
-			}
-			return noteMsg{text: msg}
 		}
 	}
 
